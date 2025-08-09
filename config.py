@@ -4,11 +4,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # API Configuration
-API_FOOTBALL_KEY = "376d3a099be68a055af2aca6e237bdd5"
+API_FOOTBALL_KEY = "9e50c7d2e07bd980072a9840ba6a8d1b"
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 
 # Telegram Configuration
-TELEGRAM_BOT_TOKEN = "8091722792:AAFE8sgk08rkAnpdo_sFW7-9j8glE4dLBLo"  # Your working token
+TELEGRAM_BOT_TOKEN = "8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA"  # Your working token
 # TELEGRAM_BOT_TOKEN = "8209018533:AAFFEFcJ0XDKKOFdNvalvtFoxvS0JHkeG0k"  # Your other token
 TELEGRAM_CHAT_ID = None  # Will be set via /setchat command in bot
 
