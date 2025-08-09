@@ -13,12 +13,26 @@ class TelegramBetBot:
     
     def __init__(self, token: str = None):
         self.token = token or config.TELEGRAM_BOT_TOKEN
+        if not self.token:
+            raise ValueError("Telegram bot token is required. Set TELEGRAM_BOT_TOKEN in config.py or environment variable.")
+        
         self.bot = Bot(token=self.token)
         self.chat_id = config.TELEGRAM_CHAT_ID
         self.application = None
         
     async def start(self):
         """Start the Telegram bot"""
+        try:
+            # Validate token by getting bot info
+            bot_info = await self.bot.get_me()
+            print(f"✅ Bot authenticated successfully: @{bot_info.username}")
+            
+        except Exception as e:
+            print(f"❌ Bot authentication failed: {e}")
+            print(f"🔑 Current token: {self.token[:15]}...")
+            print("💡 Please check your TELEGRAM_BOT_TOKEN in config.py")
+            raise
+        
         self.application = Application.builder().token(self.token).build()
         
         # Add command handlers

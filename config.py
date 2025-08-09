@@ -8,7 +8,7 @@ API_FOOTBALL_KEY = "376d3a099be68a055af2aca6e237bdd5"
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 
 # Telegram Configuration
-TELEGRAM_BOT_TOKEN = "8209018533:AAHN91m6RzLpzKTVftGqFQLN2ECpM2DNrWU"
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8209018533:AAFFEFcJ0XDKKOFdNvalvtFoxvS0JHkeG0k")
 TELEGRAM_CHAT_ID = None  # Will be set when bot starts
 
 # Premium Betting Configuration
