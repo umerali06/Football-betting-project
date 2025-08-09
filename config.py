@@ -8,8 +8,9 @@ API_FOOTBALL_KEY = "376d3a099be68a055af2aca6e237bdd5"
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 
 # Telegram Configuration
-TELEGRAM_BOT_TOKEN = "8209018533:AAHN91m6RzLpzKTVftGqFQLN2ECpM2DNrWU"
-TELEGRAM_CHAT_ID = None  # Will be set when bot starts
+TELEGRAM_BOT_TOKEN = "8091722792:AAFE8sgk08rkAnpdo_sFW7-9j8glE4dLBLo"  # Your working token
+# TELEGRAM_BOT_TOKEN = "8209018533:AAFFEFcJ0XDKKOFdNvalvtFoxvS0JHkeG0k"  # Your other token
+TELEGRAM_CHAT_ID = None  # Will be set via /setchat command in bot
 
 # Premium Betting Configuration
 VALUE_BET_THRESHOLD = 0.08  # 8% edge required for premium analysis
@@ -17,6 +18,12 @@ MIN_ODDS = 1.8
 MAX_ODDS = 8.0
 CONFIDENCE_THRESHOLD = 0.7  # Minimum confidence for premium bets
 MIN_MATCHES_ANALYZED = 5  # Minimum matches for team analysis
+
+# Premium Analysis Settings
+PREMIUM_ANALYSIS_ENABLED = True
+AUTO_ANALYSIS_INTERVAL = 3600  # Check every hour (in seconds)
+ANALYSIS_QUALITY_THRESHOLD = 0.6  # Minimum quality for premium analysis
+MAX_ANALYSIS_MATCHES = 20  # Maximum matches to analyze per session
 
 # Advanced Model Configuration
 ELO_K_FACTOR = 24  # Reduced for more stable ratings

@@ -31,9 +31,21 @@ class CornersModel:
         corners_against = []
         
         for match in recent_matches:
-            if match['team_id'] == team_id:
-                corners_for.append(match.get('corners_for', 5.0))
-                corners_against.append(match.get('corners_against', 5.0))
+            # Check if this team is home or away in the match
+            home_team_id = match.get('teams', {}).get('home', {}).get('id')
+            away_team_id = match.get('teams', {}).get('away', {}).get('id')
+            
+            if home_team_id == team_id or away_team_id == team_id:
+                # Use default corner values if not available
+                home_corners = match.get('corners_for', 5.0)
+                away_corners = match.get('corners_against', 5.0)
+                
+                if home_team_id == team_id:
+                    corners_for.append(home_corners)
+                    corners_against.append(away_corners)
+                else:
+                    corners_for.append(away_corners)
+                    corners_against.append(home_corners)
         
         # Calculate averages with recent form weighting
         if corners_for:

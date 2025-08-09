@@ -31,9 +31,21 @@ class XGModel:
         xg_against = []
         
         for match in recent_matches:
-            if match['team_id'] == team_id:
-                xg_for.append(match.get('xg_for', 1.0))
-                xg_against.append(match.get('xg_against', 1.0))
+            # Check if this team is home or away in the match
+            home_team_id = match.get('teams', {}).get('home', {}).get('id')
+            away_team_id = match.get('teams', {}).get('away', {}).get('id')
+            
+            if home_team_id == team_id or away_team_id == team_id:
+                # Use goals as proxy for xG if not available
+                home_goals = match.get('goals', {}).get('home', 1)
+                away_goals = match.get('goals', {}).get('away', 1)
+                
+                if home_team_id == team_id:
+                    xg_for.append(match.get('xg_for', home_goals))
+                    xg_against.append(match.get('xg_against', away_goals))
+                else:
+                    xg_for.append(match.get('xg_for', away_goals))
+                    xg_against.append(match.get('xg_against', home_goals))
         
         # Calculate averages with recent form weighting
         if xg_for:

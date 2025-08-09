@@ -61,8 +61,13 @@ class FootballBettingSystem:
             try:
                 await self.telegram_bot.start()
                 logger.info("Telegram bot started successfully")
+                logger.info("Send /setchat to your bot in Telegram to set up notifications")
             except Exception as e:
-                logger.warning(f"Telegram bot failed to start: {e}")
+                logger.error(f"Telegram bot failed to start: {e}")
+                logger.info("This could be due to:")
+                logger.info("1. Invalid bot token")
+                logger.info("2. Network connectivity issues")
+                logger.info("3. Bot not properly configured")
                 logger.info("Running in demo mode without Telegram bot")
                 self.demo_mode = True
         
@@ -90,14 +95,17 @@ class FootballBettingSystem:
         logger.info("Starting daily betting analysis...")
         
         try:
-            # Get today's matches
+            # Get today's matches - REAL TIME ONLY
             matches = self.api_client.get_today_matches()
             
             if not matches:
-                logger.info("No matches found for today")
+                logger.info("📭 No matches available at the moment")
+                if not self.demo_mode:
+                    await self.telegram_bot.post_no_matches_message()
+                    logger.info("Posted 'no matches' message to Telegram")
                 return
             
-            logger.info(f"Found {len(matches)} matches for today")
+            logger.info(f"✅ Found {len(matches)} matches for today")
             
             total_value_bets = []
             summary_stats = {
@@ -129,6 +137,11 @@ class FootballBettingSystem:
             # Post value bets to Telegram (if not in demo mode)
             if total_value_bets and not self.demo_mode:
                 await self.telegram_bot.post_value_bets(total_value_bets)
+                logger.info(f"Posted {len(total_value_bets)} value bets to Telegram")
+            elif not self.demo_mode:
+                # Post "no matches" message to Telegram
+                await self.telegram_bot.post_no_matches_message()
+                logger.info("Posted 'no matches' message to Telegram")
             
             # Post daily summary (if not in demo mode)
             if not self.demo_mode:
