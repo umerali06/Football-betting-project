@@ -7,6 +7,15 @@ load_dotenv()
 API_FOOTBALL_KEY = "376d3a099be68a055af2aca6e237bdd5"
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 
+# Sportmonks API Configuration
+SPORTMONKS_API_KEY = os.getenv("SPORTMONKS_API_KEY", "R2MI7yE4uEJdrFEjZW4ig5EG45orVa1Znx3U4RkpnOlcNRxuExpGCVs1YOkl")
+SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3/football"
+SPORTMONKS_ENABLED = True  # Enable/disable Sportmonks as data source
+
+# API Priority Configuration
+PRIMARY_API = "sportmonks"  # Options: "api_football", "sportmonks"
+FALLBACK_API = "api_football"  # Fallback if primary fails
+
 # Telegram Configuration
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8209018533:AAFFEFcJ0XDKKOFdNvalvtFoxvS0JHkeG0k")
 TELEGRAM_CHAT_ID = None  # Will be set when bot starts

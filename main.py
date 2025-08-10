@@ -7,7 +7,7 @@ import logging
 
 # Import our modules
 import config
-from api.api_football import APIFootballClient
+from api.unified_client import UnifiedAPIClient
 from models.elo_model import EloModel
 from models.xg_model import XGModel
 from models.corners_model import CornersModel
@@ -34,7 +34,7 @@ class FootballBettingSystem:
     """
     
     def __init__(self, demo_mode: bool = False):
-        self.api_client = APIFootballClient()
+        self.api_client = UnifiedAPIClient()
         self.elo_model = EloModel()
         self.xg_model = XGModel()
         self.corners_model = CornersModel()
