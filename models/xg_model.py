@@ -115,6 +115,11 @@ class XGModel:
         over_25_prob = 1 - (np.exp(-total_xg) + total_xg * np.exp(-total_xg) + 
                             (total_xg**2 / 2) * np.exp(-total_xg))
         
+        # Under probabilities (complement of over)
+        under_05_prob = 1 - over_05_prob
+        under_15_prob = 1 - over_15_prob
+        under_25_prob = 1 - over_25_prob
+        
         # Both teams to score probability
         btts_prob = (1 - np.exp(-home_xg)) * (1 - np.exp(-away_xg))
         
@@ -122,6 +127,9 @@ class XGModel:
             'over_05': over_05_prob,
             'over_15': over_15_prob,
             'over_25': over_25_prob,
+            'under_05': under_05_prob,
+            'under_15': under_15_prob,
+            'under_25': under_25_prob,
             'btts': btts_prob,
             'total_xg': total_xg,
             'home_xg': home_xg,

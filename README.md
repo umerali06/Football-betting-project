@@ -1,355 +1,295 @@
-# 🚀 FIXORA PRO - Football Betting System
+# 🏈 FIXORA PRO - Football Betting Analysis System
 
-## 📋 Table of Contents
-1. [What is FIXORA PRO?](#what-is-fixora-pro)
-2. [Installation Guide](#installation-guide)
-3. [Setup Guide](#setup-guide)
-4. [How to Use](#how-to-use)
-5. [Daily Updates vs Real-Time](#daily-updates-vs-real-time)
-6. [Troubleshooting](#troubleshooting)
-7. [FAQ](#faq)
+A comprehensive AI-powered football betting analysis system that uses machine learning models to identify value bets and provide real-time insights.
 
----
+## 🎯 What This System Does
 
-## 🎯 What is FIXORA PRO?
+**FIXORA PRO** is an intelligent football betting analysis platform that:
 
-FIXORA PRO is an advanced football betting analysis system that:
-- 📊 Analyzes football matches using AI models
-- 💎 Finds value betting opportunities
-- 📱 Sends notifications to your Telegram
-- 🔄 Works in two modes: Daily Updates and Real-Time
+- **Analyzes football matches** using multiple prediction models (ELO, Expected Goals, Corners)
+- **Identifies value bets** where bookmaker odds are higher than model predictions
+- **Provides real-time updates** via Telegram bot
+- **Manages betting risks** with sophisticated risk management algorithms
+- **Integrates with SportMonks API** for live football data and odds
 
-### 🎮 Two Modes Available:
+## 🏗️ System Architecture
 
-#### 1. **Daily Updates** (`main.py`)
-- Runs once per day at 9:00 AM
-- Analyzes all available matches
-- Posts summary to Telegram
-- Good for regular betting analysis
-
-#### 2. **Real-Time Monitor** (`start_realtime.py`)
-- Runs continuously 24/7
-- Checks for new matches every 5 minutes
-- Posts value bets instantly when found
-- Perfect for live betting opportunities
-
----
-
-## 🛠️ Installation Guide
-
-### Step 1: Download and Extract
-1. Download the project files
-2. Extract to a folder (e.g., `G:\Projects\football-project`)
-3. Open Command Prompt or PowerShell in that folder
-
-### Step 2: Install Python
-1. Download Python from: https://www.python.org/downloads/
-2. Install Python (make sure to check "Add Python to PATH")
-3. Verify installation:
-   ```bash
-   python --version
-   ```
-
-### Step 3: Install Required Packages
-```bash
-pip install requests python-telegram-bot python-dotenv
+```
+FIXORA PRO/
+├── 📊 Models/           # AI Prediction Models
+├── 🎲 Betting/          # Value Bet Analysis & Risk Management
+├── 🔌 API/              # External Data Integration
+├── 🤖 Bot Interface/    # Telegram Bot & User Interface
+├── 📈 Reports/          # Analysis Reports & Logs
+└── ⚙️ Config/           # System Configuration
 ```
 
-### Step 4: Verify Installation
+### Core Components
+
+#### 🤖 **AI Prediction Models**
+- **ELO Model**: Team strength ratings and match outcome predictions
+- **Expected Goals (xG) Model**: Goal-scoring probability analysis
+- **Corners Model**: Corner kick predictions and analysis
+- **Machine Learning Model**: Advanced statistical predictions
+
+#### 💰 **Value Bet Analyzer**
+- Calculates implied probabilities from bookmaker odds
+- Identifies value bets with positive expected value
+- Applies Kelly Criterion for optimal bet sizing
+- Filters bets by confidence thresholds and risk parameters
+
+#### 🛡️ **Risk Management**
+- Portfolio-level risk assessment
+- Maximum bet size calculations
+- Loss limit enforcement
+- Correlation analysis between bets
+
+#### 📡 **Data Integration**
+- **SportMonks API**: Live football data, fixtures, and odds
+- **Fallback System**: Mock data for testing and development
+- **Real-time Updates**: Live match data and odds streaming
+
+## 🚀 Quick Start Guide
+
+### Prerequisites
+- Python 3.8+ 
+- SportMonks API subscription (optional for testing)
+- Telegram Bot Token
+
+### 1. Installation
+
 ```bash
-python test_api_config.py
+# Clone the repository
+git clone <your-repo-url>
+cd football-project
+
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
----
+### 2. Configuration
 
-## ⚙️ Setup Guide
+Edit `config.py` with your settings:
 
-### Step 1: Get API Key
-1. Go to: https://dashboard.api-football.com
-2. Create an account
-3. Get your API key
-4. Make sure your account is active (not suspended)
+```python
+# API Configuration
+SPORTMONKS_API_TOKEN = "your_api_token_here"
+SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3"
 
-### Step 2: Get Telegram Bot Token
-1. Open Telegram
-2. Search for "@BotFather"
-3. Send: `/newbot`
-4. Follow instructions to create a bot
-5. Copy the bot token (looks like: `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`)
+# Telegram Configuration
+TELEGRAM_BOT_TOKEN = "your_bot_token_here"
+TELEGRAM_CHAT_ID = "your_chat_id_here"
 
-### Step 3: Configure the System
-1. Open `config.py` in a text editor
-2. Replace the API key:
-   ```python
-   API_FOOTBALL_KEY = "YOUR_API_KEY_HERE"
-   ```
-3. Replace the Telegram token:
-   ```python
-   TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
-   ```
-4. Save the file
-
-### Step 4: Test Configuration
-```bash
-python test_api_config.py
+# Betting Parameters
+VALUE_BET_THRESHOLD = 0.05  # 5% edge required
+MIN_ODDS = 1.5               # Minimum odds to consider
+MAX_ODDS = 10.0              # Maximum odds to consider
+CONFIDENCE_THRESHOLD = 0.6   # Minimum confidence for bets
 ```
-You should see: ✅ API is accessible
 
----
+### 3. Run the System
 
-## 🚀 How to Use
-
-### 🎯 Option 1: Daily Updates (Recommended for Beginners)
-
-#### What it does:
-- Analyzes matches once per day
-- Posts summary to Telegram
-- Good for regular betting analysis
-
-#### How to run:
 ```bash
+# Start the main betting analysis system
 python main.py
+
+# The system will:
+# 1. Fetch today's football fixtures
+# 2. Generate predictions using AI models
+# 3. Analyze odds for value bets
+# 4. Send results to Telegram
+# 5. Continue monitoring for updates
 ```
 
-#### What happens:
-1. System starts and connects to API
-2. Fetches today's matches
-3. Analyzes each match
-4. Posts results to Telegram
-5. Stops automatically
+## 📱 Telegram Bot Commands
 
-#### Expected output:
+Once running, interact with your bot:
+
+- `/start` - Initialize the system
+- `/status` - Check system status
+- `/analyze` - Run manual analysis
+- `/odds <fixture_id>` - Get odds for specific match
+- `/predictions <fixture_id>` - Get model predictions
+- `/help` - Show available commands
+
+## 🔧 How It Works
+
+### 1. **Data Collection**
+- Fetches daily football fixtures from SportMonks API
+- Retrieves live odds data for each match
+- Collects team form and historical data
+
+### 2. **AI Predictions**
+- **ELO Model**: Calculates team strength and win probabilities
+- **xG Model**: Predicts goal-scoring patterns and totals
+- **Corners Model**: Estimates corner kick frequencies
+- **ML Model**: Combines all factors for final predictions
+
+### 3. **Value Bet Analysis**
+- Converts bookmaker odds to implied probabilities
+- Compares with model predictions to find edges
+- Applies risk filters and confidence thresholds
+- Calculates optimal bet sizes using Kelly Criterion
+
+### 4. **Risk Management**
+- Monitors portfolio exposure
+- Enforces maximum bet limits
+- Tracks correlation between bets
+- Implements stop-loss mechanisms
+
+### 5. **Real-time Updates**
+- Continuously monitors odds changes
+- Sends alerts for new value bets
+- Updates existing bet recommendations
+- Provides daily summary reports
+
+## 📊 Example Output
+
 ```
-🚀 FIXORA PRO - Daily Betting Analysis
-✅ Found 15 matches for today
-📊 Analyzing matches...
-💎 Found 3 value bets
-📱 Posted to Telegram
-✅ Analysis complete!
-```
+🎯 Generated predictions for fixture 216281:
+   Match Result: {'home_win': 0.64, 'draw': 0.0, 'away_win': 0.36}
+   Goals: {'over_25': 0.39, 'under_25': 0.61, 'btts': 0.45}
+   Corners: {'over_65': 0.91, 'under_65': 0.09}
 
----
+💰 Available odds:
+   Match: {'home_win': 3.38, 'draw': 4.22, 'away_win': 3.14}
+   Goals: {'over_total': 2.77, 'under_total': 2.3}
+   Corners: {'over_corners': 1.87, 'under_corners': 2.38}
 
-### ⚡ Option 2: Real-Time Monitor (Advanced)
-
-#### What it does:
-- Runs continuously 24/7
-- Checks for new matches every 5 minutes
-- Posts value bets instantly when found
-- Perfect for live betting
-
-#### How to run:
-```bash
-python start_realtime.py
-```
-
-#### What happens:
-1. System starts and shows menu
-2. Type `y` to start
-3. System runs continuously
-4. Press `Ctrl+C` to stop
-
-#### Expected output:
-```
-🚀 FIXORA PRO - Real-Time Football Betting Monitor
-============================================================
-📊 Features:
-   • Real-time match monitoring
-   • Live API data analysis
-   • Automatic value bet detection
-   • Instant Telegram notifications
-   • No mock data - only real data
-============================================================
-
-Start real-time monitor? (y/n): y
-
-🔄 Starting real-time monitor...
-💡 Press Ctrl+C to stop the monitor
-============================================================
-🚀 Real-Time Betting Monitor Started!
-✅ System is now running and monitoring for new matches
-🔄 Checking every 5 minutes for new matches
-```
-
----
-
-## 📱 Telegram Setup
-
-### Step 1: Find Your Bot
-1. Open Telegram
-2. Search for your bot name (the one you created)
-3. Click on it
-
-### Step 2: Set Chat ID
-1. Send this command to your bot:
-   ```
-   /setchat
-   ```
-2. The bot will reply: "✅ Chat ID set to: [number]"
-
-### Step 3: Test Notifications
-1. Run the system (daily or real-time)
-2. You should receive messages in Telegram
-
----
-
-## 📊 Understanding the Output
-
-### Daily Analysis Messages:
-```
-📊 Daily Betting Summary
-
-🎯 Total Bets Analyzed: 15
-💎 Value Bets Found: 3
-📈 Average Edge: 12.5%
-💰 Total ROI: 8.2%
-
-📅 Next analysis scheduled for tomorrow.
+🔍 Found 3 value bets for this match
+✅ Posted to Telegram successfully
 ```
 
-### Real-Time Value Bet Messages:
-```
-🎯 PREMIUM VALUE BETS FOUND!
+## 🛠️ Development & Testing
 
-📊 Analysis Summary:
-• Total Value Bets: 2
-• Average Edge: 15.2%
-• Average Confidence: 78.5%
-
-1. ⚽ Manchester United vs Liverpool
-   🎯 Match Result - Home Win
-   📊 Odds: 2.15
-   📈 Edge: 15.2%
-   🎯 Confidence: 82.1%
-   💰 Kelly %: 8.5%
-   💵 Recommended: £25.00
-```
-
-### No Matches Message:
-```
-🔍 No Matches Found
-
-Currently no matches available for analysis.
-The system will automatically check again in 5 minutes.
-```
-
----
-
-## 🔧 Troubleshooting
-
-### ❌ Problem: "API Errors: Your account is suspended"
-**Solution:**
-1. Go to https://dashboard.api-football.com
-2. Log in to your account
-3. Check subscription status
-4. Reactivate if suspended
-5. Ensure you have credits
-
-### ❌ Problem: "Bot token is invalid"
-**Solution:**
-1. Check your bot token in `config.py`
-2. Make sure you copied it correctly
-3. Create a new bot if needed
-
-### ❌ Problem: "No matches found"
-**Solution:**
-1. This is normal - not all days have matches
-2. Check if your API account is active
-3. Try running real-time monitor instead
-
-### ❌ Problem: "Module not found"
-**Solution:**
-```bash
-pip install requests python-telegram-bot python-dotenv
-```
-
-### ❌ Problem: "Telegram notifications not working"
-**Solution:**
-1. Send `/setchat` to your bot in Telegram
-2. Make sure the bot has permission to send messages
-3. Check your internet connection
-
----
-
-## ❓ FAQ
-
-### Q: Which mode should I use?
-**A:** 
-- **Beginners**: Start with Daily Updates (`python main.py`)
-- **Advanced users**: Use Real-Time Monitor (`python start_realtime.py`)
-
-### Q: How often does it check for matches?
-**A:** 
-- **Daily mode**: Once per day at 9:00 AM
-- **Real-time mode**: Every 5 minutes
-
-### Q: What are value bets?
-**A:** Value bets are when the system's prediction is better than the bookmaker's odds by 8% or more.
-
-### Q: How do I stop the real-time monitor?
-**A:** Press `Ctrl+C` in the terminal.
-
-### Q: Can I change the check interval?
-**A:** Yes, edit `realtime_monitor.py` and change `self.check_interval = 300` (300 seconds = 5 minutes).
-
-### Q: What if I don't get any value bets?
-**A:** This is normal! Value bets require significant edge. The system will continue monitoring and notify you when opportunities arise.
-
----
-
-## 📁 File Structure
-
+### Project Structure
 ```
 football-project/
-├── README.md                 # This guide
-├── config.py                 # Configuration file
-├── main.py                   # Daily analysis system
-├── start_realtime.py         # Real-time monitor
-├── realtime_monitor.py       # Real-time system core
-├── test_api_config.py        # API testing
-├── test_realtime.py          # System testing
+├── main.py                 # Main application entry point
+├── config.py               # Configuration settings
+├── requirements.txt        # Python dependencies
 ├── api/
-│   └── api_football.py       # API client
+│   ├── __init__.py
+│   └── api_sportmonks.py  # SportMonks API client
+├── betting/
+│   ├── __init__.py
+│   ├── value_bet_analyzer.py  # Value bet identification
+│   └── risk_manager.py        # Risk management
+├── models/
+│   ├── __init__.py
+│   ├── elo_model.py       # ELO rating system
+│   ├── xg_model.py        # Expected goals model
+│   ├── corners_model.py   # Corners prediction
+│   └── ml_model.py        # Machine learning model
 ├── bot_interface/
-│   └── telegram_bot.py       # Telegram bot
-├── models/                   # Prediction models
-├── betting/                  # Betting analysis
-└── REALTIME_GUIDE.md         # Advanced real-time guide
+│   ├── __init__.py
+│   └── telegram_bot.py    # Telegram bot interface
+└── reports/                # Generated reports and logs
 ```
+
+### Testing Without API Access
+The system includes a comprehensive fallback system:
+- **Mock Data**: Generates realistic odds and match data
+- **Placeholder IDs**: Uses generated team IDs for testing
+- **Offline Mode**: Works completely without internet connection
+
+### Adding New Models
+1. Create new model file in `models/` directory
+2. Implement `predict()` method returning probabilities
+3. Add model to `generate_predictions()` in `main.py`
+4. Update value bet analyzer to handle new markets
+
+## 📈 Performance & Monitoring
+
+### Logging
+- **Application Logs**: `betting_system.log`
+- **Real-time Logs**: `realtime_system.log`
+- **Log Level**: Configurable (DEBUG, INFO, WARNING, ERROR)
+
+### Metrics Tracked
+- Number of fixtures analyzed
+- Value bets identified
+- Prediction accuracy
+- API response times
+- Error rates
+
+## 🔒 Security & Best Practices
+
+- **API Keys**: Store in environment variables, not in code
+- **Rate Limiting**: Respects API rate limits
+- **Error Handling**: Graceful fallbacks for API failures
+- **Data Validation**: Input sanitization and validation
+- **Logging**: Secure logging without sensitive data exposure
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+**"No result(s) found" Error**
+- Check SportMonks API subscription level
+- Verify API token is valid
+- System will use mock data as fallback
+
+**Telegram Bot Not Responding**
+- Verify bot token is correct
+- Check chat ID configuration
+- Ensure bot has permission to send messages
+
+**Import Errors**
+- Activate virtual environment
+- Install missing dependencies: `pip install -r requirements.txt`
+- Check Python version compatibility
+
+### Debug Mode
+Enable debug logging in `config.py`:
+```python
+LOG_LEVEL = "DEBUG"
+```
+
+## 📚 API Documentation
+
+### SportMonks Integration
+- **Base URL**: `https://api.sportmonks.com/v3`
+- **Endpoints**: Fixtures, Odds, Teams, Form
+- **Rate Limits**: Varies by subscription plan
+- **Data Format**: JSON with nested structures
+
+### Custom API Integration
+To add new data sources:
+1. Create new client class in `api/` directory
+2. Implement standard interface methods
+3. Update `main.py` to use new client
+4. Add fallback handling
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Implement changes with tests
+4. Submit pull request
+5. Ensure code follows project standards
+
+## 📄 License
+
+This project is proprietary software. All rights reserved.
+
+## 🆘 Support
+
+For technical support or questions:
+- Check the logs for error details
+- Review configuration settings
+- Ensure all dependencies are installed
+- Verify API credentials and permissions
 
 ---
 
-## 🎯 Quick Start Checklist
-
-- [ ] Python installed
-- [ ] Packages installed (`pip install requests python-telegram-bot python-dotenv`)
-- [ ] API key configured in `config.py`
-- [ ] Telegram bot token configured in `config.py`
-- [ ] API account active (not suspended)
-- [ ] Chat ID set (`/setchat` command sent to bot)
-
-### Ready to Start?
-
-**For Daily Updates:**
-```bash
-python main.py
-```
-
-**For Real-Time Monitoring:**
-```bash
-python start_realtime.py
-```
-
----
-
-## 📞 Support
-
-If you need help:
-1. Check this README first
-2. Look at the troubleshooting section
-3. Check your API account status
-4. Verify your Telegram bot setup
-
----
-
-**🚀 Happy Betting with FIXORA PRO!**
+**FIXORA PRO** - Making Football Betting Smarter with AI 🚀⚽

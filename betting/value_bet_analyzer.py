@@ -148,7 +148,7 @@ class ValueBetAnalyzer:
             btts_odds = odds['btts_yes']
             btts_prob = predictions['btts']
             
-            if self.is_value_bet(btts_prob, btts_odds):
+            if self.is_value_bet(btts_prob, btts_odds, 'both_teams_to_score'):
                 value_bets.append({
                     'market': 'both_teams_to_score',
                     'selection': 'yes',
@@ -159,18 +159,19 @@ class ValueBetAnalyzer:
                     'confidence': self._calculate_confidence(btts_prob, btts_odds)
                 })
         
-        # Over/Under Goals
+        # Over/Under Goals - handle the new odds format
         for over_line in ['05', '15', '25']:
             over_key = f'over_{over_line}'
             under_key = f'under_{over_line}'
             
+            # Check for over goals
             if over_key in odds and over_key in predictions:
                 over_odds = odds[over_key]
                 over_prob = predictions[over_key]
                 
-                if self.is_value_bet(over_prob, over_odds):
+                if self.is_value_bet(over_prob, over_odds, 'over_under_goals'):
                     value_bets.append({
-                        'market': f'over_under_{over_line}_goals',
+                        'market': 'over_under_goals',
                         'selection': f'over_{over_line}',
                         'odds': over_odds,
                         'model_probability': over_prob,
@@ -179,13 +180,14 @@ class ValueBetAnalyzer:
                         'confidence': self._calculate_confidence(over_prob, over_odds)
                     })
             
-            if under_key in odds and over_key in predictions:
+            # Check for under goals
+            if under_key in odds and under_key in predictions:
                 under_odds = odds[under_key]
-                under_prob = 1 - predictions[over_key]  # Under is opposite of over
+                under_prob = predictions[under_key]
                 
-                if self.is_value_bet(under_prob, under_odds):
+                if self.is_value_bet(under_prob, under_odds, 'over_under_goals'):
                     value_bets.append({
-                        'market': f'over_under_{over_line}_goals',
+                        'market': 'over_under_goals',
                         'selection': f'under_{over_line}',
                         'odds': under_odds,
                         'model_probability': under_prob,
@@ -194,11 +196,43 @@ class ValueBetAnalyzer:
                         'confidence': self._calculate_confidence(under_prob, under_odds)
                     })
         
+        # Handle the new odds format from SportMonks
+        # Check for over/under total goals
+        if 'over_total' in odds and 'over_25' in predictions:
+            over_odds = odds['over_total']
+            over_prob = predictions['over_25']
+            
+            if self.is_value_bet(over_prob, over_odds, 'over_under_goals'):
+                value_bets.append({
+                    'market': 'over_under_goals',
+                    'selection': 'over_total',
+                    'odds': over_odds,
+                    'model_probability': over_prob,
+                    'implied_probability': self.calculate_implied_probability(over_odds),
+                    'edge': self.calculate_value_edge(over_prob, over_odds),
+                    'confidence': self._calculate_confidence(over_prob, over_odds)
+                })
+        
+        if 'under_total' in odds and 'under_25' in predictions:
+            under_odds = odds['under_total']
+            under_prob = predictions['under_25']
+            
+            if self.is_value_bet(under_prob, under_odds, 'over_under_goals'):
+                value_bets.append({
+                    'market': 'over_under_goals',
+                    'selection': 'under_total',
+                    'odds': under_odds,
+                    'model_probability': under_prob,
+                    'implied_probability': self.calculate_implied_probability(under_odds),
+                    'edge': self.calculate_value_edge(under_prob, under_odds),
+                    'confidence': self._calculate_confidence(under_prob, under_odds)
+                })
+        
         return value_bets
     
     def analyze_corners_bets(self, predictions: Dict, odds: Dict) -> List[Dict]:
         """
-        Analyze corners bets for value
+        Analyze corners-related bets for value
         
         Args:
             predictions: Model predictions for corners markets
@@ -209,19 +243,20 @@ class ValueBetAnalyzer:
         """
         value_bets = []
         
-        # Over/Under Corners
-        for over_line in ['85', '95', '105']:
-            over_key = f'over_{over_line}'
-            under_key = f'under_{over_line}'
+        # Total Corners Over/Under
+        for corner_line in ['45', '55', '65', '75', '85', '95']:
+            over_key = f'over_{corner_line}'
+            under_key = f'under_{corner_line}'
             
+            # Check for over corners
             if over_key in odds and over_key in predictions:
                 over_odds = odds[over_key]
                 over_prob = predictions[over_key]
                 
-                if self.is_value_bet(over_prob, over_odds):
+                if self.is_value_bet(over_prob, over_odds, 'corners'):
                     value_bets.append({
-                        'market': f'over_under_{over_line}_corners',
-                        'selection': f'over_{over_line}',
+                        'market': 'corners',
+                        'selection': f'over_{corner_line}',
                         'odds': over_odds,
                         'model_probability': over_prob,
                         'implied_probability': self.calculate_implied_probability(over_odds),
@@ -229,14 +264,15 @@ class ValueBetAnalyzer:
                         'confidence': self._calculate_confidence(over_prob, over_odds)
                     })
             
-            if under_key in odds and over_key in predictions:
+            # Check for under corners
+            if under_key in odds and under_key in predictions:
                 under_odds = odds[under_key]
-                under_prob = 1 - predictions[over_key]
+                under_prob = predictions[under_key]
                 
-                if self.is_value_bet(under_prob, under_odds):
+                if self.is_value_bet(under_prob, under_odds, 'corners'):
                     value_bets.append({
-                        'market': f'over_under_{over_line}_corners',
-                        'selection': f'under_{over_line}',
+                        'market': 'corners',
+                        'selection': f'under_{corner_line}',
                         'odds': under_odds,
                         'model_probability': under_prob,
                         'implied_probability': self.calculate_implied_probability(under_odds),
@@ -244,40 +280,68 @@ class ValueBetAnalyzer:
                         'confidence': self._calculate_confidence(under_prob, under_odds)
                     })
         
+        # Handle the new odds format from SportMonks
+        # Check for over/under total corners
+        if 'over_corners' in odds and 'over_65' in predictions:
+            over_odds = odds['over_corners']
+            over_prob = predictions['over_65']  # Use 6.5 as default total
+            
+            if self.is_value_bet(over_prob, over_odds, 'corners'):
+                value_bets.append({
+                    'market': 'corners',
+                    'selection': 'over_total',
+                    'odds': over_odds,
+                    'model_probability': over_prob,
+                    'implied_probability': self.calculate_implied_probability(over_odds),
+                    'edge': self.calculate_value_edge(over_prob, over_odds),
+                    'confidence': self._calculate_confidence(over_prob, over_odds)
+                })
+        
+        if 'under_corners' in odds and 'under_65' in predictions:
+            under_odds = odds['under_corners']
+            under_prob = predictions['under_65']  # Use 6.5 as default total
+            
+            if self.is_value_bet(under_prob, under_odds, 'corners'):
+                value_bets.append({
+                    'market': 'corners',
+                    'selection': 'under_total',
+                    'odds': under_odds,
+                    'model_probability': under_prob,
+                    'implied_probability': self.calculate_implied_probability(under_odds),
+                    'edge': self.calculate_value_edge(under_prob, under_odds),
+                    'confidence': self._calculate_confidence(under_prob, under_odds)
+                })
+        
         # Team Corners
-        for team in ['home', 'away']:
-            over_key = f'{team}_over_45'
-            under_key = f'{team}_under_45'
+        if 'home_corners' in odds and 'home_corners' in predictions:
+            home_odds = odds['home_corners']
+            home_prob = predictions['home_corners']
             
-            if over_key in odds and over_key in predictions:
-                over_odds = odds[over_key]
-                over_prob = predictions[over_key]
-                
-                if self.is_value_bet(over_prob, over_odds):
-                    value_bets.append({
-                        'market': f'{team}_team_corners',
-                        'selection': f'{team}_over_45',
-                        'odds': over_odds,
-                        'model_probability': over_prob,
-                        'implied_probability': self.calculate_implied_probability(over_odds),
-                        'edge': self.calculate_value_edge(over_prob, over_odds),
-                        'confidence': self._calculate_confidence(over_prob, over_odds)
-                    })
+            if self.is_value_bet(home_prob, home_odds, 'corners'):
+                value_bets.append({
+                    'market': 'team_corners',
+                    'selection': 'home_corners',
+                    'odds': home_odds,
+                    'model_probability': home_prob,
+                    'implied_probability': self.calculate_implied_probability(home_odds),
+                    'edge': self.calculate_value_edge(home_prob, home_odds),
+                    'confidence': self._calculate_confidence(home_prob, home_odds)
+                })
+        
+        if 'away_corners' in odds and 'away_corners' in predictions:
+            away_odds = odds['away_corners']
+            away_prob = predictions['away_corners']
             
-            if under_key in odds and over_key in predictions:
-                under_odds = odds[under_key]
-                under_prob = 1 - predictions[over_key]
-                
-                if self.is_value_bet(under_prob, under_odds):
-                    value_bets.append({
-                        'market': f'{team}_team_corners',
-                        'selection': f'{team}_under_45',
-                        'odds': under_odds,
-                        'model_probability': under_prob,
-                        'implied_probability': self.calculate_implied_probability(under_odds),
-                        'edge': self.calculate_value_edge(under_prob, under_odds),
-                        'confidence': self._calculate_confidence(under_prob, under_odds)
-                    })
+            if self.is_value_bet(away_prob, away_odds, 'corners'):
+                value_bets.append({
+                    'market': 'team_corners',
+                    'selection': 'away_corners',
+                    'odds': away_odds,
+                    'model_probability': away_prob,
+                    'implied_probability': self.calculate_implied_probability(away_odds),
+                    'edge': self.calculate_value_edge(away_prob, away_odds),
+                    'confidence': self._calculate_confidence(away_prob, away_odds)
+                })
         
         return value_bets
     

@@ -7,7 +7,7 @@ import logging
 
 # Import our modules
 import config
-from api.api_football import APIFootballClient
+from api.api_sportmonks import SportMonksClient
 from models.elo_model import EloModel
 from models.xg_model import XGModel
 from models.corners_model import CornersModel
@@ -34,7 +34,7 @@ class FootballBettingSystem:
     """
     
     def __init__(self, demo_mode: bool = False):
-        self.api_client = APIFootballClient()
+        self.api_client = SportMonksClient()
         self.elo_model = EloModel()
         self.xg_model = XGModel()
         self.corners_model = CornersModel()
@@ -51,6 +51,14 @@ class FootballBettingSystem:
         # Load ML models if available
         if config.ML_ENABLED:
             self.ml_model.load_models('models/ml_models.pkl')
+    
+    def _extract_team_names(self, match_name: str) -> tuple:
+        """Extract home and away team names from SportMonks match name format"""
+        if ' vs ' in match_name:
+            parts = match_name.split(' vs ')
+            if len(parts) == 2:
+                return parts[0].strip(), parts[1].strip()
+        return 'Home Team', 'Away Team'
         
     async def start(self):
         """Start the betting system"""
@@ -99,13 +107,13 @@ class FootballBettingSystem:
             matches = self.api_client.get_today_matches()
             
             if not matches:
-                logger.info("📭 No matches available at the moment")
+                logger.info("No matches available at the moment")
                 if not self.demo_mode:
                     await self.telegram_bot.post_no_matches_message()
                     logger.info("Posted 'no matches' message to Telegram")
                 return
             
-            logger.info(f"✅ Found {len(matches)} matches for today")
+            logger.info(f"Found {len(matches)} matches for today")
             
             total_value_bets = []
             summary_stats = {
@@ -119,7 +127,11 @@ class FootballBettingSystem:
             demo_matches = matches[:3] if self.demo_mode else matches
             
             for i, match in enumerate(demo_matches):
-                logger.info(f"Analyzing match {i+1}/{len(demo_matches)}: {match['teams']['home']['name']} vs {match['teams']['away']['name']}")
+                # Extract team names from SportMonks API response
+                match_name = match.get('name', 'Unknown vs Unknown')
+                home_team, away_team = self._extract_team_names(match_name)
+                
+                logger.info(f"Analyzing match {i+1}/{len(demo_matches)}: {home_team} vs {away_team}")
                 
                 value_bets = await self.analyze_match(match)
                 if value_bets:
@@ -151,7 +163,7 @@ class FootballBettingSystem:
             
             # Print summary in demo mode
             if self.demo_mode:
-                print(f"\n📊 Premium Analysis Summary:")
+                print(f"\nPremium Analysis Summary:")
                 print(f"Matches analyzed: {summary_stats['total_bets']}")
                 print(f"Value bets found: {summary_stats['value_bets_found']}")
                 if total_value_bets:
@@ -160,7 +172,7 @@ class FootballBettingSystem:
                     # Get risk-managed recommendations
                     recommendations = self.risk_manager.get_bet_recommendations(total_value_bets)
                     
-                    print(f"\n🎯 Premium Value Bets (Risk-Managed):")
+                    print(f"\nPremium Value Bets (Risk-Managed):")
                     for i, rec in enumerate(recommendations[:5], 1):  # Show top 5
                         print(f"{i}. {rec['match_info']['home_team']} vs {rec['match_info']['away_team']}")
                         print(f"   Market: {rec['market']} | Selection: {rec['selection']}")
@@ -174,20 +186,20 @@ class FootballBettingSystem:
                     # Show performance metrics
                     metrics = self.risk_manager.get_performance_metrics()
                     if metrics and metrics.get('total_bets', 0) > 0:
-                        print(f"💰 Performance Metrics:")
+                        print(f"Performance Metrics:")
                         print(f"   Win Rate: {metrics.get('win_rate', 0):.1%}")
                         print(f"   Overall ROI: {metrics.get('overall_roi', 0):.1%}")
                         print(f"   Bankroll Growth: {metrics.get('bankroll_growth', 0):.1%}")
                         print(f"   Kelly Efficiency: {metrics.get('kelly_efficiency', 0):.1%}")
                         print()
                     else:
-                        print(f"💰 Performance Metrics: No historical data available yet")
+                        print(f"Performance Metrics: No historical data available yet")
                         print()
                     
                     # Show risk alerts
                     alerts = self.risk_manager.get_risk_alerts()
                     if alerts:
-                        print(f"⚠️ Risk Alerts:")
+                        print(f"Risk Alerts:")
                         for alert in alerts:
                             print(f"   • {alert}")
                         print()
@@ -200,51 +212,104 @@ class FootballBettingSystem:
     async def analyze_match(self, match_data: Dict) -> List[Dict]:
         """Analyze a single match for value bets"""
         try:
-            fixture_id = match_data['fixture']['id']
-            home_team_id = match_data['teams']['home']['id']
-            away_team_id = match_data['teams']['away']['id']
+            fixture_id = match_data['id']
             
-            # Get team form data
-            home_form = self.api_client.get_team_form(home_team_id, 10)
-            away_form = self.api_client.get_team_form(away_team_id, 10)
+            # Extract team names from match name
+            match_name = match_data.get('name', 'Unknown vs Unknown')
+            home_team, away_team = self._extract_team_names(match_name)
+            
+            # Extract team IDs from fixture data if available
+            home_team_id = match_data.get('localTeam', {}).get('id') or match_data.get('localteam_id')
+            away_team_id = match_data.get('visitorTeam', {}).get('id') or match_data.get('visitorteam_id')
+            
+            # If team IDs are not available, try to extract from participants
+            if not home_team_id or not away_team_id:
+                participants = match_data.get('participants', [])
+                if len(participants) >= 2:
+                    home_team_id = participants[0].get('id') if participants[0].get('meta', {}).get('location') == 'home' else participants[1].get('id')
+                    away_team_id = participants[1].get('id') if participants[1].get('meta', {}).get('location') == 'away' else participants[0].get('id')
+            
+            # If still no team IDs, use placeholder IDs for demo purposes
+            if not home_team_id or not away_team_id:
+                home_team_id = 1000 + fixture_id  # Generate unique placeholder ID
+                away_team_id = 2000 + fixture_id  # Generate unique placeholder ID
+                logger.warning(f"Using placeholder team IDs for fixture {fixture_id}")
             
             # Get match odds
             odds_data = self.api_client.get_match_odds(fixture_id)
             
+            if not odds_data:
+                logger.warning(f"No odds data available for fixture {fixture_id}")
+                return []
+            
+            # Get team form data (use empty lists if not available)
+            try:
+                home_form = self.api_client.get_team_form(home_team_id, 5) or []
+                away_form = self.api_client.get_team_form(away_team_id, 5) or []
+            except:
+                home_form = []
+                away_form = []
+                logger.warning(f"Could not fetch team form for fixture {fixture_id}")
+            
             # Generate predictions
             predictions = await self.generate_predictions(home_team_id, away_team_id, home_form, away_form)
+            
+            print(f"🎯 Generated predictions for fixture {fixture_id}:")
+            print(f"   Match Result: {predictions.get('match_result', {})}")
+            print(f"   Goals: {predictions.get('goals', {})}")
+            print(f"   Corners: {predictions.get('corners', {})}")
+            
+            # Extract odds in the correct format
+            match_odds = self.extract_match_odds(odds_data)
+            goals_odds = self.extract_goals_odds(odds_data)
+            corners_odds = self.extract_corners_odds(odds_data)
+            
+            print(f"💰 Available odds:")
+            print(f"   Match: {match_odds}")
+            print(f"   Goals: {goals_odds}")
+            print(f"   Corners: {corners_odds}")
             
             # Analyze for value bets
             value_bets = []
             
-            # Match result bets
-            if 'match_result' in predictions and odds_data:
-                match_odds = self.extract_match_odds(odds_data)
-                value_bets.extend(self.value_analyzer.analyze_match_result_bets(predictions['match_result'], match_odds))
+            # Match result analysis
+            if match_odds and 'match_result' in predictions:
+                print(f"🔍 Analyzing match result bets...")
+                match_result_bets = self.value_analyzer.analyze_match_result_bets(
+                    predictions['match_result'], match_odds
+                )
+                print(f"   Found {len(match_result_bets)} match result value bets")
+                value_bets.extend(match_result_bets)
             
-            # Goals bets
-            if 'goals' in predictions and odds_data:
-                goals_odds = self.extract_goals_odds(odds_data)
-                value_bets.extend(self.value_analyzer.analyze_goals_bets(predictions['goals'], goals_odds))
+            # Goals analysis
+            if goals_odds and 'goals' in predictions:
+                print(f"🔍 Analyzing goals bets...")
+                goals_bets = self.value_analyzer.analyze_goals_bets(
+                    predictions['goals'], goals_odds
+                )
+                print(f"   Found {len(goals_bets)} goals value bets")
+                value_bets.extend(goals_bets)
             
-            # Corners bets
-            if 'corners' in predictions and odds_data:
-                corners_odds = self.extract_corners_odds(odds_data)
-                value_bets.extend(self.value_analyzer.analyze_corners_bets(predictions['corners'], corners_odds))
+            # Corners analysis
+            if corners_odds and 'corners' in predictions:
+                print(f"🔍 Analyzing corners bets...")
+                corners_bets = self.value_analyzer.analyze_corners_bets(
+                    predictions['corners'], corners_odds
+                )
+                print(f"   Found {len(corners_bets)} corners value bets")
+                value_bets.extend(corners_bets)
             
-            # Add match info to value bets
-            for bet in value_bets:
-                bet['match_info'] = {
-                    'fixture_id': fixture_id,
-                    'home_team': match_data['teams']['home']['name'],
-                    'away_team': match_data['teams']['away']['name'],
-                    'match_time': match_data['fixture']['date']
-                }
+            if value_bets:
+                logger.info(f"Match {fixture_id} ({home_team} vs {away_team}) - Found {len(value_bets)} value bets")
+                # Sort by edge value
+                value_bets = self.value_analyzer.sort_value_bets(value_bets)
+            else:
+                logger.info(f"Match {fixture_id} ({home_team} vs {away_team}) - No value bets found")
             
             return value_bets
             
         except Exception as e:
-            logger.error(f"Error analyzing match {match_data.get('fixture', {}).get('id', 'unknown')}: {e}")
+            logger.error(f"Error analyzing match {match_data.get('id', 'unknown')}: {e}")
             return []
     
     async def generate_predictions(self, home_team_id: int, away_team_id: int,
@@ -279,64 +344,131 @@ class FootballBettingSystem:
         return predictions
     
     def extract_match_odds(self, odds_data: List[Dict]) -> Dict:
-        """Extract match result odds from API data"""
+        """Extract match result odds from API data - Updated for SportMonks format"""
         match_odds = {}
         
-        for bookmaker in odds_data:
-            if 'bookmakers' in bookmaker:
-                for bm in bookmaker['bookmakers']:
-                    if bm['name'] in config.BOOKMAKERS:
-                        for market in bm['bets']:
-                            if market['name'] == 'Match Winner':
-                                for outcome in market['values']:
-                                    if outcome['value'] == 'Home':
-                                        match_odds['home_win'] = float(outcome['odd'])
-                                    elif outcome['value'] == 'Draw':
-                                        match_odds['draw'] = float(outcome['odd'])
-                                    elif outcome['value'] == 'Away':
-                                        match_odds['away_win'] = float(outcome['odd'])
+        print(f"🔍 Processing {len(odds_data)} odds records for match result...")
         
+        for odds_record in odds_data:
+            # Check if this is a match result market
+            market_desc = odds_record.get('market_description', '').lower()
+            if 'fulltime result' in market_desc or 'match winner' in market_desc:
+                # Extract the outcome value and odds
+                outcome_value = odds_record.get('value', '')
+                odds_value = odds_record.get('dp3') or odds_record.get('value')
+                
+                print(f"   📊 Market: {market_desc}, Outcome: {outcome_value}, Odds: {odds_value}")
+                
+                if odds_value and outcome_value:
+                    try:
+                        odds_float = float(odds_value)
+                        if outcome_value == '1' or outcome_value == 'home':
+                            match_odds['home_win'] = odds_float
+                            print(f"      ✅ Home win odds: {odds_float}")
+                        elif outcome_value == 'X' or outcome_value == 'draw':
+                            match_odds['draw'] = odds_float
+                            print(f"      ✅ Draw odds: {odds_float}")
+                        elif outcome_value == '2' or outcome_value == 'away':
+                            match_odds['away_win'] = odds_float
+                            print(f"      ✅ Away win odds: {odds_float}")
+                    except (ValueError, TypeError):
+                        print(f"      ❌ Invalid odds value: {odds_value}")
+                        continue
+        
+        print(f"📈 Extracted match odds: {match_odds}")
         return match_odds
     
     def extract_goals_odds(self, odds_data: List[Dict]) -> Dict:
-        """Extract goals-related odds from API data"""
+        """Extract goals-related odds from API data - Updated for SportMonks format"""
         goals_odds = {}
         
-        for bookmaker in odds_data:
-            if 'bookmakers' in bookmaker:
-                for bm in bookmaker['bookmakers']:
-                    if bm['name'] in config.BOOKMAKERS:
-                        for market in bm['bets']:
-                            if market['name'] == 'Both Teams Score':
-                                for outcome in market['values']:
-                                    if outcome['value'] == 'Yes':
-                                        goals_odds['btts_yes'] = float(outcome['odd'])
-                            
-                            elif market['name'] == 'Total Goals':
-                                for outcome in market['values']:
-                                    if 'Over' in outcome['value']:
-                                        goals_odds[f"over_{outcome['value'].split()[-1]}"] = float(outcome['odd'])
-                                    elif 'Under' in outcome['value']:
-                                        goals_odds[f"under_{outcome['value'].split()[-1]}"] = float(outcome['odd'])
+        print(f"🔍 Processing {len(odds_data)} odds records for goals markets...")
         
+        for odds_record in odds_data:
+            market_desc = odds_record.get('market_description', '').lower()
+            outcome_value = odds_record.get('value', '')
+            odds_value = odds_record.get('dp3') or odds_record.get('value')
+            
+            if not odds_value or not outcome_value:
+                continue
+                
+            try:
+                odds_float = float(odds_value)
+                
+                # Both teams to score
+                if 'both teams to score' in market_desc or 'btts' in market_desc:
+                    if 'yes' in outcome_value.lower():
+                        goals_odds['btts_yes'] = odds_float
+                        print(f"      ✅ BTTS Yes odds: {odds_float}")
+                    elif 'no' in outcome_value.lower():
+                        goals_odds['btts_no'] = odds_float
+                        print(f"      ✅ BTTS No odds: {odds_float}")
+                
+                # Over/Under goals
+                elif 'over' in market_desc or 'under' in market_desc:
+                    if 'over' in outcome_value.lower():
+                        goals_odds['over_goals'] = odds_float
+                        print(f"      ✅ Over goals odds: {odds_float}")
+                    elif 'under' in outcome_value.lower():
+                        goals_odds['under_goals'] = odds_float
+                        print(f"      ✅ Under goals odds: {odds_float}")
+                
+                # Total goals
+                elif 'total goals' in market_desc:
+                    if 'over' in outcome_value.lower():
+                        goals_odds['over_total'] = odds_float
+                        print(f"      ✅ Over total odds: {odds_float}")
+                    elif 'under' in outcome_value.lower():
+                        goals_odds['under_total'] = odds_float
+                        print(f"      ✅ Under total odds: {odds_float}")
+                        
+            except (ValueError, TypeError):
+                print(f"      ❌ Invalid odds value: {odds_value}")
+                continue
+        
+        print(f"📈 Extracted goals odds: {goals_odds}")
         return goals_odds
     
     def extract_corners_odds(self, odds_data: List[Dict]) -> Dict:
-        """Extract corners odds from API data"""
+        """Extract corners-related odds from API data - Updated for SportMonks format"""
         corners_odds = {}
         
-        for bookmaker in odds_data:
-            if 'bookmakers' in bookmaker:
-                for bm in bookmaker['bookmakers']:
-                    if bm['name'] in config.BOOKMAKERS:
-                        for market in bm['bets']:
-                            if market['name'] == 'Total Corners':
-                                for outcome in market['values']:
-                                    if 'Over' in outcome['value']:
-                                        corners_odds[f"over_{outcome['value'].split()[-1]}"] = float(outcome['odd'])
-                                    elif 'Under' in outcome['value']:
-                                        corners_odds[f"under_{outcome['value'].split()[-1]}"] = float(outcome['odd'])
+        print(f"🔍 Processing {len(odds_data)} odds records for corners markets...")
         
+        for odds_record in odds_data:
+            market_desc = odds_record.get('market_description', '').lower()
+            outcome_value = odds_record.get('value', '')
+            odds_value = odds_record.get('dp3') or odds_record.get('value')
+            
+            if not odds_value or not outcome_value:
+                continue
+                
+            try:
+                odds_float = float(odds_value)
+                
+                # Total corners
+                if 'corners' in market_desc:
+                    if 'over' in outcome_value.lower():
+                        corners_odds['over_corners'] = odds_float
+                        print(f"      ✅ Over corners odds: {odds_float}")
+                    elif 'under' in outcome_value.lower():
+                        corners_odds['under_corners'] = odds_float
+                        print(f"      ✅ Under corners odds: {odds_float}")
+                
+                # Team corners
+                elif 'team corners' in market_desc:
+                    if 'home' in outcome_value.lower():
+                        corners_odds['home_corners'] = odds_float
+                        print(f"      ✅ Home corners odds: {odds_float}")
+                    elif 'away' in outcome_value.lower():
+                        corners_odds['away_corners'] = odds_float
+                        print(f"      ✅ Away corners odds: {odds_float}")
+                        
+            except (ValueError, TypeError):
+                print(f"      ❌ Invalid odds value: {odds_value}")
+                continue
+        
+        print(f"📈 Extracted corners odds: {corners_odds}")
         return corners_odds
     
     def generate_weekly_report(self):

@@ -1,11 +1,12 @@
+
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # API Configuration
-API_FOOTBALL_KEY = "9e50c7d2e07bd980072a9840ba6a8d1b"
-API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
+SPORTMONKS_API_KEY = "R2MI7yE4uEJdrFEjZW4ig5EG45orVa1Znx3U4RkpnOlcNRxuExpGCVs1YOkl"
+SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3/football"
 
 # Telegram Configuration
 TELEGRAM_BOT_TOKEN = "8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA"  # Your working token
@@ -50,6 +51,12 @@ MATCH_RESULT_THRESHOLD = 0.08
 BTTS_THRESHOLD = 0.06
 OVER_UNDER_THRESHOLD = 0.07
 CORNERS_THRESHOLD = 0.05
+
+# Value Bet Analysis Settings
+VALUE_BET_THRESHOLD = 0.05  # Default threshold for value bets
+MIN_ODDS = 1.5               # Minimum odds to consider
+MAX_ODDS = 10.0              # Maximum odds to consider
+CONFIDENCE_THRESHOLD = 0.6   # Minimum confidence for value bets
 
 # Risk Management
 MAX_BETS_PER_DAY = 10

@@ -76,6 +76,12 @@ class CornersModel:
         """
         Predict expected corners for home and away teams
         
+        Args:
+            home_team_id: Home team ID
+            away_team_id: Away team ID
+            home_stats: Home team corner statistics
+            away_stats: Away team corner statistics
+            
         Returns:
             Tuple of (home_corners, away_corners)
         """
@@ -104,24 +110,48 @@ class CornersModel:
         """
         Calculate probability distributions for different corner outcomes
         
+        Args:
+            home_corners: Predicted home team corners
+            away_corners: Predicted away team corners
+            
         Returns:
             Dictionary with various corner probability predictions
         """
         total_corners = home_corners + away_corners
         
         # Over/Under corner probabilities (using Poisson distribution)
+        over_45_prob = 1 - self._poisson_cdf(total_corners, 4.5)
+        over_55_prob = 1 - self._poisson_cdf(total_corners, 5.5)
+        over_65_prob = 1 - self._poisson_cdf(total_corners, 6.5)
+        over_75_prob = 1 - self._poisson_cdf(total_corners, 7.5)
         over_85_prob = 1 - self._poisson_cdf(total_corners, 8.5)
         over_95_prob = 1 - self._poisson_cdf(total_corners, 9.5)
-        over_105_prob = 1 - self._poisson_cdf(total_corners, 10.5)
+        
+        # Under probabilities (complement of over)
+        under_45_prob = 1 - over_45_prob
+        under_55_prob = 1 - over_55_prob
+        under_65_prob = 1 - over_65_prob
+        under_75_prob = 1 - over_75_prob
+        under_85_prob = 1 - over_85_prob
+        under_95_prob = 1 - over_95_prob
         
         # Team corner predictions
         home_over_45_prob = 1 - self._poisson_cdf(home_corners, 4.5)
         away_over_45_prob = 1 - self._poisson_cdf(away_corners, 4.5)
         
         return {
+            'over_45': over_45_prob,
+            'over_55': over_55_prob,
+            'over_65': over_65_prob,
+            'over_75': over_75_prob,
             'over_85': over_85_prob,
             'over_95': over_95_prob,
-            'over_105': over_105_prob,
+            'under_45': under_45_prob,
+            'under_55': under_55_prob,
+            'under_65': under_65_prob,
+            'under_75': under_75_prob,
+            'under_85': under_85_prob,
+            'under_95': under_95_prob,
             'home_over_45': home_over_45_prob,
             'away_over_45': away_over_45_prob,
             'total_corners': total_corners,
@@ -149,3 +179,5 @@ class CornersModel:
         # Keep only last 20 matches
         if len(self.team_corner_stats[team_id]) > 20:
             self.team_corner_stats[team_id] = self.team_corner_stats[team_id][-20:]
+
+
