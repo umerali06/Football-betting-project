@@ -9,7 +9,7 @@ API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 
 # Sportmonks API Configuration
 SPORTMONKS_API_KEY = os.getenv("SPORTMONKS_API_KEY", "R2MI7yE4uEJdrFEjZW4ig5EG45orVa1Znx3U4RkpnOlcNRxuExpGCVs1YOkl")
-SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3/football"
+SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3"
 SPORTMONKS_ENABLED = True  # Enable/disable Sportmonks as data source
 
 # API Priority Configuration
