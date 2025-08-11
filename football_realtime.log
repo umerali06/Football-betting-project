@@ -1,0 +1,15 @@
+2025-08-11 22:13:50,704 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA/getMe "HTTP/1.1 200 OK"
+2025-08-11 22:13:50,766 - telegram_bot - WARNING - No chat ID configured for Telegram bot
+2025-08-11 22:13:51,755 - api.api_sportmonks - INFO - Found 1 fixtures for today
+2025-08-11 22:13:52,416 - api.api_sportmonks - INFO - Retrieved detailed data for fixture 19425591
+2025-08-11 22:13:57,316 - api.api_sportmonks - INFO - Retrieved 3445 odds for fixture 19425591
+2025-08-11 22:13:57,853 - api.api_sportmonks - WARNING - No recent fixtures available for team 1789
+2025-08-11 22:13:58,410 - api.api_sportmonks - WARNING - No recent fixtures available for team 2356
+2025-08-11 22:13:59,145 - api.api_sportmonks - ERROR - API access denied: You do not have access to the 'xgfixture' include
+2025-08-11 22:13:59,849 - api.api_sportmonks - ERROR - API access denied: You do not have access to this endpoint
+2025-08-11 22:14:02,590 - api.api_sportmonks - INFO - Retrieved 3445 odds for fixture 19425591
+2025-08-11 22:14:02,802 - telegram_bot - WARNING - No chat ID configured for Telegram bot
+2025-08-11 22:43:32,571 - __main__ - INFO - Received signal 2, initiating graceful shutdown...
+2025-08-11 22:43:32,586 - telegram_bot - WARNING - No chat ID configured for Telegram bot
+2025-08-11 22:43:34,924 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA/close "HTTP/1.1 200 OK"
+2025-08-11 22:43:35,521 - telegram_bot - WARNING - Telegram bot not initialized

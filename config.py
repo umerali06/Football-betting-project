@@ -5,13 +5,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # API Configuration
-SPORTMONKS_API_KEY = "R2MI7yE4uEJdrFEjZW4ig5EG45orVa1Znx3U4RkpnOlcNRxuExpGCVs1YOkl"
+# Primary API: API-Football (api-sports.io)
+API_FOOTBALL_API_KEY = "4b1e476868094336df4bbec5730c4d22"  # Add your API-Football key here
+API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
+API_FOOTBALL_TIMEZONE = "UTC"
+
+# Fallback API: SportMonks
+SPORTMONKS_API_KEY = "mxoCE92QPwWT5ZfwGCAA6Ee32QQI1WWRd68TKzqrBR2TxTBMAzE5rLK8SLZk"
 SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3/football"
 
 # Telegram Configuration
 TELEGRAM_BOT_TOKEN = "8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA"  # Your working token
 # TELEGRAM_BOT_TOKEN = "8209018533:AAFFEFcJ0XDKKOFdNvalvtFoxvS0JHkeG0k"  # Your other token
-TELEGRAM_CHAT_ID = None  # Will be set via /setchat command in bot
+TELEGRAM_CHAT_ID = None  # Will be set automatically when you send a message to the bot
 
 # Premium Betting Configuration
 VALUE_BET_THRESHOLD = 0.08  # 8% edge required for premium analysis
