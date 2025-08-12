@@ -222,7 +222,8 @@ class SportMonksClient:
             return None
 
     def extract_match_status(self, fixture: Dict) -> str:
-        """Extract match status from fixture data"""
+        """Extract match status from fixture data with multiple fallbacks"""
+        # Method 1: Check scores array for CURRENT status
         if 'scores' in fixture and fixture['scores']:
             for score in fixture['scores']:
                 if score.get('description') == 'CURRENT':
@@ -230,11 +231,58 @@ class SportMonksClient:
                 elif score.get('description') == 'FULL_TIME':
                     return 'FINISHED'
         
+        # Method 2: Check time.status field (v3 schema)
+        if 'time' in fixture and fixture['time']:
+            time_data = fixture['time']
+            status = time_data.get('status', '')
+            status_reason = time_data.get('status_reason', '')
+            minute = time_data.get('minute')
+            
+            # Map various status values
+            if status in ['LIVE', '1H', '2H', 'HT', 'ET', 'PEN']:
+                return 'LIVE'
+            elif status in ['FT', 'AET', 'PEN']:
+                return 'FINISHED'
+            elif status in ['NS', 'TBD']:
+                return 'NOT_STARTED'
+            elif minute and minute > 0:
+                return 'LIVE'
+        
+        # Method 3: Check boolean live field
+        if 'live' in fixture:
+            if fixture['live']:
+                return 'LIVE'
+            else:
+                # Check if it's finished or not started
+                if 'starting_at' in fixture and 'ending_at' in fixture:
+                    return 'FINISHED'
+                else:
+                    return 'NOT_STARTED'
+        
+        # Method 4: Check starting_at timestamp
         if 'starting_at' in fixture:
             start_time = fixture['starting_at']
             if start_time:
+                # If we have a start time but no live indicator, assume not started
                 return 'NOT_STARTED'
         
+        # Method 5: Check for any live-related fields
+        live_indicators = ['is_live', 'live_status', 'match_status', 'status']
+        for indicator in live_indicators:
+            if indicator in fixture:
+                value = fixture[indicator]
+                if isinstance(value, str):
+                    if value.upper() in ['LIVE', '1H', '2H', 'HT', 'ET', 'PEN']:
+                        return 'LIVE'
+                    elif value.upper() in ['FT', 'AET', 'PEN', 'FINISHED']:
+                        return 'FINISHED'
+                    elif value.upper() in ['NS', 'TBD', 'NOT_STARTED']:
+                        return 'NOT_STARTED'
+                elif isinstance(value, bool) and value:
+                    return 'LIVE'
+        
+        # Default fallback
+        logger.debug(f"Could not determine match status for fixture, using UNKNOWN. Available fields: {list(fixture.keys())}")
         return 'UNKNOWN'
 
     def extract_team_names(self, fixture: Dict) -> Tuple[str, str]:

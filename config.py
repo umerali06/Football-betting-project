@@ -6,9 +6,9 @@ load_dotenv()
 
 # API Configuration
 # Primary API: API-Football (api-sports.io)
-API_FOOTBALL_API_KEY = "4b1e476868094336df4bbec5730c4d22"  # Add your API-Football key here
+API_FOOTBALL_API_KEY = "148dc4fd5b1a406225ec3558ebe11771"  # Add your API-Football key here
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
-API_FOOTBALL_TIMEZONE = "UTC"
+API_FOOTBALL_TIMEZONE = "Asia/Karachi"  # Use Asia/Karachi timezone for better date handling
 
 # Fallback API: SportMonks
 SPORTMONKS_API_KEY = "mxoCE92QPwWT5ZfwGCAA6Ee32QQI1WWRd68TKzqrBR2TxTBMAzE5rLK8SLZk"

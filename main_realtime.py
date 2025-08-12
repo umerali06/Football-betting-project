@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 FIXORA PRO Real-Time Football Betting System
-Enhanced version with real-time analysis and Telegram integration
+Enhanced version with real-time analysis (Telegram bot runs separately)
 """
 
 import asyncio
@@ -13,7 +13,6 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
 import schedule
-from telegram_bot import TelegramBetBot
 
 from realtime_analyzer import RealTimeAnalyzer
 import config
@@ -35,7 +34,7 @@ class RealTimeBettingSystem:
     
     def __init__(self):
         self.analyzer = RealTimeAnalyzer()
-        self.telegram_bot = TelegramBetBot()
+        # Remove Telegram bot - it runs separately to avoid conflicts
         self.is_running = False
         self.analysis_stats = {
             'total_analyses': 0,
@@ -49,10 +48,7 @@ class RealTimeBettingSystem:
         """Start the real-time system"""
         try:
             logger.info("Starting FIXORA PRO Real-Time Football Betting System...")
-            
-            # Start Telegram bot (interactive mode)
-            await self.telegram_bot.start()
-            logger.info("Interactive Telegram bot started successfully")
+            logger.info("Note: Telegram bot runs separately to avoid conflicts")
             
             # Schedule analysis tasks
             self.schedule_analysis()
@@ -62,6 +58,7 @@ class RealTimeBettingSystem:
             await self.run_initial_analysis()
             
             logger.info("Real-time system started successfully")
+            logger.info("To use the Telegram bot, run: python bot_interface/telegram_bot.py")
             
         except Exception as e:
             logger.error(f"Failed to start system: {e}")
@@ -260,7 +257,7 @@ Last Analysis: {self._format_last_analysis()}
 Feature Status:
 - Live Analysis: Active
 - Daily Analysis: Scheduled
-- Telegram Integration: Active
+- Telegram Integration: Runs Separately
 - API Client: Connected
         """
     
@@ -270,22 +267,10 @@ Feature Status:
             return "Never"
         return self.analysis_stats['last_analysis'].strftime("%H:%M:%S")
     
-    async def send_telegram_message(self, message: str):
-        """Send message to Telegram"""
-        try:
-            await self.telegram_bot.send_message(message)
-            return True
-        except Exception as e:
-            logger.error(f"Failed to send Telegram message: {e}")
-            return False
-    
     async def shutdown(self):
         """Shutdown the system gracefully"""
         try:
             logger.info("Shutting down FIXORA PRO system...")
-            
-            # Stop Telegram bot
-            await self.telegram_bot.stop()
             
             # Close analyzer
             await self.analyzer.close()

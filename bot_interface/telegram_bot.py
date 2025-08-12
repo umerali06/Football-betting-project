@@ -6,6 +6,9 @@ from typing import Dict, List, Optional
 import config
 import json
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TelegramBetBot:
     """
@@ -27,6 +30,8 @@ class TelegramBetBot:
         self.application.add_handler(CommandHandler("help", self.help_command))
         self.application.add_handler(CommandHandler("status", self.status_command))
         self.application.add_handler(CommandHandler("setchat", self.set_chat_command))
+        self.application.add_handler(CommandHandler("analyze", self.analyze_command))
+        self.application.add_handler(CommandHandler("live", self.live_command))
         
         # Start the bot
         await self.application.initialize()
@@ -75,9 +80,159 @@ Commands:
 /help - Show this help
 /status - Check bot status
 /setchat - Set chat ID for notifications
+/analyze - Analyze today's matches
+/live - Get live match analysis
+
+💡 Tip: Use /analyze to get instant analysis of today's matches!
         """
         await update.message.reply_text(help_message)
-    
+
+    async def analyze_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /analyze command - analyze today's matches"""
+        await update.message.reply_text("🔍 Analyzing today's matches... Please wait.")
+        
+        try:
+            # Import here to avoid circular imports
+            from api.unified_api_client import UnifiedAPIClient
+            
+            client = UnifiedAPIClient()
+            
+            # Get today's matches
+            matches = await client.get_today_matches(include_live=True)
+            
+            if not matches:
+                await update.message.reply_text("📅 No matches found for today.")
+                await client.close()
+                return
+            
+            # Analyze first few matches
+            analysis_results = []
+            subscription_limits = []
+            
+            for i, match in enumerate(matches[:5]):  # Limit to 5 matches
+                try:
+                    # Extract basic info
+                    home_team, away_team = self.extract_team_names(match)
+                    status = self.extract_match_status(match)
+                    
+                    # Try to get rich data
+                    odds = await client.safe_match_odds(match)
+                    predictions = await client.safe_predictions(match)
+                    stats = await client.safe_fixture_statistics(match)
+                    
+                    # Determine data quality
+                    data_quality = self.assess_data_quality(odds, predictions, stats)
+                    
+                    analysis_results.append({
+                        'match': f"{home_team} vs {away_team}",
+                        'status': status,
+                        'quality': data_quality,
+                        'odds_available': bool(odds),
+                        'predictions_available': bool(predictions),
+                        'stats_available': bool(stats)
+                    })
+                    
+                    # Check for subscription limitations
+                    if not odds and not predictions and not stats:
+                        subscription_limits.append(f"{home_team} vs {away_team}")
+                        
+                except Exception as e:
+                    logger.error(f"Error analyzing match {i}: {e}")
+                    continue
+            
+            await client.close()
+            
+            # Create analysis message
+            message = "🔍 Today's Matches Analysis\n\n"
+            
+            for result in analysis_results:
+                quality_emoji = "🟢" if result['quality'] == "High" else "🟡" if result['quality'] == "Medium" else "🔴"
+                message += f"{quality_emoji} {result['match']}\n"
+                message += f"   📊 Status: {result['status']}\n"
+                message += f"   📈 Quality: {result['quality']}\n"
+                message += f"   💰 Odds: {'✅' if result['odds_available'] else '❌'}\n"
+                message += f"   🔮 Predictions: {'✅' if result['predictions_available'] else '❌'}\n"
+                message += f"   📊 Stats: {'✅' if result['stats_available'] else '❌'}\n\n"
+            
+            # Add subscription information
+            if subscription_limits:
+                message += "⚠️ Subscription Limitations:\n"
+                message += "Some matches have limited data due to subscription plan restrictions.\n"
+                message += "Consider upgrading for full access to:\n"
+                message += "• Live odds and predictions\n"
+                message += "• Detailed statistics\n"
+                message += "• Advanced analysis features\n\n"
+            
+            message += f"📊 Total matches analyzed: {len(analysis_results)}"
+            
+            await update.message.reply_text(message)
+            
+        except Exception as e:
+            error_msg = f"❌ Analysis failed: {str(e)}"
+            await update.message.reply_text(error_msg)
+            logger.error(f"Analysis command failed: {e}")
+
+    async def live_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /live command - get live match analysis"""
+        await update.message.reply_text("⚽ Getting live match analysis... Please wait.")
+        
+        try:
+            # Import here to avoid circular imports
+            from api.unified_api_client import UnifiedAPIClient
+            
+            client = UnifiedAPIClient()
+            
+            # Get live matches
+            live_matches = await client.get_live_scores()
+            
+            if not live_matches:
+                await update.message.reply_text("📺 No live matches currently.")
+                await client.close()
+                return
+            
+            # Analyze live matches
+            live_analysis = []
+            
+            for match in live_matches[:3]:  # Limit to 3 live matches
+                try:
+                    home_team, away_team = self.extract_team_names(match)
+                    status = self.extract_match_status(match)
+                    score = self.extract_score(match)
+                    
+                    # Try to get live odds
+                    live_odds = await client.safe_live_odds(match)
+                    
+                    live_analysis.append({
+                        'match': f"{home_team} vs {away_team}",
+                        'status': status,
+                        'score': f"{score[0]}-{score[1]}",
+                        'live_odds': bool(live_odds)
+                    })
+                    
+                except Exception as e:
+                    logger.error(f"Error analyzing live match: {e}")
+                    continue
+            
+            await client.close()
+            
+            # Create live analysis message
+            message = "⚽ Live Matches Analysis\n\n"
+            
+            for analysis in live_analysis:
+                message += f"🔥 {analysis['match']}\n"
+                message += f"   📊 Status: {analysis['status']}\n"
+                message += f"   🎯 Score: {analysis['score']}\n"
+                message += f"   💰 Live Odds: {'✅' if analysis['live_odds'] else '❌'}\n\n"
+            
+            message += f"📺 Total live matches: {len(live_analysis)}"
+            
+            await update.message.reply_text(message)
+            
+        except Exception as e:
+            error_msg = f"❌ Live analysis failed: {str(e)}"
+            await update.message.reply_text(error_msg)
+            logger.error(f"Live command failed: {e}")
+
     async def status_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /status command"""
         status_message = f"""
@@ -281,6 +436,11 @@ The system will automatically check again in 5 minutes.
 • Check back later for new matches
 • The system analyzes matches from major leagues
 • Value bets are posted automatically when found
+
+🔧 Available Commands:
+• /analyze - Analyze today's matches
+• /live - Get live match analysis
+• /status - Check bot status
         """.format(time=datetime.datetime.now().strftime('%Y-%m-%d %H:%M'))
         
         try:
@@ -288,6 +448,99 @@ The system will automatically check again in 5 minutes.
             print("Posted 'no matches' message to Telegram")
         except Exception as e:
             print(f"Failed to post no matches message: {e}")
+
+    async def post_subscription_upgrade_message(self, limited_features: List[str]):
+        """Post message about subscription limitations and upgrade suggestions"""
+        if not self.chat_id:
+            return
+        
+        message = """
+⚠️ Subscription Limitations Detected
+
+Some features are limited due to your current subscription plan.
+
+Limited Features:
+{limited_features}
+
+🚀 Upgrade Benefits:
+• Full access to live odds and predictions
+• Detailed match statistics and xG data
+• Advanced analysis features
+• Priority API access
+• No rate limiting
+
+💡 Current Plan Features:
+• Basic match information
+• Limited odds data
+• Basic predictions
+• Standard API access
+
+🔧 Commands Available:
+• /analyze - Basic match analysis
+• /live - Live match status
+• /status - Bot status
+
+To upgrade, visit your API provider's website or contact support.
+        """.format(limited_features="\n".join([f"• {feature}" for feature in limited_features]))
+        
+        try:
+            await self.bot.send_message(chat_id=self.chat_id, text=message)
+            print("Posted subscription upgrade message to Telegram")
+        except Exception as e:
+            print(f"Failed to post subscription message: {e}")
+
+    async def post_data_quality_summary(self, analysis_results: List[Dict]):
+        """Post summary of data quality across matches"""
+        if not self.chat_id:
+            return
+        
+        # Count data quality levels
+        high_quality = sum(1 for r in analysis_results if r['quality'] == 'High')
+        medium_quality = sum(1 for r in analysis_results if r['quality'] == 'Medium')
+        basic_quality = sum(1 for r in analysis_results if r['quality'] == 'Basic')
+        
+        # Count available features
+        total_odds = sum(1 for r in analysis_results if r['odds_available'])
+        total_predictions = sum(1 for r in analysis_results if r['predictions_available'])
+        total_stats = sum(1 for r in analysis_results if r['stats_available'])
+        
+        message = f"""
+📊 Data Quality Summary
+
+📈 Quality Breakdown:
+• 🟢 High Quality: {high_quality} matches
+• 🟡 Medium Quality: {medium_quality} matches  
+• 🔴 Basic Quality: {basic_quality} matches
+
+🔧 Feature Availability:
+• 💰 Odds: {total_odds}/{len(analysis_results)} matches
+• 🔮 Predictions: {total_predictions}/{len(analysis_results)} matches
+• 📊 Statistics: {total_stats}/{len(analysis_results)} matches
+
+💡 Quality Indicators:
+• 🟢 High: 2+ premium features available
+• 🟡 Medium: 1 premium feature available
+• 🔴 Basic: Basic match info only
+
+{self._get_subscription_recommendation(high_quality, len(analysis_results))}
+        """
+        
+        try:
+            await self.bot.send_message(chat_id=self.chat_id, text=message)
+            print("Posted data quality summary to Telegram")
+        except Exception as e:
+            print(f"Failed to post data quality summary: {e}")
+
+    def _get_subscription_recommendation(self, high_quality: int, total_matches: int) -> str:
+        """Get subscription recommendation based on data quality"""
+        quality_percentage = (high_quality / total_matches * 100) if total_matches > 0 else 0
+        
+        if quality_percentage >= 80:
+            return "✅ Excellent data quality! Your current plan is working well."
+        elif quality_percentage >= 50:
+            return "⚠️ Moderate data quality. Consider upgrading for better analysis."
+        else:
+            return "❌ Limited data quality. Upgrade recommended for full features."
     
     def stop(self):
         """Stop the Telegram bot"""
@@ -315,3 +568,80 @@ The system will automatically check again in 5 minutes.
         except Exception as e:
             print(f"Failed to load chat ID: {e}")
         return None
+
+    def assess_data_quality(self, odds, predictions, stats) -> str:
+        """Assess the quality of available data"""
+        available_features = sum([bool(odds), bool(predictions), bool(stats)])
+        
+        if available_features >= 2:
+            return "High"
+        elif available_features == 1:
+            return "Medium"
+        else:
+            return "Basic"
+
+    def extract_team_names(self, fixture: Dict) -> tuple:
+        """Extract team names from fixture data"""
+        try:
+            # Try API-Football format first
+            if 'teams' in fixture:
+                home_team = fixture['teams'].get('home', {}).get('name', 'Home Team')
+                away_team = fixture['teams'].get('away', {}).get('name', 'Away Team')
+                return home_team, away_team
+            
+            # Try SportMonks format
+            elif 'participants' in fixture:
+                home_team = "Home Team"
+                away_team = "Away Team"
+                for participant in fixture['participants']:
+                    if participant.get('meta', {}).get('location') == 'home':
+                        home_team = participant.get('name', 'Home Team')
+                    elif participant.get('meta', {}).get('location') == 'away':
+                        away_team = participant.get('name', 'Away Team')
+                return home_team, away_team
+            
+            else:
+                return "Home Team", "Away Team"
+                
+        except Exception:
+            return "Home Team", "Away Team"
+
+    def extract_match_status(self, fixture: Dict) -> str:
+        """Extract match status from fixture data"""
+        try:
+            # Try API-Football format
+            if 'fixture' in fixture and 'status' in fixture['fixture']:
+                return fixture['fixture']['status']['short']
+            
+            # Try SportMonks format
+            elif 'time' in fixture and 'status' in fixture['time']:
+                return fixture['time']['status']
+            
+            # Fallback
+            return "Unknown"
+            
+        except Exception:
+            return "Unknown"
+
+    def extract_score(self, fixture: Dict) -> tuple:
+        """Extract current score from fixture data"""
+        try:
+            # Try API-Football format
+            if 'goals' in fixture:
+                home_score = fixture['goals'].get('home', 0)
+                away_score = fixture['goals'].get('away', 0)
+                return home_score, away_score
+            
+            # Try SportMonks format
+            elif 'scores' in fixture and fixture['scores']:
+                for score in fixture['scores']:
+                    if score.get('description') == 'CURRENT':
+                        home_score = score.get('score', {}).get('participant_1', 0)
+                        away_score = score.get('score', {}).get('participant_2', 0)
+                        return home_score, away_score
+            
+            # Fallback
+            return 0, 0
+            
+        except Exception:
+            return 0, 0
