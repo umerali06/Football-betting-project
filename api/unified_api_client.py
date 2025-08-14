@@ -282,39 +282,67 @@ class UnifiedAPIClient:
             return []
     
     async def get_expected_goals(self, fixture_id: int) -> Optional[Dict]:
-        """Get expected goals with allow_empty=True and team ID support"""
-        # Try API-Football first with allow_empty=True
+        """Get expected goals with proper handling of API plan limitations"""
+        # Try API-Football first - this endpoint often returns empty for many fixtures
         try:
             result = await self.api_football.get_expected_goals(fixture_id)
             if result:
+                logger.debug(f"API-Football xG data retrieved for fixture {fixture_id}")
                 return result
+            else:
+                # Empty result is normal for API-Football xG - not a failure
+                logger.debug(f"API-Football xG returned empty for fixture {fixture_id} (normal for this API)")
         except Exception as e:
-            logger.debug(f"API-Football expected goals failed: {e}")
+            logger.debug(f"API-Football expected goals failed for fixture {fixture_id}: {e}")
         
-        # Fall back to SportMonks
+        # Fall back to SportMonks - this is where the xGFixture include error occurs
         try:
             result = await self.sportmonks.get_expected_goals(fixture_id)
-            return result
+            if result:
+                logger.debug(f"SportMonks xG data retrieved for fixture {fixture_id}")
+                return result
+            else:
+                # Empty result from SportMonks might indicate plan limitation
+                logger.debug(f"SportMonks xG returned empty for fixture {fixture_id} (may be plan limitation)")
+                return None
         except Exception as e:
-            logger.debug(f"SportMonks expected goals failed: {e}")
+            # Check if this is an API access denied error (plan limitation)
+            if "access denied" in str(e).lower() or "403" in str(e):
+                logger.debug(f"SportMonks xG access denied for fixture {fixture_id} (plan limitation)")
+            else:
+                logger.debug(f"SportMonks expected goals failed for fixture {fixture_id}: {e}")
             return None
     
     async def get_predictions(self, fixture_id: int) -> Optional[Dict]:
-        """Get predictions with allow_empty=True since they might not be available"""
-        # Try API-Football first with allow_empty=True
+        """Get predictions with proper handling of API plan limitations"""
+        # Try API-Football first - predictions endpoint often returns empty for many fixtures
         try:
             result = await self.api_football.get_predictions(fixture_id)
             if result:
+                logger.debug(f"API-Football predictions retrieved for fixture {fixture_id}")
                 return result
+            else:
+                # Empty result is normal for API-Football predictions - not a failure
+                logger.debug(f"API-Football predictions returned empty for fixture {fixture_id} (normal for this API)")
         except Exception as e:
-            logger.debug(f"API-Football predictions failed: {e}")
+            logger.debug(f"API-Football predictions failed for fixture {fixture_id}: {e}")
         
-        # Fall back to SportMonks
+        # Fall back to SportMonks - this might have plan limitations
         try:
             result = await self.sportmonks.get_predictions(fixture_id)
-            return result
+            if result:
+                logger.debug(f"SportMonks predictions retrieved for fixture {fixture_id}")
+                return result
+            else:
+                # Empty result from SportMonks might indicate plan limitation
+                logger.debug(f"SportMonks predictions returned empty for fixture {fixture_id} (may be plan limitation)")
+                return None
         except Exception as e:
-            logger.debug(f"SportMonks predictions failed: {e}")
+            # Check if this is an API access denied error (plan limitation)
+            if "access denied" in str(e).lower() or "403" in str(e):
+                logger.debug(f"SportMonks predictions access denied for fixture {fixture_id} (plan limitation)")
+            else:
+                logger.debug(f"SportMonks predictions failed for fixture {fixture_id}: {e}")
             return None
     
     async def safe_predictions(self, fixture: Dict) -> Optional[Dict]:

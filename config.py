@@ -6,12 +6,12 @@ load_dotenv()
 
 # API Configuration
 # Primary API: API-Football (api-sports.io)
-API_FOOTBALL_API_KEY = "148dc4fd5b1a406225ec3558ebe11771"  # Add your API-Football key here
+API_FOOTBALL_API_KEY = "8e6fa3e25470765f5ca5f8031780069e"  # Add your API-Football key here
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 API_FOOTBALL_TIMEZONE = "Asia/Karachi"  # Use Asia/Karachi timezone for better date handling
 
 # Fallback API: SportMonks
-SPORTMONKS_API_KEY = "mxoCE92QPwWT5ZfwGCAA6Ee32QQI1WWRd68TKzqrBR2TxTBMAzE5rLK8SLZk"
+SPORTMONKS_API_KEY = "h9GMoaRrTilhjTWReVbVIofysrPRfkigyJ45IlCBhyp6x9EYu3Tqa5xqlUHC"
 SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3/football"
 
 # Telegram Configuration

@@ -1,0 +1,238 @@
+2025-08-14 00:59:28,700 - __main__ - INFO - Starting Comprehensive FIXORA PRO System Test
+2025-08-14 00:59:28,700 - __main__ - INFO - ============================================================
+2025-08-14 00:59:28,700 - __main__ - INFO - Testing API-Football Client...
+2025-08-14 00:59:32,037 - __main__ - INFO - Testing basic connectivity...
+2025-08-14 00:59:32,037 - __main__ - INFO - Testing expected goals with multiple strategies...
+2025-08-14 00:59:35,422 - __main__ - INFO - Expected goals data retrieved: <class 'dict'>
+2025-08-14 00:59:35,422 - __main__ - INFO -    Source: fixture_statistics
+2025-08-14 00:59:35,425 - __main__ - INFO - API-Football client test completed successfully
+2025-08-14 00:59:35,425 - __main__ - INFO - Testing Unified API Client...
+2025-08-14 00:59:37,899 - __main__ - INFO - Testing today's matches...
+2025-08-14 00:59:45,563 - api.api_apifootball - INFO - Fetching today's matches for date: 2025-08-14 (timezone: Asia/Karachi)
+2025-08-14 00:59:48,142 - api.api_apifootball - INFO - Found 137 fixtures for today (2025-08-14)
+2025-08-14 00:59:48,143 - api.unified_api_client - INFO - API-Football get_today_matches successful
+2025-08-14 00:59:49,326 - api.api_apifootball - INFO - Retrieved 26 live matches
+2025-08-14 00:59:49,327 - api.unified_api_client - INFO - API-Football get_live_scores successful
+2025-08-14 00:59:49,328 - api.unified_api_client - INFO - Merged 26 live matches with today's fixtures
+2025-08-14 00:59:49,328 - __main__ - INFO - Today's matches retrieved: 153 matches
+2025-08-14 00:59:49,346 - __main__ - INFO -    Testing fixture ID: 1377400
+2025-08-14 00:59:51,778 - __main__ - INFO -    Expected goals: <class 'dict'>
+2025-08-14 00:59:52,630 - __main__ - INFO -    Predictions: <class 'dict'>
+2025-08-14 00:59:52,631 - api.unified_api_client - INFO - Unified API client closed successfully
+2025-08-14 00:59:52,632 - __main__ - INFO - Unified API client test completed successfully
+2025-08-14 00:59:52,635 - __main__ - INFO - Testing Real-Time Analyzer...
+2025-08-14 00:59:52,850 - __main__ - INFO - Testing today's matches analysis...
+2025-08-14 00:59:52,851 - realtime_analyzer - INFO - Starting analysis of today's matches...
+2025-08-14 00:59:52,854 - api.api_apifootball - INFO - Fetching today's matches for date: 2025-08-14 (timezone: Asia/Karachi)
+2025-08-14 00:59:56,088 - api.api_apifootball - INFO - Found 137 fixtures for today (2025-08-14)
+2025-08-14 00:59:56,089 - api.unified_api_client - INFO - API-Football get_today_matches successful
+2025-08-14 00:59:58,505 - api.api_apifootball - INFO - Retrieved 26 live matches
+2025-08-14 00:59:58,506 - api.unified_api_client - INFO - API-Football get_live_scores successful
+2025-08-14 00:59:58,507 - api.unified_api_client - INFO - Merged 26 live matches with today's fixtures
+2025-08-14 01:00:19,833 - realtime_analyzer - INFO - Analysis completed for Paris Saint Germain vs Tottenham (Quality: moderate)
+2025-08-14 01:00:48,187 - realtime_analyzer - INFO - Analysis completed for Banks O' Dee vs Brechin (Quality: moderate)
+2025-08-14 01:00:48,583 - __main__ - INFO - Test interrupted by user
+2025-08-14 01:00:48,589 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001F584FAF890>
+2025-08-14 01:00:55,082 - __main__ - INFO - Starting Comprehensive FIXORA PRO System Test
+2025-08-14 01:00:55,082 - __main__ - INFO - ============================================================
+2025-08-14 01:00:55,085 - __main__ - INFO - Testing API-Football Client...
+2025-08-14 01:00:56,751 - __main__ - INFO - Testing basic connectivity...
+2025-08-14 01:00:56,752 - __main__ - INFO - Testing expected goals with multiple strategies...
+2025-08-14 01:01:05,276 - __main__ - INFO - Expected goals data retrieved: <class 'dict'>
+2025-08-14 01:01:05,276 - __main__ - INFO -    Source: fixture_statistics
+2025-08-14 01:01:05,278 - __main__ - INFO - API-Football client test completed successfully
+2025-08-14 01:01:05,282 - __main__ - INFO - Testing Unified API Client...
+2025-08-14 01:01:06,146 - __main__ - INFO - Testing today's matches...
+2025-08-14 01:01:06,749 - api.api_apifootball - INFO - Fetching today's matches for date: 2025-08-14 (timezone: Asia/Karachi)
+2025-08-14 01:01:09,446 - api.api_apifootball - INFO - Found 137 fixtures for today (2025-08-14)
+2025-08-14 01:01:09,448 - api.unified_api_client - INFO - API-Football get_today_matches successful
+2025-08-14 01:01:10,037 - api.api_apifootball - INFO - Retrieved 28 live matches
+2025-08-14 01:01:10,037 - api.unified_api_client - INFO - API-Football get_live_scores successful
+2025-08-14 01:01:10,038 - api.unified_api_client - INFO - Merged 28 live matches with today's fixtures
+2025-08-14 01:01:10,045 - __main__ - INFO - Today's matches retrieved: 152 matches
+2025-08-14 01:01:10,046 - __main__ - INFO -    Testing fixture ID: 1377400
+2025-08-14 01:01:12,936 - __main__ - INFO -    Expected goals: <class 'dict'>
+2025-08-14 01:01:13,954 - __main__ - INFO -    Predictions: <class 'dict'>
+2025-08-14 01:01:13,956 - api.unified_api_client - INFO - Unified API client closed successfully
+2025-08-14 01:01:13,957 - __main__ - INFO - Unified API client test completed successfully
+2025-08-14 01:01:13,958 - __main__ - INFO - Testing Real-Time Analyzer...
+2025-08-14 01:01:13,967 - __main__ - INFO - Testing today's matches analysis...
+2025-08-14 01:01:13,968 - realtime_analyzer - INFO - Starting analysis of today's matches...
+2025-08-14 01:01:13,968 - api.api_apifootball - INFO - Fetching today's matches for date: 2025-08-14 (timezone: Asia/Karachi)
+2025-08-14 01:01:22,155 - api.api_apifootball - INFO - Found 137 fixtures for today (2025-08-14)
+2025-08-14 01:01:22,156 - api.unified_api_client - INFO - API-Football get_today_matches successful
+2025-08-14 01:01:23,341 - api.api_apifootball - INFO - Retrieved 28 live matches
+2025-08-14 01:01:23,458 - api.unified_api_client - INFO - API-Football get_live_scores successful
+2025-08-14 01:01:23,509 - api.unified_api_client - INFO - Merged 28 live matches with today's fixtures
+2025-08-14 01:01:32,001 - realtime_analyzer - INFO - Analysis completed for Paris Saint Germain vs Tottenham (Quality: moderate)
+2025-08-14 01:01:48,559 - realtime_analyzer - INFO - Analysis completed for Banks O' Dee vs Brechin (Quality: moderate)
+2025-08-14 01:01:58,397 - realtime_analyzer - INFO - Analysis completed for Buckie Thistle vs Strathspey Thistle (Quality: moderate)
+2025-08-14 01:02:05,596 - realtime_analyzer - INFO - Analysis completed for Clachnacuddin vs Lossiemouth (Quality: basic)
+2025-08-14 01:02:11,898 - realtime_analyzer - INFO - Analysis completed for Deveronvale vs Keith (Quality: basic)
+2025-08-14 01:02:18,386 - realtime_analyzer - INFO - Analysis completed for Fraserburgh vs Rothes (Quality: basic)
+2025-08-14 01:02:27,961 - realtime_analyzer - INFO - Analysis completed for Inverurie Loco Works vs Forres Mechanics (Quality: basic)
+2025-08-14 01:02:34,989 - realtime_analyzer - INFO - Analysis completed for Nairn County vs Huntly (Quality: basic)
+2025-08-14 01:02:43,697 - realtime_analyzer - INFO - Analysis completed for Turriff United vs Formartine United (Quality: moderate)
+2025-08-14 01:02:51,744 - realtime_analyzer - INFO - Analysis completed for Wick Academy vs Brora Rangers (Quality: basic)
+2025-08-14 01:02:58,039 - realtime_analyzer - INFO - Analysis completed for Always Ready vs Real Tomayapo (Quality: moderate)
+2025-08-14 01:03:01,992 - realtime_analyzer - INFO - Analysis completed for Birmingham vs Sheffield Utd (Quality: moderate)
+2025-08-14 01:03:07,563 - realtime_analyzer - INFO - Analysis completed for América de Cali W vs Santa Fe W (Quality: basic)
+2025-08-14 01:03:14,443 - realtime_analyzer - INFO - Analysis completed for Internacional Palmira vs Orsomarso W (Quality: basic)
+2025-08-14 01:03:20,672 - realtime_analyzer - INFO - Analysis completed for Throttur Reykjavik vs IR Reykjavik (Quality: moderate)
+2025-08-14 01:03:27,811 - realtime_analyzer - INFO - Analysis completed for KFG vs Grotta (Quality: moderate)
+2025-08-14 01:03:34,544 - realtime_analyzer - INFO - Analysis completed for San Antonio vs Manta FC (Quality: moderate)
+2025-08-14 01:03:40,539 - realtime_analyzer - INFO - Analysis completed for Atlético Pantoja vs San Cristóbal (Quality: moderate)
+2025-08-14 01:03:46,694 - realtime_analyzer - INFO - Analysis completed for Salcedo vs Atlántico (Quality: basic)
+2025-08-14 01:03:52,793 - realtime_analyzer - INFO - Analysis completed for River Plate Res. vs Godoy Cruz Res. (Quality: moderate)
+2025-08-14 01:03:58,732 - realtime_analyzer - INFO - Analysis completed for Cucuta vs Quindio (Quality: moderate)
+2025-08-14 01:04:04,676 - realtime_analyzer - INFO - Analysis completed for Santa Fe W vs América de Cali W (Quality: basic)
+2025-08-14 01:04:09,882 - realtime_analyzer - INFO - Analysis completed for Minga Guazu vs Sportivo Luqueno (Quality: basic)
+2025-08-14 01:04:16,099 - realtime_analyzer - INFO - Analysis completed for Central Córdoba SdE Res. vs Barracas Central Res. (Quality: moderate)
+2025-08-14 01:04:22,387 - realtime_analyzer - INFO - Analysis completed for Ind. Juniors vs San Antonio (Quality: basic)
+2025-08-14 01:04:29,201 - realtime_analyzer - INFO - Analysis completed for Cerro Porteno vs Estudiantes L.P. (Quality: moderate)
+2025-08-14 01:04:35,383 - realtime_analyzer - INFO - Analysis completed for Aurora vs Blooming (Quality: moderate)
+2025-08-14 01:04:41,318 - realtime_analyzer - INFO - Analysis completed for Bolívar vs Cienciano (Quality: moderate)
+2025-08-14 01:04:46,892 - realtime_analyzer - INFO - Analysis completed for Criciuma U20 vs Barra SC U20 (Quality: moderate)
+2025-08-14 01:04:51,987 - realtime_analyzer - INFO - Analysis completed for Bangu vs São Gonçalo EC RJ (Quality: basic)
+2025-08-14 01:04:57,863 - realtime_analyzer - INFO - Analysis completed for Atletico Tucuman vs Newells Old Boys (Quality: moderate)
+2025-08-14 01:05:03,465 - realtime_analyzer - INFO - Analysis completed for One Knoxville vs Richmond Kickers (Quality: moderate)
+2025-08-14 01:05:09,068 - api.api_sportmonks - ERROR - API access denied: You do not have access to the 'xgfixture' include
+2025-08-14 01:05:10,475 - realtime_analyzer - INFO - Analysis completed for Ottawa Rapid vs AFC Toronto (Quality: limited)
+2025-08-14 01:05:16,332 - realtime_analyzer - INFO - Analysis completed for León W vs Juárez W (Quality: moderate)
+2025-08-14 01:05:23,077 - realtime_analyzer - INFO - Analysis completed for Portuguesa RJ vs Resende (Quality: moderate)
+2025-08-14 01:05:28,472 - realtime_analyzer - INFO - Analysis completed for Forge vs Vancouver Whitecaps (Quality: moderate)
+2025-08-14 01:05:34,709 - realtime_analyzer - INFO - Analysis completed for Cibao vs Vega Real (Quality: basic)
+2025-08-14 01:05:40,000 - realtime_analyzer - INFO - Analysis completed for Guarany Alagoano vs Dimensão Saúde (Quality: basic)
+2025-08-14 01:05:46,242 - realtime_analyzer - INFO - Analysis completed for Philadelphia Union vs New York Red Bulls (Quality: moderate)
+2025-08-14 01:05:51,664 - realtime_analyzer - INFO - Analysis completed for Sporting San Miguelito vs Diriangén (Quality: moderate)
+2025-08-14 01:05:57,292 - realtime_analyzer - INFO - Analysis completed for Real Soacha vs Deportes Tolima (Quality: moderate)
+2025-08-14 01:06:02,447 - realtime_analyzer - INFO - Analysis completed for US Virgin Islands vs Turks and Caicos Islands (Quality: moderate)
+2025-08-14 01:06:08,756 - realtime_analyzer - INFO - Analysis completed for Flamengo vs Internacional (Quality: moderate)
+2025-08-14 01:06:14,443 - realtime_analyzer - INFO - Analysis completed for Guabirá vs Independiente Petrolero (Quality: moderate)
+2025-08-14 01:06:20,074 - realtime_analyzer - INFO - Analysis completed for Deportivo Cali vs Union Magdalena (Quality: moderate)
+2025-08-14 01:06:27,007 - realtime_analyzer - INFO - Analysis completed for Universidad de Chile vs Independiente (Quality: moderate)
+2025-08-14 01:06:33,476 - realtime_analyzer - INFO - Analysis completed for Alianza Lima vs Universidad Catolica (Quality: moderate)
+2025-08-14 01:06:39,499 - realtime_analyzer - INFO - Analysis completed for Toluca W vs Guadalajara W (Quality: moderate)
+2025-08-14 01:06:45,288 - realtime_analyzer - INFO - Analysis completed for América W vs Puebla W (Quality: moderate)
+2025-08-14 01:06:51,778 - realtime_analyzer - INFO - Analysis completed for Santa Fe vs Millonarios (Quality: moderate)
+2025-08-14 01:06:57,245 - realtime_analyzer - INFO - Analysis completed for Alianza vs Managua (Quality: basic)
+2025-08-14 01:07:03,397 - realtime_analyzer - INFO - Analysis completed for Municipal vs Real Espana (Quality: moderate)
+2025-08-14 01:07:09,292 - realtime_analyzer - INFO - Analysis completed for Vancouver FC vs Atlético Ottawa (Quality: moderate)
+2025-08-14 01:07:14,618 - realtime_analyzer - INFO - Analysis completed for Mazatlán W vs Pumas UNAM W (Quality: moderate)
+2025-08-14 01:07:20,323 - realtime_analyzer - INFO - Analysis completed for Boeun Sangmu vs Seoul (Quality: basic)
+2025-08-14 01:07:27,950 - realtime_analyzer - INFO - Analysis completed for Rukh Vynnyky U19 vs Obolon' Kyiv U19 (Quality: basic)
+2025-08-14 01:07:41,663 - realtime_analyzer - INFO - Analysis completed for Southern Samity vs United (Quality: moderate)
+2025-08-14 01:07:46,848 - realtime_analyzer - INFO - Analysis completed for Sribhumi vs Mohammedan (Quality: basic)
+2025-08-14 01:07:52,399 - realtime_analyzer - INFO - Analysis completed for Bhawanipore vs United Kolkata (Quality: basic)
+2025-08-14 01:07:58,321 - realtime_analyzer - INFO - Analysis completed for Gyeongju vs Incheon Red Angels (Quality: basic)
+2025-08-14 01:08:06,408 - realtime_analyzer - INFO - Analysis completed for Farense U23 vs Santa Clara U23 (Quality: basic)
+2025-08-14 01:08:12,294 - realtime_analyzer - INFO - Analysis completed for Dinamo Moskva U19 vs Krylya Sovetov U19 (Quality: basic)
+2025-08-14 01:08:18,195 - realtime_analyzer - INFO - Analysis completed for Aktobe Jas vs Shakhter Karagandy (Quality: basic)
+2025-08-14 01:08:23,984 - realtime_analyzer - INFO - Analysis completed for Ekibastuz vs AKAS (Quality: basic)
+2025-08-14 01:08:31,478 - realtime_analyzer - INFO - Analysis completed for SD Family vs Taraz (Quality: basic)
+2025-08-14 01:08:38,696 - realtime_analyzer - INFO - Analysis completed for Thimphu City vs Ugyen Academy (Quality: moderate)
+2025-08-14 01:08:43,976 - realtime_analyzer - INFO - Analysis completed for Istiqlol vs Istaravshan (Quality: basic)
+2025-08-14 01:08:50,149 - realtime_analyzer - INFO - Analysis completed for Khan Tengri vs Akademiya Ontustik (Quality: basic)
+2025-08-14 01:08:55,574 - realtime_analyzer - INFO - Analysis completed for Bars vs Neftchi (Quality: basic)
+2025-08-14 01:09:02,370 - realtime_analyzer - INFO - Analysis completed for Masr vs Ceramica Cleopatra (Quality: moderate)
+2025-08-14 01:09:08,097 - realtime_analyzer - INFO - Analysis completed for Al Ittihad vs Future FC (Quality: basic)
+2025-08-14 01:09:14,624 - realtime_analyzer - INFO - Analysis completed for Morocco vs Zambia (Quality: moderate)
+2025-08-14 01:09:20,471 - realtime_analyzer - INFO - Analysis completed for FC Astana vs Lausanne (Quality: moderate)
+2025-08-14 01:09:26,058 - realtime_analyzer - INFO - Analysis completed for Asiagoal vs Talant (Quality: basic)
+2025-08-14 01:09:42,001 - realtime_analyzer - INFO - Analysis completed for Sama Al Sarhan vs Al Ahli (Quality: moderate)
+2025-08-14 01:09:52,249 - realtime_analyzer - INFO - Analysis completed for Al Buqa'a vs Al Jazeera (Quality: moderate)
+2025-08-14 01:10:12,605 - realtime_analyzer - INFO - Analysis completed for Al-Rayyan SC vs Al-Sailiya (Quality: basic)
+2025-08-14 01:10:19,251 - realtime_analyzer - INFO - Analysis completed for Ararat-Armenia vs Sparta Praha (Quality: moderate)
+2025-08-14 01:10:26,005 - realtime_analyzer - INFO - Analysis completed for Sabah FA vs Levski Sofia (Quality: moderate)
+2025-08-14 01:10:32,943 - realtime_analyzer - INFO - Analysis completed for FC Midtjylland vs Fredrikstad (Quality: moderate)
+2025-08-14 01:10:41,372 - realtime_analyzer - INFO - Analysis completed for Napoli vs Olympiakos Piraeus (Quality: moderate)
+2025-08-14 01:10:46,903 - realtime_analyzer - INFO - Analysis completed for Nizhny Novgorod vs FC Rostov (Quality: moderate)
+2025-08-14 01:10:52,606 - realtime_analyzer - INFO - Analysis completed for FC Levadia Tallinn vs FC Differdange 03 (Quality: moderate)
+2025-08-14 01:10:57,967 - realtime_analyzer - INFO - Analysis completed for Frosinone vs L'Aquila (Quality: basic)
+2025-08-14 01:11:03,228 - realtime_analyzer - INFO - Analysis completed for Velden vs Wohnbau Dietach (Quality: basic)
+2025-08-14 01:11:09,119 - realtime_analyzer - INFO - Analysis completed for Wallern / Marienkirchen vs Gleisdorf 09 (Quality: moderate)
+2025-08-14 01:11:15,837 - realtime_analyzer - INFO - Analysis completed for Wolfsberger AC vs PAOK (Quality: moderate)
+2025-08-14 01:11:21,200 - realtime_analyzer - INFO - Analysis completed for Union Bremen vs Eiche Horn (Quality: basic)
+2025-08-14 01:11:26,763 - realtime_analyzer - INFO - Analysis completed for Gloggnitz vs Krems / Rehberg (Quality: moderate)
+2025-08-14 01:11:32,762 - realtime_analyzer - INFO - Analysis completed for El Geish vs AL Masry (Quality: moderate)
+2025-08-14 01:11:39,346 - realtime_analyzer - INFO - Analysis completed for Pyramids FC vs Ismaily SC (Quality: moderate)
+2025-08-14 01:11:46,639 - realtime_analyzer - INFO - Analysis completed for Angola vs Congo DR (Quality: moderate)
+2025-08-14 01:11:52,812 - realtime_analyzer - INFO - Analysis completed for Weiz vs Deutschlandsberger SC (Quality: moderate)
+2025-08-14 01:11:58,661 - realtime_analyzer - INFO - Analysis completed for Paks vs Polessya (Quality: moderate)
+2025-08-14 01:12:04,325 - realtime_analyzer - INFO - Analysis completed for Sheriff Tiraspol vs Anderlecht (Quality: moderate)
+2025-08-14 01:12:10,166 - realtime_analyzer - INFO - Analysis completed for Gyori ETO FC vs AIK Stockholm (Quality: moderate)
+2025-08-14 01:12:15,647 - realtime_analyzer - INFO - Analysis completed for Omonia Nicosia vs Araz (Quality: moderate)
+2025-08-14 01:12:21,192 - realtime_analyzer - INFO - Analysis completed for Hammarby FF vs Rosenborg (Quality: moderate)
+2025-08-14 01:12:27,104 - realtime_analyzer - INFO - Analysis completed for FC Noah vs Lincoln Red Imps FC (Quality: moderate)
+2025-08-14 01:12:32,354 - realtime_analyzer - INFO - Analysis completed for Brann vs BK Hacken (Quality: moderate)
+2025-08-14 01:12:37,668 - realtime_analyzer - INFO - Analysis completed for Atvidabergs FF vs Nyköping (Quality: basic)
+2025-08-14 01:12:44,013 - realtime_analyzer - INFO - Analysis completed for Al Shamal vs Al Ahli Doha (Quality: basic)
+2025-08-14 01:12:50,553 - realtime_analyzer - INFO - Analysis completed for Preußen Münster II vs SG Wattenscheid 09 (Quality: basic)
+2025-08-14 01:12:56,762 - realtime_analyzer - INFO - Analysis completed for FC Vaduz vs AZ Alkmaar (Quality: moderate)
+2025-08-14 01:13:02,667 - realtime_analyzer - INFO - Analysis completed for Brondby vs Vikingur Reykjavik (Quality: moderate)
+2025-08-14 01:13:08,539 - realtime_analyzer - INFO - Analysis completed for Arda Kardzhali vs Kauno Žalgiris (Quality: moderate)
+2025-08-14 01:13:14,190 - realtime_analyzer - INFO - Analysis completed for Beitar Jerusalem vs Riga (Quality: moderate)
+2025-08-14 01:13:19,874 - realtime_analyzer - INFO - Analysis completed for Breidablik vs Zrinjski (Quality: moderate)
+2025-08-14 01:13:24,915 - realtime_analyzer - INFO - Analysis completed for Castro vs Sámano (Quality: basic)
+2025-08-14 01:13:30,355 - realtime_analyzer - INFO - Analysis completed for Sanluqueño vs Algeciras (Quality: moderate)
+2025-08-14 01:13:36,022 - realtime_analyzer - INFO - Analysis completed for Al Salt vs Al Hussein (Quality: moderate)
+2025-08-14 01:13:41,308 - realtime_analyzer - INFO - Analysis completed for Huracán Res. vs Argentinos Juniors Res. (Quality: moderate)
+2025-08-14 01:13:46,811 - realtime_analyzer - INFO - Analysis completed for Racing Club Res. vs Tigre Res. (Quality: moderate)
+2025-08-14 01:13:53,131 - realtime_analyzer - INFO - Analysis completed for Vélez Sársfield Res. vs Independiente Res. (Quality: moderate)
+2025-08-14 01:13:58,331 - realtime_analyzer - INFO - Analysis completed for Rosario Central Res. vs Deportivo Riestra Res. (Quality: moderate)
+2025-08-14 01:14:04,000 - realtime_analyzer - INFO - Analysis completed for Celje vs FC Lugano (Quality: moderate)
+2025-08-14 01:14:15,523 - realtime_analyzer - INFO - Analysis completed for Besiktas vs St Patrick's Athl. (Quality: moderate)
+2025-08-14 01:14:21,154 - realtime_analyzer - INFO - Analysis completed for Neman vs KI Klaksvik (Quality: moderate)
+2025-08-14 01:14:26,917 - realtime_analyzer - INFO - Analysis completed for AEK Athens FC vs Aris (Quality: moderate)
+2025-08-14 01:14:32,299 - realtime_analyzer - INFO - Analysis completed for Drita vs FCSB (Quality: moderate)
+2025-08-14 01:14:37,767 - realtime_analyzer - INFO - Analysis completed for Maccabi Tel Aviv vs Hamrun Spartans (Quality: moderate)
+2025-08-14 01:14:42,931 - realtime_analyzer - INFO - Analysis completed for Shakhtar Donetsk vs Panathinaikos (Quality: moderate)
+2025-08-14 01:14:48,632 - realtime_analyzer - INFO - Analysis completed for Utrecht vs Servette FC (Quality: moderate)
+2025-08-14 01:14:54,791 - realtime_analyzer - INFO - Analysis completed for Juventus RJ vs Paraty (Quality: basic)
+2025-08-14 01:15:00,142 - realtime_analyzer - INFO - Analysis completed for Riostrense vs Santa Cruz RJ (Quality: basic)
+2025-08-14 01:15:06,460 - realtime_analyzer - INFO - Analysis completed for Jagiellonia vs Silkeborg (Quality: moderate)
+2025-08-14 01:15:11,939 - realtime_analyzer - INFO - Analysis completed for Atlético Pueblonuevo vs Badajoz (Quality: basic)
+2025-08-14 01:15:17,989 - realtime_analyzer - INFO - Analysis completed for Spartak Trnava vs Universitatea Craiova (Quality: moderate)
+2025-08-14 01:15:24,134 - realtime_analyzer - INFO - Analysis completed for SC Braga vs CFR 1907 Cluj (Quality: moderate)
+2025-08-14 01:15:29,111 - realtime_analyzer - INFO - Analysis completed for Xerez vs Sevilla Atletico (Quality: basic)
+2025-08-14 01:15:34,611 - realtime_analyzer - INFO - Analysis completed for Dundee Utd vs Rapid Vienna (Quality: moderate)
+2025-08-14 01:15:39,957 - realtime_analyzer - INFO - Analysis completed for Dinamo Tirana vs HNK Hajduk Split (Quality: moderate)
+2025-08-14 01:15:45,287 - realtime_analyzer - INFO - Analysis completed for Linfield vs Vikingur Gota (Quality: moderate)
+2025-08-14 01:15:50,718 - realtime_analyzer - INFO - Analysis completed for Fjolnir vs Njardvik (Quality: moderate)
+2025-08-14 01:15:56,250 - realtime_analyzer - INFO - Analysis completed for Ægir vs Thróttur Vogar (Quality: moderate)
+2025-08-14 01:16:01,344 - realtime_analyzer - INFO - Analysis completed for Dalvík / Reynir vs Kormákur / Hvöt (Quality: basic)
+2025-08-14 01:16:05,871 - realtime_analyzer - INFO - Analysis completed for Barnsley vs Fleetwood Town (Quality: moderate)
+2025-08-14 01:16:09,856 - realtime_analyzer - INFO - Analysis completed for Bolton vs Sheffield Wednesday (Quality: moderate)
+2025-08-14 01:16:13,474 - realtime_analyzer - INFO - Analysis completed for Cheltenham vs Exeter City (Quality: moderate)
+2025-08-14 01:16:17,647 - realtime_analyzer - INFO - Analysis completed for Huddersfield vs Leicester (Quality: moderate)
+2025-08-14 01:16:23,180 - realtime_analyzer - INFO - Analysis completed for Hamilton Academical vs Motherwell U21 (Quality: basic)
+2025-08-14 01:16:28,992 - realtime_analyzer - INFO - Analysis completed for Edinburgh City vs Kilmarnock II (Quality: moderate)
+2025-08-14 01:16:34,492 - realtime_analyzer - INFO - Analysis completed for Gosport Borough vs Farnham Town (Quality: moderate)
+2025-08-14 01:16:41,166 - realtime_analyzer - INFO - Analysis completed for Taunton Town vs Yate Town (Quality: moderate)
+2025-08-14 01:16:46,515 - realtime_analyzer - INFO - Analysis completed for Gateshead vs Newcastle United U21 (Quality: basic)
+2025-08-14 01:16:53,990 - realtime_analyzer - INFO - Analysis completed for Marbella vs Puente Genil (Quality: basic)
+2025-08-14 01:17:00,733 - realtime_analyzer - INFO - Analysis completed for Puebla vs Extremadura 1924 (Quality: basic)
+2025-08-14 01:17:05,954 - realtime_analyzer - INFO - Analysis completed for Tamworth vs Manchester United U21 (Quality: basic)
+2025-08-14 01:17:05,954 - realtime_analyzer - INFO - Completed analysis of 152 matches
+2025-08-14 01:17:05,954 - __main__ - INFO - Analysis completed: 152 matches
+2025-08-14 01:17:05,954 - __main__ - INFO -    First match: Paris Saint Germain vs Tottenham
+2025-08-14 01:17:05,954 - __main__ - INFO -    Quality: moderate
+2025-08-14 01:17:05,954 - __main__ - INFO -    Data availability: {'odds': True, 'team_form': False, 'expected_goals': True, 'predictions': True, 'advanced_stats': False}
+2025-08-14 01:17:05,964 - __main__ - INFO -    Data sources: {'expected_goals': 'fixture_statistics', 'predictions': 'unknown', 'odds': 'sportmonks'}
+2025-08-14 01:17:05,964 - __main__ - INFO - Real-time analyzer test completed successfully
+2025-08-14 01:17:05,964 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002C55E4F7920>
+2025-08-14 01:17:05,967 - asyncio - ERROR - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x000002C55E585490>, 15665.843)])']
+connector: <aiohttp.connector.TCPConnector object at 0x000002C55E4F7890>
+2025-08-14 01:17:05,967 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002C55E2EE000>
+2025-08-14 01:17:06,160 - __main__ - INFO - ============================================================
+2025-08-14 01:17:06,161 - __main__ - INFO - Test Results Summary:
+2025-08-14 01:17:06,162 - __main__ - INFO -    api_football: PASS
+2025-08-14 01:17:06,163 - __main__ - INFO -    unified_api: PASS
+2025-08-14 01:17:06,163 - __main__ - INFO -    realtime_analyzer: PASS
+2025-08-14 01:17:06,164 - __main__ - INFO - 
+Overall: 3/3 tests passed
+2025-08-14 01:17:06,166 - __main__ - INFO - All tests passed! System is working correctly.

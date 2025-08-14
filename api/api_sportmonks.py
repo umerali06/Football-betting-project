@@ -173,54 +173,166 @@ class SportMonksClient:
             
             logger.warning(f"No recent fixtures available for team {team_id}")
             return []
-            
+    
         except Exception as e:
             logger.debug(f"Team form API failed for team {team_id}: {e}")
             return []
-
+    
     async def get_expected_goals(self, fixture_id: int) -> Optional[Dict]:
-        """Get expected goals data using correct v3 xGFixture include"""
+        """Get expected goals data with multiple fallback strategies"""
         try:
-            # Try to get xG using the xGFixture include (cleanest method)
+            # Strategy 1: Try to get xG using the xGFixture include (cleanest method)
             params = {
                 'include': 'xGFixture'
             }
             
             data = await self._make_async_request(f'fixtures/{fixture_id}', params)
             if not data or 'data' not in data:
-                logger.debug(f"Expected goals data not accessible for fixture {fixture_id}")
-                return None
+                logger.debug(f"xGFixture include not accessible for fixture {fixture_id}")
+                # Don't return None yet - try alternative strategies
+            else:
+                fixture_data = data['data']
+                if 'xGFixture' in fixture_data and fixture_data['xGFixture']:
+                    xg_data = fixture_data['xGFixture']
+                    logger.info(f"Retrieved xG data via xGFixture for fixture {fixture_id}")
+                    return xg_data
             
-            fixture_data = data['data']
-            if 'xGFixture' in fixture_data:
-                xg_data = fixture_data['xGFixture']
-                logger.info(f"Retrieved xG data for fixture {fixture_id}")
-                return xg_data
+            # Strategy 2: Try to get statistics which might contain xG-like data
+            try:
+                stats_params = {
+                    'include': 'statistics;statistics.type'
+                }
+                stats_data = await self._make_async_request(f'fixtures/{fixture_id}', stats_params)
+                if stats_data and 'data' in stats_data:
+                    fixture_data = stats_data['data']
+                    if 'statistics' in fixture_data and fixture_data['statistics']:
+                        logger.debug(f"Retrieved statistics data for fixture {fixture_id} (can be used for xG-like analysis)")
+                        return {"statistics": fixture_data['statistics'], "source": "statistics"}
+            except Exception as e:
+                logger.debug(f"Statistics fallback failed for fixture {fixture_id}: {e}")
             
+            # Strategy 3: Try to get team form data which can be used for xG estimation
+            try:
+                # Get home and away team IDs from the fixture
+                fixture_info = await self._make_async_request(f'fixtures/{fixture_id}', {'include': 'participants'})
+                if fixture_info and 'data' in fixture_info:
+                    fixture_data = fixture_info['data']
+                    if 'participants' in fixture_data:
+                        participants = fixture_data['participants']
+                        home_team_id = None
+                        away_team_id = None
+                        
+                        for participant in participants:
+                            if participant.get('meta', {}).get('location') == 'home':
+                                home_team_id = participant.get('participant_id')
+                            elif participant.get('meta', {}).get('location') == 'away':
+                                away_team_id = participant.get('participant_id')
+                        
+                        if home_team_id and away_team_id:
+                            # Get recent form for both teams
+                            home_form = await self.get_team_form(home_team_id)
+                            away_form = await self.get_team_form(away_team_id)
+                            
+                            if home_form or away_form:
+                                logger.debug(f"Retrieved team form data for fixture {fixture_id} (can be used for xG estimation)")
+                                return {
+                                    "home_form": home_form,
+                                    "away_form": away_form,
+                                    "source": "team_form"
+                                }
+            except Exception as e:
+                logger.debug(f"Team form fallback failed for fixture {fixture_id}: {e}")
+            
+            # If all strategies fail, log the limitation
+            logger.debug(f"All xG data strategies failed for fixture {fixture_id} - this may be a plan limitation")
             return None
             
         except Exception as e:
-            logger.debug(f"Expected goals data failed for fixture {fixture_id}: {e}")
+            # Check if this is an API access denied error
+            if "access denied" in str(e).lower() or "403" in str(e):
+                logger.debug(f"xG data access denied for fixture {fixture_id} (plan limitation - xGFixture include not available)")
+            else:
+                logger.debug(f"Expected goals data failed for fixture {fixture_id}: {e}")
             return None
     
     async def get_predictions(self, fixture_id: int) -> Optional[Dict]:
-        """Get predictions using correct v3 endpoint"""
+        """Get predictions with multiple fallback strategies for plan limitations"""
         try:
-            # Try predictions endpoint with proper v3 path
+            # Strategy 1: Try predictions endpoint with proper v3 path
             params = {
                 'include': 'fixture;type'
             }
             data = await self._make_async_request(f'predictions/probabilities/fixtures/{fixture_id}', params)
-            if not data or 'data' not in data:
-                logger.debug(f"Predictions not accessible for fixture {fixture_id}")
-                return None
+            if data and 'data' in data and data['data']:
+                logger.debug(f"Predictions retrieved via probabilities endpoint for fixture {fixture_id}")
+                return data['data']
+            else:
+                logger.debug(f"Predictions probabilities endpoint returned empty for fixture {fixture_id}")
             
-            return data['data']
+            # Strategy 2: Try value bets endpoint (alternative predictions source)
+            try:
+                value_bets_data = await self._make_async_request(f'predictions/value-bets/fixtures/{fixture_id}', params)
+                if value_bets_data and 'data' in value_bets_data and value_bets_data['data']:
+                    logger.debug(f"Value bets predictions retrieved for fixture {fixture_id}")
+                    return {"value_bets": value_bets_data['data'], "source": "value_bets"}
+            except Exception as e:
+                logger.debug(f"Value bets predictions failed for fixture {fixture_id}: {e}")
+            
+            # Strategy 3: Try to get team form data which can be used for prediction-like analysis
+            try:
+                # Get home and away team IDs from the fixture
+                fixture_info = await self._make_async_request(f'fixtures/{fixture_id}', {'include': 'participants'})
+                if fixture_info and 'data' in fixture_info:
+                    fixture_data = fixture_info['data']
+                    if 'participants' in fixture_data:
+                        participants = fixture_data['participants']
+                        home_team_id = None
+                        away_team_id = None
+                        
+                        for participant in participants:
+                            if participant.get('meta', {}).get('location') == 'home':
+                                home_team_id = participant.get('participant_id')
+                            elif participant.get('meta', {}).get('location') == 'away':
+                                away_team_id = participant.get('participant_id')
+                        
+                        if home_team_id and away_team_id:
+                            # Get recent form for both teams
+                            home_form = await self.get_team_form(home_team_id)
+                            away_form = await self.get_team_form(away_team_id)
+                            
+                            if home_form or away_form:
+                                logger.debug(f"Team form data retrieved for fixture {fixture_id} (can be used for prediction-like analysis)")
+                                return {
+                                    "home_form": home_form,
+                                    "away_form": away_form,
+                                    "source": "team_form_predictions"
+                                }
+            except Exception as e:
+                logger.debug(f"Team form predictions fallback failed for fixture {fixture_id}: {e}")
+            
+            # Strategy 4: Try to get head-to-head data which can be used for predictions
+            try:
+                if home_team_id and away_team_id:
+                    # Get head-to-head matches between these teams
+                    h2h_data = await self._make_async_request(f'teams/{home_team_id}/fixtures/between/2024-01-01/2024-12-31/{away_team_id}')
+                    if h2h_data and 'data' in h2h_data and h2h_data['data']:
+                        logger.debug(f"Head-to-head data retrieved for fixture {fixture_id} (can be used for prediction-like analysis)")
+                        return {"head_to_head": h2h_data['data'], "source": "h2h_predictions"}
+            except Exception as e:
+                logger.debug(f"Head-to-head predictions fallback failed for fixture {fixture_id}: {e}")
+            
+            # If all strategies fail, log the limitation
+            logger.debug(f"All prediction strategies failed for fixture {fixture_id} - this may be a plan limitation")
+            return None
             
         except Exception as e:
-            logger.debug(f"Predictions failed for fixture {fixture_id}: {e}")
+            # Check if this is an API access denied error
+            if "access denied" in str(e).lower() or "403" in str(e):
+                logger.debug(f"Predictions access denied for fixture {fixture_id} (plan limitation)")
+            else:
+                logger.debug(f"Predictions failed for fixture {fixture_id}: {e}")
             return None
-
+    
     def extract_match_status(self, fixture: Dict) -> str:
         """Extract match status from fixture data with multiple fallbacks"""
         # Method 1: Check scores array for CURRENT status
@@ -256,7 +368,7 @@ class SportMonksClient:
                 # Check if it's finished or not started
                 if 'starting_at' in fixture and 'ending_at' in fixture:
                     return 'FINISHED'
-                else:
+        else:
                     return 'NOT_STARTED'
         
         # Method 4: Check starting_at timestamp

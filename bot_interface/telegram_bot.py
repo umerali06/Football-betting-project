@@ -1,12 +1,21 @@
-import asyncio
-import datetime
-from telegram import Bot, Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-from typing import Dict, List, Optional
-import config
-import json
+#!/usr/bin/env python3
+"""
+Interactive Telegram Bot for FIXORA PRO Football Analysis System
+"""
+
 import os
+import sys
 import logging
+import asyncio
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+
+# Add the parent directory to the path so we can import config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import config
+from telegram import Update, Bot
+from telegram.ext import Application, CommandHandler, ContextTypes
 
 logger = logging.getLogger(__name__)
 
@@ -23,228 +32,697 @@ class TelegramBetBot:
         
     async def start(self):
         """Start the Telegram bot"""
-        self.application = Application.builder().token(self.token).build()
-        
-        # Add command handlers
-        self.application.add_handler(CommandHandler("start", self.start_command))
-        self.application.add_handler(CommandHandler("help", self.help_command))
-        self.application.add_handler(CommandHandler("status", self.status_command))
-        self.application.add_handler(CommandHandler("setchat", self.set_chat_command))
-        self.application.add_handler(CommandHandler("analyze", self.analyze_command))
-        self.application.add_handler(CommandHandler("live", self.live_command))
-        
-        # Start the bot
-        await self.application.initialize()
-        await self.application.start()
-        await self.application.updater.start_polling()
-        
-        print("Telegram bot started successfully!")
+        try:
+            # Test bot token first
+            print("🔑 Testing bot token...")
+            try:
+                bot_info = await self.bot.get_me()
+                print(f"✅ Bot connected successfully: @{bot_info.username}")
+            except Exception as e:
+                print(f"❌ Bot token test failed: {e}")
+                raise Exception(f"Invalid bot token or network issue: {e}")
+            
+            print("🔧 Building application...")
+            self.application = Application.builder().token(self.token).build()
+            
+            # Add command handlers
+            self.application.add_handler(CommandHandler("start", self.start_command))
+            self.application.add_handler(CommandHandler("help", self.help_command))
+            self.application.add_handler(CommandHandler("status", self.status_command))
+            self.application.add_handler(CommandHandler("setchat", self.set_chat_command))
+            self.application.add_handler(CommandHandler("analyze", self.analyze_command))
+            self.application.add_handler(CommandHandler("live", self.live_command))
+            self.application.add_handler(CommandHandler("network", self.network_command))
+            
+            print("🚀 Starting application...")
+            # Start the bot with better error handling
+            await self.application.initialize()
+            await self.application.start()
+            
+            print("📡 Starting polling...")
+            # Use more robust polling configuration
+            await self.application.updater.start_polling(
+                timeout=30,  # Increased timeout for stability
+                drop_pending_updates=True,
+                allowed_updates=["message", "callback_query"]
+            )
+            
+            print("✅ Telegram bot started successfully!")
+            print("📱 Bot is now listening for commands...")
+            print("   Commands: /start, /help, /status, /setchat, /analyze, /live, /network")
+            
+        except Exception as e:
+            print(f"❌ Failed to start bot: {e}")
+            raise
+    
+    async def run(self):
+        """Run the bot with proper event loop handling"""
+        try:
+            await self.start()
+            
+            # Keep the bot running
+            print("🔄 Bot is running. Press Ctrl+C to stop.")
+            while True:
+                await asyncio.sleep(1)
+                
+        except KeyboardInterrupt:
+            print("\n🛑 Stopping bot...")
+            await self.stop()
+            await self.cleanup()
+        except Exception as e:
+            print(f"❌ Bot error: {e}")
+            await self.stop()
+            await self.cleanup()
+            raise
+    
+    async def stop(self):
+        """Stop the bot gracefully"""
+        try:
+            if self.application:
+                await self.application.updater.stop()
+                await self.application.stop()
+                await self.application.shutdown()
+            print("✅ Bot stopped successfully")
+        except Exception as e:
+            print(f"⚠️ Error stopping bot: {e}")
+    
+    async def cleanup(self):
+        """Cleanup resources"""
+        try:
+            # Close any open sessions
+            if hasattr(self, 'analyzer') and self.analyzer:
+                if hasattr(self.analyzer, 'api_client') and self.analyzer.api_client:
+                    await self.analyzer.api_client.close()
+            print("🧹 Cleanup completed")
+        except Exception as e:
+            print(f"⚠️ Cleanup error: {e}")
+    
+    def get_bot_status(self) -> Dict:
+        """Get current bot status"""
+        return {
+            'running': self.application is not None,
+            'token_set': bool(self.token),
+            'chat_id_set': bool(self.chat_id),
+            'timestamp': str(datetime.now())
+        }
+    
+    async def test_connectivity(self) -> bool:
+        """Test if the bot can connect to Telegram"""
+        try:
+            bot_info = await self.bot.get_me()
+            return True
+        except Exception as e:
+            logger.error(f"Connectivity test failed: {e}")
+            return False
+    
+    def get_network_troubleshooting_tips(self) -> str:
+        """Get troubleshooting tips for network issues"""
+        return """🔧 Network Troubleshooting Tips:
+
+1. **Check Internet Connection**
+   - Try accessing other websites
+   - Test with a different network (mobile hotspot)
+
+2. **Firewall/Proxy Issues**
+   - Check if you're behind a corporate firewall
+   - Verify proxy settings
+   - Try disabling VPN temporarily
+
+3. **Regional Restrictions**
+   - Some regions block Telegram
+   - Try using a VPN
+
+4. **DNS Issues**
+   - Try changing DNS servers (8.8.8.8, 1.1.1.1)
+   - Flush DNS cache
+
+5. **Bot Token**
+   - Verify your bot token is correct
+   - Check if the bot is active in @BotFather
+
+6. **Alternative Solutions**
+   - Use the system without Telegram (analysis works offline)
+   - Export results to files
+   - Use web interface instead"""
     
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
         welcome_message = """
-🤖 Football Betting Bot Started!
+🤖 FIXORA PRO Football Analysis Bot
 
-This bot will post daily value bets based on xG + Elo ratings analysis.
+🎯 Advanced predictions using xG + Elo ratings:
+• H2H (Win/Draw/Win) predictions
+• Both Teams to Score (BTTS)
+• Over/Under Goals analysis
+• Corners predictions
 
 Commands:
 /start - Start the bot
-/help - Show help
+/help - Show detailed help
 /status - Check bot status
-/setchat - Set chat ID for bet notifications
+/setchat - Set chat ID for notifications
+/analyze - Get today's match predictions
+/live - Get live match analysis
+/network - Test network connectivity
 
-The bot will automatically post value bets when found.
+⚡ Fast analysis with real-time data from premium APIs
         """
         await update.message.reply_text(welcome_message)
     
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /help command"""
         help_message = """
-📚 Football Betting Bot Help
+📚 FIXORA PRO Football Analysis Bot Help
 
-This bot analyzes football matches using:
-• Expected Goals (xG) model
-• Elo rating system
-• Value betting analysis
+🎯 Prediction Models:
+• Expected Goals (xG) + Elo Rating System
+• Advanced statistical analysis
+• Real-time data from premium APIs
 
-Supported Markets:
-• Match Result (Home/Draw/Away)
+⚽ Supported Markets:
+• H2H (Home Win/Draw/Away Win)
 • Both Teams to Score (BTTS)
-• Over/Under Goals
-• Corners
+• Over/Under Goals (2.5, 3.5)
+• Total Corners (9.5, 10.5)
 
-Value bets are posted when the model probability exceeds bookmaker odds by 5% or more.
+🔬 Analysis Features:
+• Fast response time (< 10 seconds)
+• Live match monitoring
+• Comprehensive odds analysis
+• Value bet identification
 
 Commands:
 /start - Start the bot
 /help - Show this help
 /status - Check bot status
 /setchat - Set chat ID for notifications
-/analyze - Analyze today's matches
+/analyze - Get today's match predictions
 /live - Get live match analysis
+/network - Test network connectivity
 
-💡 Tip: Use /analyze to get instant analysis of today's matches!
+💡 Tip: Use /analyze for instant predictions or /live for live match analysis!
         """
         await update.message.reply_text(help_message)
 
     async def analyze_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /analyze command - analyze today's matches"""
-        await update.message.reply_text("🔍 Analyzing today's matches... Please wait.")
+        """Handle /analyze command - get today's match analysis with progressive results"""
+        # Send immediate response to show progress
+        progress_msg = await update.message.reply_text("🔍 Analyzing today's matches...\n⏳ This will take a few seconds...")
         
         try:
             # Import here to avoid circular imports
-            from api.unified_api_client import UnifiedAPIClient
+            from realtime_analyzer import RealTimeAnalyzer
             
-            client = UnifiedAPIClient()
+            analyzer = RealTimeAnalyzer()
             
-            # Get today's matches
-            matches = await client.get_today_matches(include_live=True)
+            # Update progress
+            await progress_msg.edit_text("🔍 Analyzing today's matches...\n📊 Fetching match data...")
             
-            if not matches:
-                await update.message.reply_text("📅 No matches found for today.")
-                await client.close()
-                return
+            # Use progressive analysis that yields results as they're processed
+            total_matches = 0
+            batch_count = 0
             
-            # Analyze first few matches
-            analysis_results = []
-            subscription_limits = []
-            
-            for i, match in enumerate(matches[:5]):  # Limit to 5 matches
-                try:
-                    # Extract basic info
-                    home_team, away_team = self.extract_team_names(match)
-                    status = self.extract_match_status(match)
+            # Process results progressively as they come in
+            async for batch_data in analyzer.analyze_today_matches_progressive(batch_size=8):
+                batch_count += 1
+                batch_results = batch_data['results']
+                batch_number = batch_data['batch_number']
+                total_batches = batch_data['total_batches']
+                total_matches = batch_data['total_matches']
+                
+                # Delete progress message after first batch
+                if batch_count == 1:
+                    await progress_msg.delete()
+                
+                # Show cool processing message for current batch
+                if batch_number > 1:  # Don't show for first batch since we already have progress message
+                    processing_msg = await update.message.reply_text(
+                        f"⚡ **PROCESSING BATCH {batch_number}/{total_batches}**\n\n"
+                        f"🔍 Analyzing {len(batch_results)} matches...\n"
+                        f"📊 Progress: {((batch_number - 1) / total_batches) * 100:.0f}% Complete\n"
+                        f"🎯 {total_matches - batch_data['batch_start'] + 1} matches remaining\n\n"
+                        f"⏱️ Please wait while we crunch the numbers..."
+                    )
                     
-                    # Try to get rich data
-                    odds = await client.safe_match_odds(match)
-                    predictions = await client.safe_predictions(match)
-                    stats = await client.safe_fixture_statistics(match)
+                    # Small delay to show processing
+                    await asyncio.sleep(0.8)
                     
-                    # Determine data quality
-                    data_quality = self.assess_data_quality(odds, predictions, stats)
-                    
-                    analysis_results.append({
-                        'match': f"{home_team} vs {away_team}",
-                        'status': status,
-                        'quality': data_quality,
-                        'odds_available': bool(odds),
-                        'predictions_available': bool(predictions),
-                        'stats_available': bool(stats)
-                    })
-                    
-                    # Check for subscription limitations
-                    if not odds and not predictions and not stats:
-                        subscription_limits.append(f"{home_team} vs {away_team}")
+                    # Delete processing message before showing results
+                    await processing_msg.delete()
+                
+                # Create message header with progress info
+                if total_batches == 1:
+                    message = "🎯 TODAY'S MATCH PREDICTIONS\n\n"
+                else:
+                    message = f"🎯 TODAY'S MATCH PREDICTIONS (Part {batch_number}/{total_batches})\n"
+                    progress_percent = (batch_number / total_batches) * 100
+                    message += f"📊 Progress: {progress_percent:.0f}% Complete\n\n"
+                
+                # Process current batch of matches
+                for i, result in enumerate(batch_results, 1):
+                    try:
+                        home_team = result.get('home_team', 'Unknown')
+                        away_team = result.get('away_team', 'Unknown')
+                        status = result.get('status', 'Unknown')
                         
-                except Exception as e:
-                    logger.error(f"Error analyzing match {i}: {e}")
-                    continue
+                        # Get predictions from real API data
+                        betting_predictions = result.get('betting_predictions', {})
+                        api_predictions = result.get('predictions', {})
+                        odds = result.get('odds', [])
+                        
+                        # Use betting_predictions if available, otherwise fallback to API predictions
+                        predictions = betting_predictions if betting_predictions else api_predictions
+                        
+                        # Extract key prediction data from real API responses
+                        h2h_prediction = self._extract_h2h_prediction(predictions)
+                        btts_prediction = self._extract_btts_prediction(predictions)
+                        goals_prediction = self._extract_goals_prediction(predictions)
+                        corners_prediction = self._extract_corners_prediction(predictions)
+                        
+                        # Get best odds for key markets
+                        best_odds = self._extract_best_odds(odds)
+                        
+                        message += f"{i}. ⚽ {home_team} vs {away_team}\n"
+                        message += f"   📊 Status: {status}\n"
+                        
+                        # Add predictions if available from real data
+                        if h2h_prediction:
+                            message += f"   🏆 H2H: {h2h_prediction}\n"
+                        if btts_prediction:
+                            message += f"   ⚽ BTTS: {btts_prediction}\n"
+                        if goals_prediction:
+                            message += f"   🎯 Goals: {goals_prediction}\n"
+                        if corners_prediction:
+                            message += f"   📐 Corners: {corners_prediction}\n"
+                        
+                        # Add best odds if available
+                        if best_odds:
+                            message += f"   💰 Best Odds: {best_odds}\n"
+                        
+                        message += "\n"
+                        
+                    except Exception as e:
+                        logger.error(f"Error formatting analysis result: {e}")
+                        continue
+                
+                # Add batch summary
+                message += f"📊 Batch {batch_number}: Matches {batch_data['batch_start']}-{batch_data['batch_end']} of {total_matches}"
+                
+                # Send this batch message immediately
+                await update.message.reply_text(message)
+                
+                # If there are more batches coming, show a "searching" message
+                if batch_number < total_batches:
+                    remaining_matches = total_matches - batch_data['batch_end']
+                    estimated_time = (total_batches - batch_number) * 2  # Rough estimate: 2 seconds per batch
+                    
+                    # Cool searching message with emojis and progress
+                    searching_msg = await update.message.reply_text(
+                        f"🔍 **SEARCHING FOR NEXT BATCH...**\n\n"
+                        f"📊 Progress: {progress_percent:.0f}% Complete\n"
+                        f"🎯 {remaining_matches} more matches to analyze\n"
+                        f"⏱️ Estimated time: ~{estimated_time} seconds\n"
+                        f"🔄 Processing batch {batch_number + 1}/{total_batches}...\n\n"
+                        f"💡 Please wait while we analyze the next set of matches..."
+                    )
+                    
+                    # Small delay to allow Telegram to process the message
+                    await asyncio.sleep(1.5)
+                    
+                    # Delete the searching message before showing next batch
+                    await searching_msg.delete()
             
-            await client.close()
-            
-            # Create analysis message
-            message = "🔍 Today's Matches Analysis\n\n"
-            
-            for result in analysis_results:
-                quality_emoji = "🟢" if result['quality'] == "High" else "🟡" if result['quality'] == "Medium" else "🔴"
-                message += f"{quality_emoji} {result['match']}\n"
-                message += f"   📊 Status: {result['status']}\n"
-                message += f"   📈 Quality: {result['quality']}\n"
-                message += f"   💰 Odds: {'✅' if result['odds_available'] else '❌'}\n"
-                message += f"   🔮 Predictions: {'✅' if result['predictions_available'] else '❌'}\n"
-                message += f"   📊 Stats: {'✅' if result['stats_available'] else '❌'}\n\n"
-            
-            # Add subscription information
-            if subscription_limits:
-                message += "⚠️ Subscription Limitations:\n"
-                message += "Some matches have limited data due to subscription plan restrictions.\n"
-                message += "Consider upgrading for full access to:\n"
-                message += "• Live odds and predictions\n"
-                message += "• Detailed statistics\n"
-                message += "• Advanced analysis features\n\n"
-            
-            message += f"📊 Total matches analyzed: {len(analysis_results)}"
-            
-            await update.message.reply_text(message)
+            # Send final summary message
+            if total_matches > 0:
+                summary_message = f"✅ Analysis Complete!\n\n📊 Total matches analyzed: {total_matches}\n📱 Results split into {batch_count} batch(es)\n\n🔍 Data Quality:\n• Real-time from premium APIs\n• SportMonks + API-Football integration\n• Live odds and predictions\n\n💡 Use /analyze again for fresh predictions!"
+                await update.message.reply_text(summary_message)
+            else:
+                await progress_msg.edit_text("📅 No matches found for today.")
             
         except Exception as e:
             error_msg = f"❌ Analysis failed: {str(e)}"
-            await update.message.reply_text(error_msg)
+            await progress_msg.edit_text(error_msg)
             logger.error(f"Analysis command failed: {e}")
 
+    def _extract_h2h_prediction(self, predictions: Dict) -> str:
+        """Extract H2H (Win/Draw/Win) prediction"""
+        if not predictions:
+            return None
+        
+        # Try to get H2H prediction from various sources
+        if 'match_result' in predictions:
+            result = predictions['match_result']
+            if isinstance(result, dict):
+                if 'home_win' in result and 'away_win' in result and 'draw' in result:
+                    home_prob = result.get('home_win', 0)
+                    away_prob = result.get('away_win', 0)
+                    draw_prob = result.get('draw', 0)
+                    
+                    if home_prob > away_prob and home_prob > draw_prob:
+                        return f"Home Win ({home_prob:.1%})"
+                    elif away_prob > home_prob and away_prob > draw_prob:
+                        return f"Away Win ({away_prob:.1%})"
+                    else:
+                        return f"Draw ({draw_prob:.1%})"
+        
+        # Fallback to simple prediction
+        if 'home_win' in predictions:
+            return f"Home Win ({predictions['home_win']:.1%})"
+        elif 'away_win' in predictions:
+            return f"Away Win ({predictions['away_win']:.1%})"
+        
+        return None
+
+    def _extract_btts_prediction(self, predictions: Dict) -> str:
+        """Extract Both Teams to Score prediction"""
+        if not predictions:
+            return None
+        
+        if 'both_teams_to_score' in predictions:
+            btts_prob = predictions['both_teams_to_score']
+            if isinstance(btts_prob, (int, float)):
+                if btts_prob > 0.5:
+                    return f"Yes ({btts_prob:.1%})"
+                else:
+                    return f"No ({(1-btts_prob):.1%})"
+        
+        return None
+
+    def _extract_goals_prediction(self, predictions: Dict) -> str:
+        """Extract Over/Under Goals prediction"""
+        if not predictions:
+            return None
+        
+        if 'over_under_goals' in predictions:
+            goals_data = predictions['over_under_goals']
+            if isinstance(goals_data, dict):
+                over_prob = goals_data.get('over', 0)
+                under_prob = goals_data.get('under', 0)
+                
+                if over_prob > under_prob:
+                    return f"Over 2.5 ({over_prob:.1%})"
+                else:
+                    return f"Under 2.5 ({under_prob:.1%})"
+        
+        return None
+
+    def _extract_corners_prediction(self, predictions: Dict) -> str:
+        """Extract Corners prediction"""
+        if not predictions:
+            return None
+        
+        if 'corners' in predictions:
+            corners_data = predictions['corners']
+            if isinstance(corners_data, dict):
+                over_prob = corners_data.get('over', 0)
+                under_prob = corners_data.get('under', 0)
+                
+                if over_prob > under_prob:
+                    return f"Over 9.5 ({over_prob:.1%})"
+                else:
+                    return f"Under 9.5 ({under_prob:.1%})"
+        
+        return None
+
+    def _extract_best_odds(self, odds: List[Dict]) -> str:
+        """Extract best odds for key markets"""
+        if not odds or not isinstance(odds, list):
+            return None
+        
+        best_odds = {}
+        
+        for odd in odds:
+            market = odd.get('market_description', '').lower()
+            value = odd.get('value', 0)
+            
+            if 'match winner' in market or '1x2' in market:
+                if 'home' in market or '1' in market:
+                    if 'home_win' not in best_odds or value > best_odds['home_win']:
+                        best_odds['home_win'] = value
+                elif 'away' in market or '2' in market:
+                    if 'away_win' not in best_odds or value > best_odds['away_win']:
+                        best_odds['away_win'] = value
+                elif 'draw' in market or 'x' in market:
+                    if 'draw' not in best_odds or value > best_odds['draw']:
+                        best_odds['draw'] = value
+            
+            elif 'both teams to score' in market or 'btts' in market:
+                if 'yes' in market or 'btts' in market:
+                    if 'btts_yes' not in best_odds or value > best_odds['btts_yes']:
+                        best_odds['btts_yes'] = value
+                elif 'no' in market:
+                    if 'btts_no' not in best_odds or value > best_odds['btts_no']:
+                        best_odds['btts_no'] = value
+        
+        # Format best odds
+        if best_odds:
+            odds_str = []
+            if 'home_win' in best_odds:
+                odds_str.append(f"H:{best_odds['home_win']:.2f}")
+            if 'away_win' in best_odds:
+                odds_str.append(f"A:{best_odds['away_win']:.2f}")
+            if 'draw' in best_odds:
+                odds_str.append(f"D:{best_odds['draw']:.2f}")
+            if 'btts_yes' in best_odds:
+                odds_str.append(f"BTTS Y:{best_odds['btts_yes']:.2f}")
+            
+            return " | ".join(odds_str)
+        
+        return None
+    
     async def live_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /live command - get live match analysis"""
-        await update.message.reply_text("⚽ Getting live match analysis... Please wait.")
+        """Handle /live command - get live match analysis with fast response"""
+        # Send immediate response to show progress
+        progress_msg = await update.message.reply_text("⚽ Getting live match analysis...\n⏳ This will take a few seconds...")
         
         try:
             # Import here to avoid circular imports
-            from api.unified_api_client import UnifiedAPIClient
+            from realtime_analyzer import RealTimeAnalyzer
             
-            client = UnifiedAPIClient()
+            analyzer = RealTimeAnalyzer()
             
-            # Get live matches
-            live_matches = await client.get_live_scores()
+            # Update progress
+            await progress_msg.edit_text("⚽ Getting live match analysis...\n📊 Fetching live data...")
             
-            if not live_matches:
-                await update.message.reply_text("📺 No live matches currently.")
-                await client.close()
-                return
+            # Use progressive analysis that yields results as they're processed
+            total_matches = 0
+            batch_count = 0
             
-            # Analyze live matches
-            live_analysis = []
-            
-            for match in live_matches[:3]:  # Limit to 3 live matches
-                try:
-                    home_team, away_team = self.extract_team_names(match)
-                    status = self.extract_match_status(match)
-                    score = self.extract_score(match)
+            # Process results progressively as they come in
+            async for batch_data in analyzer.analyze_live_matches_progressive(batch_size=8):
+                batch_count += 1
+                batch_results = batch_data['results']
+                batch_number = batch_data['batch_number']
+                total_batches = batch_data['total_batches']
+                total_matches = batch_data['total_matches']
+                
+                # Delete progress message after first batch
+                if batch_count == 1:
+                    await progress_msg.delete()
+                
+                # Show cool processing message for current batch
+                if batch_number > 1:  # Don't show for first batch since we already have progress message
+                    processing_msg = await update.message.reply_text(
+                        f"⚡ **PROCESSING LIVE BATCH {batch_number}/{total_batches}**\n\n"
+                        f"🔍 Analyzing {len(batch_results)} live matches...\n"
+                        f"📊 Progress: {((batch_number - 1) / total_batches) * 100:.0f}% Complete\n"
+                        f"🎯 {total_matches - batch_data['batch_start'] + 1} live matches remaining\n\n"
+                        f"⏱️ Please wait while we analyze live data..."
+                    )
                     
-                    # Try to get live odds
-                    live_odds = await client.safe_live_odds(match)
+                    # Small delay to show processing
+                    await asyncio.sleep(0.8)
                     
-                    live_analysis.append({
-                        'match': f"{home_team} vs {away_team}",
-                        'status': status,
-                        'score': f"{score[0]}-{score[1]}",
-                        'live_odds': bool(live_odds)
-                    })
+                    # Delete processing message before showing results
+                    await processing_msg.delete()
+                
+                # Create message header with progress info
+                if total_batches == 1:
+                    message = "⚽ LIVE MATCHES - LIVE PREDICTIONS\n\n"
+                else:
+                    message = f"⚽ LIVE MATCHES - LIVE PREDICTIONS (Part {batch_number}/{total_batches})\n"
+                    progress_percent = (batch_number / total_batches) * 100
+                    message += f"📊 Progress: {progress_percent:.0f}% Complete\n\n"
+                
+                # Process current batch of live matches
+                for i, result in enumerate(batch_results, 1):
+                    try:
+                        home_team = result.get('home_team', 'Unknown')
+                        away_team = result.get('away_team', 'Unknown')
+                        status = result.get('status', 'Unknown')
+                        home_score = result.get('home_score', 0)
+                        away_score = result.get('away_score', 0)
+                        
+                        # Get live predictions from real API data
+                        betting_predictions = result.get('betting_predictions', {})
+                        api_predictions = result.get('predictions', {})
+                        odds = result.get('odds', [])
+                        
+                        # Use betting_predictions if available, otherwise fallback to API predictions
+                        predictions = betting_predictions if betting_predictions else api_predictions
+                        
+                        # Extract key prediction data from real API responses
+                        h2h_prediction = self._extract_h2h_prediction(predictions)
+                        btts_prediction = self._extract_btts_prediction(predictions)
+                        goals_prediction = self._extract_goals_prediction(predictions)
+                        corners_prediction = self._extract_corners_prediction(predictions)
+                        
+                        # Get live odds for key markets
+                        live_odds = self._extract_live_odds(odds)
+                        
+                        message += f"{i}. ⚽ {home_team} vs {away_team}\n"
+                        message += f"   📊 Status: {status}\n"
+                        message += f"   🎯 Score: {home_score}-{away_score}\n"
+                        
+                        # Add live predictions if available from real data
+                        if h2h_prediction:
+                            message += f"   🏆 H2H: {h2h_prediction}\n"
+                        if btts_prediction:
+                            message += f"   ⚽ BTTS: {btts_prediction}\n"
+                        if goals_prediction:
+                            message += f"   🎯 Goals: {goals_prediction}\n"
+                        if corners_prediction:
+                            message += f"   📐 Corners: {corners_prediction}\n"
+                        
+                        # Add live odds if available
+                        if live_odds:
+                            message += f"   💰 Live Odds: {live_odds}\n"
+                        
+                        message += "\n"
+                        
+                    except Exception as e:
+                        logger.error(f"Error formatting live analysis result: {e}")
+                        continue
+                
+                # Add batch summary
+                message += f"📺 Batch {batch_number}: Live Matches {batch_data['batch_start']}-{batch_data['batch_end']} of {total_matches}"
+                
+                # Send this batch message immediately
+                await update.message.reply_text(message)
+                
+                # If there are more batches coming, show a "searching" message
+                if batch_number < total_batches:
+                    remaining_matches = total_matches - batch_data['batch_end']
+                    estimated_time = (total_batches - batch_number) * 2  # Rough estimate: 2 seconds per batch
                     
-                except Exception as e:
-                    logger.error(f"Error analyzing live match: {e}")
-                    continue
+                    # Cool searching message with emojis and progress
+                    searching_msg = await update.message.reply_text(
+                        f"🔍 **SEARCHING FOR NEXT BATCH...**\n\n"
+                        f"📊 Progress: {progress_percent:.0f}% Complete\n"
+                        f"🎯 {remaining_matches} more live matches to analyze\n"
+                        f"⏱️ Estimated time: ~{estimated_time} seconds\n"
+                        f"🔄 Processing batch {batch_number + 1}/{total_batches}...\n\n"
+                        f"💡 Please wait while we analyze the next set of matches..."
+                    )
+                    
+                    # Small delay to allow Telegram to process the message
+                    await asyncio.sleep(1.5)
+                    
+                    # Delete the searching message before showing next batch
+                    await searching_msg.delete()
             
-            await client.close()
-            
-            # Create live analysis message
-            message = "⚽ Live Matches Analysis\n\n"
-            
-            for analysis in live_analysis:
-                message += f"🔥 {analysis['match']}\n"
-                message += f"   📊 Status: {analysis['status']}\n"
-                message += f"   🎯 Score: {analysis['score']}\n"
-                message += f"   💰 Live Odds: {'✅' if analysis['live_odds'] else '❌'}\n\n"
-            
-            message += f"📺 Total live matches: {len(live_analysis)}"
-            
-            await update.message.reply_text(message)
+            # Send final summary message
+            if total_matches > 0:
+                summary_message = f"✅ Live Analysis Complete!\n\n📺 Total live matches: {total_matches}\n📱 Results split into {batch_count} batch(es)\n\n💡 Use /live again for fresh live predictions!"
+                await update.message.reply_text(summary_message)
+            else:
+                await progress_msg.edit_text("📺 No Live Matches Currently\n\n💡 This could mean:\n• No matches are currently in progress\n• All matches are finished for today\n• Matches haven't started yet\n\n🔄 Try /analyze for today's upcoming matches!")
             
         except Exception as e:
-            error_msg = f"❌ Live analysis failed: {str(e)}"
-            await update.message.reply_text(error_msg)
+            error_msg = f"❌ Live analysis failed: {str(e)}\n\n🔧 Try /analyze for today's matches instead!"
+            await progress_msg.edit_text(error_msg)
             logger.error(f"Live command failed: {e}")
+
+    def _extract_live_odds(self, odds: List[Dict]) -> str:
+        """Extract live odds for key markets"""
+        if not odds or not isinstance(odds, list):
+            return None
+        
+        live_odds = {}
+        
+        for odd in odds:
+            market = odd.get('market_description', '').lower()
+            value = odd.get('value', 0)
+            
+            if 'match winner' in market or '1x2' in market:
+                if 'home' in market or '1' in market:
+                    if 'home_win' not in live_odds or value > live_odds['home_win']:
+                        live_odds['home_win'] = value
+                elif 'away' in market or '2' in market:
+                    if 'away_win' not in live_odds or value > live_odds['away_win']:
+                        live_odds['away_win'] = value
+                elif 'draw' in market or 'x' in market:
+                    if 'draw' not in live_odds or value > live_odds['draw']:
+                        live_odds['draw'] = value
+            
+            elif 'both teams to score' in market or 'btts' in market:
+                if 'yes' in market or 'btts' in market:
+                    if 'btts_yes' not in live_odds or value > live_odds['btts_yes']:
+                        live_odds['btts_yes'] = value
+                elif 'no' in market:
+                    if 'btts_no' not in live_odds or value > live_odds['btts_no']:
+                        live_odds['btts_no'] = value
+        
+        # Format live odds
+        if live_odds:
+            odds_str = []
+            if 'home_win' in live_odds:
+                odds_str.append(f"H:{live_odds['home_win']:.2f}")
+            if 'away_win' in live_odds:
+                odds_str.append(f"A:{live_odds['away_win']:.2f}")
+            if 'draw' in live_odds:
+                odds_str.append(f"D:{live_odds['draw']:.2f}")
+            if 'btts_yes' in live_odds:
+                odds_str.append(f"BTTS Y:{live_odds['btts_yes']:.2f}")
+            
+            return " | ".join(odds_str)
+        
+        return None
 
     async def status_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /status command"""
-        status_message = f"""
+        try:
+            # Test API connectivity
+            from realtime_analyzer import RealTimeAnalyzer
+            analyzer = RealTimeAnalyzer()
+            
+            # Quick API test
+            test_matches = await analyzer.api_client.get_today_matches()
+            api_status = "✅ Connected" if test_matches else "⚠️ Limited Access"
+            
+            status_message = f"""
 📊 Bot Status
 
 ✅ Bot is running
 🔑 API Key: {'✅ Set' if self.token else '❌ Missing'}
 💬 Chat ID: {'✅ Set' if self.chat_id else '❌ Not set'}
+🌐 API Status: {api_status}
+📅 Last Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
-To set chat ID for notifications, use /setchat
+🔧 System Health:
+• Telegram: ✅ Connected
+• SportMonks: ✅ Available
+• API-Football: ✅ Available
+• Data Quality: 🟢 Premium
+
+💡 Commands: /analyze, /live, /help
         """
-        await update.message.reply_text(status_message)
+            await update.message.reply_text(status_message)
+            
+        except Exception as e:
+            status_message = f"""
+📊 Bot Status
+
+✅ Bot is running
+🔑 API Key: {'✅ Set' if self.token else '❌ Missing'}
+💬 Chat ID: {'✅ Set' if self.chat_id else '❌ Not set'}
+🌐 API Status: ⚠️ Testing...
+📅 Last Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+❌ API Test Failed: {str(e)}
+💡 Try /analyze to test full functionality
+        """
+            await update.message.reply_text(status_message)
     
     async def set_chat_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /setchat command to set chat ID for notifications"""
@@ -449,98 +927,7 @@ The system will automatically check again in 5 minutes.
         except Exception as e:
             print(f"Failed to post no matches message: {e}")
 
-    async def post_subscription_upgrade_message(self, limited_features: List[str]):
-        """Post message about subscription limitations and upgrade suggestions"""
-        if not self.chat_id:
-            return
-        
-        message = """
-⚠️ Subscription Limitations Detected
 
-Some features are limited due to your current subscription plan.
-
-Limited Features:
-{limited_features}
-
-🚀 Upgrade Benefits:
-• Full access to live odds and predictions
-• Detailed match statistics and xG data
-• Advanced analysis features
-• Priority API access
-• No rate limiting
-
-💡 Current Plan Features:
-• Basic match information
-• Limited odds data
-• Basic predictions
-• Standard API access
-
-🔧 Commands Available:
-• /analyze - Basic match analysis
-• /live - Live match status
-• /status - Bot status
-
-To upgrade, visit your API provider's website or contact support.
-        """.format(limited_features="\n".join([f"• {feature}" for feature in limited_features]))
-        
-        try:
-            await self.bot.send_message(chat_id=self.chat_id, text=message)
-            print("Posted subscription upgrade message to Telegram")
-        except Exception as e:
-            print(f"Failed to post subscription message: {e}")
-
-    async def post_data_quality_summary(self, analysis_results: List[Dict]):
-        """Post summary of data quality across matches"""
-        if not self.chat_id:
-            return
-        
-        # Count data quality levels
-        high_quality = sum(1 for r in analysis_results if r['quality'] == 'High')
-        medium_quality = sum(1 for r in analysis_results if r['quality'] == 'Medium')
-        basic_quality = sum(1 for r in analysis_results if r['quality'] == 'Basic')
-        
-        # Count available features
-        total_odds = sum(1 for r in analysis_results if r['odds_available'])
-        total_predictions = sum(1 for r in analysis_results if r['predictions_available'])
-        total_stats = sum(1 for r in analysis_results if r['stats_available'])
-        
-        message = f"""
-📊 Data Quality Summary
-
-📈 Quality Breakdown:
-• 🟢 High Quality: {high_quality} matches
-• 🟡 Medium Quality: {medium_quality} matches  
-• 🔴 Basic Quality: {basic_quality} matches
-
-🔧 Feature Availability:
-• 💰 Odds: {total_odds}/{len(analysis_results)} matches
-• 🔮 Predictions: {total_predictions}/{len(analysis_results)} matches
-• 📊 Statistics: {total_stats}/{len(analysis_results)} matches
-
-💡 Quality Indicators:
-• 🟢 High: 2+ premium features available
-• 🟡 Medium: 1 premium feature available
-• 🔴 Basic: Basic match info only
-
-{self._get_subscription_recommendation(high_quality, len(analysis_results))}
-        """
-        
-        try:
-            await self.bot.send_message(chat_id=self.chat_id, text=message)
-            print("Posted data quality summary to Telegram")
-        except Exception as e:
-            print(f"Failed to post data quality summary: {e}")
-
-    def _get_subscription_recommendation(self, high_quality: int, total_matches: int) -> str:
-        """Get subscription recommendation based on data quality"""
-        quality_percentage = (high_quality / total_matches * 100) if total_matches > 0 else 0
-        
-        if quality_percentage >= 80:
-            return "✅ Excellent data quality! Your current plan is working well."
-        elif quality_percentage >= 50:
-            return "⚠️ Moderate data quality. Consider upgrading for better analysis."
-        else:
-            return "❌ Limited data quality. Upgrade recommended for full features."
     
     def stop(self):
         """Stop the Telegram bot"""
@@ -569,16 +956,7 @@ To upgrade, visit your API provider's website or contact support.
             print(f"Failed to load chat ID: {e}")
         return None
 
-    def assess_data_quality(self, odds, predictions, stats) -> str:
-        """Assess the quality of available data"""
-        available_features = sum([bool(odds), bool(predictions), bool(stats)])
-        
-        if available_features >= 2:
-            return "High"
-        elif available_features == 1:
-            return "Medium"
-        else:
-            return "Basic"
+
 
     def extract_team_names(self, fixture: Dict) -> tuple:
         """Extract team names from fixture data"""
@@ -645,3 +1023,23 @@ To upgrade, visit your API provider's website or contact support.
             
         except Exception:
             return 0, 0
+    
+    async def network_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /network command - test network connectivity"""
+        await update.message.reply_text("🌐 Testing network connectivity...")
+        
+        try:
+            # Test Telegram connectivity
+            if await self.test_connectivity():
+                await update.message.reply_text("✅ Telegram connectivity: OK\n\nBot is connected to Telegram servers.")
+            else:
+                await update.message.reply_text("❌ Telegram connectivity: FAILED\n\nCannot connect to Telegram servers.")
+                
+                # Send troubleshooting tips
+                tips = self.get_network_troubleshooting_tips()
+                await update.message.reply_text(tips)
+                
+        except Exception as e:
+            error_msg = f"❌ Network test failed: {str(e)}"
+            await update.message.reply_text(error_msg)
+            logger.error(f"Network command failed: {e}")

@@ -280,17 +280,62 @@ class ApiFootballClient:
 
     async def get_expected_goals(self, fixture_id: int) -> Optional[Dict]:
         """
-        API-Football doesn't provide xG directly, but we can try statistics endpoint
+        API-Football doesn't provide xG directly, but we can extract comprehensive statistics
+        that can be used for xG-like analysis
         """
         try:
-            # Try to get comprehensive statistics which might contain xG-like data
+            # Strategy 1: Get comprehensive fixture statistics
             stats = await self.get_fixture_statistics(fixture_id)
             if stats:
-                logger.debug("Statistics available for fixture %s (can be used for xG-like analysis)", fixture_id)
-                return {"statistics": stats}
-            else:
-                logger.debug("xG/statistics not available for fixture %s (API-Football limitation)", fixture_id)
-                return None
+                logger.debug("Comprehensive statistics available for fixture %s (can be used for xG-like analysis)", fixture_id)
+                return {"statistics": stats, "source": "fixture_statistics"}
+            
+            # Strategy 2: Get team statistics for both teams
+            try:
+                # First get the fixture to extract team IDs
+                fixture_data = await self._make_async_request("fixtures", {"id": fixture_id})
+                if fixture_data and "response" in fixture_data and fixture_data["response"]:
+                    fixture = fixture_data["response"][0]
+                    teams = fixture.get("teams", {})
+                    home_team_id = teams.get("home", {}).get("id")
+                    away_team_id = teams.get("away", {}).get("id")
+                    
+                    if home_team_id and away_team_id:
+                        # Get team statistics for the current season/league
+                        home_stats = await self.get_team_statistics(fixture_id, home_team_id)
+                        away_stats = await self.get_team_statistics(fixture_id, away_team_id)
+                        
+                        if home_stats or away_stats:
+                            result = {
+                                'home_team_stats': home_stats,
+                                'away_team_stats': away_stats,
+                                'fixture_id': fixture_id,
+                                'source': 'team_statistics'
+                            }
+                            logger.debug("Team statistics available for fixture %s (can be used for xG-like analysis)", fixture_id)
+                            return result
+            except Exception as e:
+                logger.debug("Team statistics fallback failed for fixture %s: %s", fixture_id, e)
+            
+            # Strategy 3: Get league statistics which might contain team performance data
+            try:
+                if fixture_data and "response" in fixture_data and fixture_data["response"]:
+                    fixture = fixture_data["response"][0]
+                    league_id = fixture.get("league", {}).get("id")
+                    
+                    if league_id:
+                        # Get league statistics
+                        league_stats = await self._make_async_request("leagues", {"id": league_id, "season": "2024"})
+                        if league_stats and "response" in league_stats and league_stats["response"]:
+                            logger.debug("League statistics available for fixture %s (can be used for xG-like analysis)", fixture_id)
+                            return {"league_stats": league_stats["response"][0], "source": "league_statistics"}
+            except Exception as e:
+                logger.debug("League statistics fallback failed for fixture %s: %s", fixture_id, e)
+            
+            # If all strategies fail, log the limitation
+            logger.debug("xG/statistics not available for fixture %s (API-Football limitation)", fixture_id)
+            return None
+            
         except Exception as e:
             logger.debug("xG retrieval failed for fixture %s: %s", fixture_id, e)
             return None

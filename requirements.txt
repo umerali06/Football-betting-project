@@ -1,42 +1,67 @@
-# Core Dependencies
-aiohttp>=3.8.0
-asyncio-mqtt>=0.11.0
+# 🚀 FIXORA PRO - Progressive Football Analysis System
+# Core dependencies for real-time analysis and Telegram bot
+
+# Telegram Bot Framework
 python-telegram-bot>=20.0
-schedule>=1.2.0
+
+# HTTP Client for API calls
+aiohttp>=3.8.0
+
+# Async support
+asyncio
+
+# Date and time handling
 python-dateutil>=2.8.0
 
-# Logging and Utilities
-colorlog>=6.7.0
-colorama>=0.4.6
+# Logging and utilities
+colorama>=0.4.0
 
-# Data Processing
+# Data processing
 pandas>=1.5.0
-numpy>=1.24.0
 
-# HTTP and Networking
-httpx>=0.24.0
+# Mathematical operations
+numpy>=1.21.0
+
+# Configuration management
+python-dotenv>=0.19.0
+
+# PDF generation (for ROI reports)
+reportlab>=3.6.0
+
+# Image processing (for enhanced bot messages)
+Pillow>=9.0.0
+
+# Schedule management
+schedule>=1.1.0
+
+# JSON handling
+ujson>=5.0.0
+
+# HTTP requests (fallback)
 requests>=2.28.0
 
-# Timezone Support
-pytz>=2023.3
+# Async HTTP client (alternative)
+httpx>=0.24.0
 
-# Async Support (Windows compatibility)
-uvloop>=0.17.0; sys_platform != "win32"
-
-# Development and Testing
+# Development and testing
 pytest>=7.0.0
 pytest-asyncio>=0.21.0
 
-# Optional: Performance Monitoring
-psutil>=5.9.0
+# Code quality
+black>=22.0.0
+flake8>=5.0.0
 
-# Optional: Environment Variables
-python-dotenv>=1.0.0
+# Documentation
+sphinx>=5.0.0
+sphinx-rtd-theme>=1.0.0
 
-# Optional: Database Support (if needed later)
-# sqlalchemy>=2.0.0
-# aiosqlite>=0.19.0
+---
 
-# Optional: Caching (if needed later)
-# redis>=4.5.0
-# aioredis>=2.0.0
+# 🎯 Installation Instructions:
+# pip install -r requirements.txt
+#
+# 🔧 For development:
+# pip install -r requirements.txt[dev]
+#
+# 📱 For production:
+# pip install -r requirements.txt --no-dev
