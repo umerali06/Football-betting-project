@@ -1,344 +1,242 @@
-# 🚀 FIXORA PRO - Advanced Football Betting Analysis System
+# FIXORA PRO ROI Betting System
 
-A Python-based real-time football betting analysis system that uses xG + Elo ratings to predict match outcomes, with progressive Telegram bot integration for instant results.
+## Overview
+The FIXORA PRO ROI Betting System is a comprehensive, focused Telegram bot that provides advanced ROI analysis, unit-based betting recommendations, automatic morning updates, and performance tracking. Built with a streamlined architecture that prioritizes ROI-focused betting analysis.
 
-## ✨ **NEW FEATURES - PROGRESSIVE ANALYSIS SYSTEM**
+## 🚀 Key Features
 
-### 🎯 **Progressive Results Display**
-- **No more waiting for 100% completion** - Results appear as each batch is ready
-- **Real-time batch processing** - Each batch of 8 matches is sent immediately
-- **Progress tracking** - Shows percentage complete, remaining matches, estimated time
-- **Enhanced user experience** - Users see results within seconds, not minutes
+### 💰 Advanced ROI Analysis
+- **Real-time Data**: Fetches live match data from API-Football and SportMonks
+- **Smart Fallback**: Enhanced API client with multiple fallback strategies
+- **League Filtering**: Focuses on top-tier European leagues for quality opportunities
+- **ROI Rating System**: Calculates realistic ROI ratings based on actual odds data
 
-### 🔍 **Cool Interactive Messages**
-- **⚡ PROCESSING BATCH** messages while analyzing
-- **🔍 SEARCHING FOR NEXT BATCH** messages between batches
-- **📊 Progress indicators** with clear visual feedback
-- **⏱️ Time estimates** for remaining analysis
+### 💎 Intelligent Unit-Based Betting System
+- **1st Place**: 3 units (highest confidence, top-rated opportunity)
+- **2nd Place**: 2 units (high confidence, strong potential)
+- **3rd Place**: 1 unit (medium confidence, good value)
+- **4th & 5th**: 0.5 units (lower confidence, speculative plays)
 
-### 📱 **Enhanced Telegram Bot Experience**
-- **Immediate feedback** - First batch appears in ~30 seconds
-- **Continuous updates** - Each batch shows progress and status
-- **Professional appearance** - Engaging messages that keep users informed
-- **Batch summaries** - Clear indication of what's been analyzed
+### 🕗 Automatic Morning Updates
+- **Precise Timing**: Daily ROI analysis at exactly 8:00 AM UK time
+- **User-Specific**: Sends personalized updates to all active users
+- **Complete Analysis**: Full ROI summary with unit recommendations
+- **Independent Operation**: Runs separately from manual commands
 
-## 🏗️ **System Architecture**
+### 📊 Comprehensive Performance Reports
+- **PDF Generation**: Professional betting performance reports
+- **Weekly Summaries**: Detailed weekly ROI performance analysis
+- **Performance Tracking**: Unit-based profit/loss analysis
+- **Historical Data**: Track betting trends and ROI patterns
 
-### 🔧 **Core Components**
-- **RealTimeAnalyzer** - Progressive analysis engine with batch processing
-- **UnifiedAPIClient** - Multi-API integration (SportMonks + API-Football)
-- **TelegramBetBot** - Enhanced bot with progressive display
-- **Progressive Analysis** - Async generators for real-time results
+### 🔧 Streamlined System Architecture
+- **ROI-Only Mode**: Clean, focused system without unnecessary features
+- **Enhanced API Integration**: Unified client for multiple data sources
+- **Automatic Scheduling**: Built-in task scheduler for daily operations
+- **User Session Management**: Track and manage active user sessions
 
-### 🌐 **API Integration**
-- **SportMonks v3** - Primary data source with premium features
-- **API-Football v3** - Secondary source with fallback capabilities
-- **Unified Client** - Seamless switching between APIs
-- **Real-time Data** - Live odds, predictions, and statistics
+## 📱 Available Commands
 
-## 🚀 **Quick Start**
+### `/start`
+- Welcome message with system overview
+- Explains ROI-focused features and unit system
+- Sets up user session tracking
 
-### 📋 **Prerequisites**
+### `/help`
+- Comprehensive help information
+- Detailed command descriptions
+- Feature explanations and usage tips
+
+### `/status`
+- Real-time bot status and health
+- API connection information
+- Active user session count
+- System configuration details
+
+### `/analyze_roi` ⭐ **MAIN COMMAND**
+- **Real-time Analysis**: Analyzes today's matches using live API data
+- **Top 5 Opportunities**: Shows highest-rated bets with detailed analysis
+- **Unit Recommendations**: Provides specific unit allocations (3-2-1-0.5)
+- **Match Details**: Status, scores, odds availability, and ROI ratings
+- **League Breakdown**: Shows match distribution across target leagues
+
+### `/report`
+- **PDF Generation**: Creates comprehensive betting performance report
+- **Performance Metrics**: Total bets, win rate, overall ROI, P&L
+- **Unit Analysis**: Breakdown by unit allocation and confidence level
+- **Historical Trends**: Performance tracking over time
+
+### `/weekly_report`
+- **Weekly Summary**: Generates weekly ROI performance PDF
+- **Period Analysis**: Detailed breakdown of weekly performance
+- **Insights**: Key performance indicators and trends
+- **Recommendations**: Based on weekly performance data
+
+## 🏗️ System Architecture
+
+### Core Components
+```
+├── main.py                      # Main system with ROI-only mode
+├── telegram_bot.py              # Enhanced Telegram bot with ROI commands
+├── api/
+│   ├── enhanced_api_client.py   # Unified API client with fallback strategies
+│   ├── api_apifootball.py      # API-Football integration
+│   ├── sportmonks_client.py    # SportMonks integration
+│   └── league_filter.py        # League filtering and targeting
+├── reports/
+│   └── report_generator.py     # PDF report generation
+└── start_roi_scheduler.py      # Automatic morning updates scheduler
+```
+
+### API Integration Strategy
+- **Primary Source**: API-Football (api-sports.io) for real-time data
+- **Fallback Source**: SportMonks for backup data
+- **Enhanced Client**: Multiple fallback strategies with sample data generation
+- **Real-time Odds**: Live odds fetching without "Sample:" prefixes
+- **League Targeting**: Focus on top European leagues for quality opportunities
+
+## 🚀 Getting Started
+
+### 1. Start the Main System (ROI-Only Mode)
 ```bash
-# Python 3.8+ required
-python --version
-
-# Install required packages
-pip install -r requirements.txt
+python main.py --roi-only
 ```
+This starts the system in ROI-only mode, disabling unnecessary daily analysis features.
 
-### 🔑 **Configuration**
-1. **Copy config template:**
-   ```bash
-   cp config_template.py config.py
-   ```
-
-2. **Edit config.py with your API keys:**
-   ```python
-   # SportMonks API (Premium)
-   SPORTMONKS_API_TOKEN = "your_sportmonks_token"
-   
-   # API-Football API (Premium)  
-   API_FOOTBALL_KEY = "your_apifootball_key"
-   
-   # Telegram Bot Token
-   TELEGRAM_BOT_TOKEN = "your_telegram_bot_token"
-   TELEGRAM_CHAT_ID = "your_chat_id"
-   ```
-
-### 🚀 **Running the System**
-
-#### **Option 1: Start Enhanced Telegram Bot (Recommended)**
+### 2. Start the Automatic ROI Scheduler
 ```bash
-# Start the progressive analysis bot
-python start_bot.py
+python start_roi_scheduler.py
+```
+This runs the automatic morning ROI updates at 8:00 AM UK time.
+
+### 3. Use Commands in Telegram
+- Send `/start` to initialize your session
+- Use `/analyze_roi` for real-time ROI opportunities
+- Use `/report` for performance reports
+- Use `/weekly_report` for weekly summaries
+- Receive automatic updates every morning at 8:00 AM UK time
+
+## ⚙️ Configuration
+
+### Required Environment Variables
+```python
+# config.py
+TELEGRAM_BOT_TOKEN = "your_bot_token"
+API_FOOTBALL_KEY = "your_api_football_key"
+SPORTMONKS_TOKEN = "your_sportmonks_token"
 ```
 
-#### **Option 2: Start Main Real-time System**
-```bash
-# Start the main analysis system
-python main_realtime.py
+### System Modes
+- **ROI-Only Mode**: Clean, focused system (`--roi-only` flag)
+- **Full Mode**: Complete system with all features (default)
+
+## 🔍 How It Works
+
+### ROI Analysis Process
+1. **Data Fetching**: Retrieves match data from multiple API sources
+2. **League Filtering**: Focuses on target European leagues
+3. **Odds Analysis**: Processes real-time odds data
+4. **ROI Calculation**: Computes realistic ROI ratings
+5. **Unit Assignment**: Assigns units based on confidence ranking
+6. **Result Formatting**: Creates comprehensive Telegram message
+
+### Automatic Morning Updates
+1. **Scheduled Execution**: Runs daily at 8:00 AM UK time
+2. **User Iteration**: Processes all active user sessions
+3. **ROI Analysis**: Performs complete analysis for each user
+4. **Message Delivery**: Sends personalized updates via Telegram
+5. **Error Handling**: Graceful fallback for failed deliveries
+
+### Report Generation
+1. **Data Collection**: Gathers betting performance data
+2. **PDF Creation**: Generates professional PDF reports
+3. **File Delivery**: Sends PDFs directly through Telegram
+4. **Performance Tracking**: Maintains historical data
+
+## 📊 Performance Features
+
+### ROI Tracking
+- **Real-time Analysis**: Live data from multiple API sources
+- **Performance Metrics**: Win rate, ROI%, unit-based P&L
+- **Historical Data**: Track performance over time
+- **Trend Analysis**: Identify patterns and opportunities
+
+### Unit System Benefits
+- **Risk Management**: Diversified betting across confidence levels
+- **Performance Tracking**: Monitor success by unit allocation
+- **Bankroll Protection**: Limit exposure on lower-confidence bets
+- **Scalable Strategy**: Adjust units based on performance
+
+## 🛠️ Technical Details
+
+### Dependencies
+```
+python-telegram-bot>=20.0
+schedule>=1.2.0
+pytz>=2023.3
+asyncio
+reportlab>=4.0.0
+httpx>=0.24.0
 ```
 
-#### **Option 3: Test Individual Components**
-```bash
-# Test comprehensive system
-python test_comprehensive_system.py
+### Scheduling System
+- **Timezone Handling**: UK time (8:00 AM) for morning updates
+- **Threading**: Separate thread for scheduler operations
+- **Error Recovery**: Automatic retry mechanisms
+- **User Management**: Track active sessions for updates
 
-# Test Telegram bot
-python test_telegram_bot_comprehensive.py
+### API Fallback Strategy
+1. **Primary**: API-Football with real-time data
+2. **Secondary**: SportMonks with backup data
+3. **Enhanced**: Sample data generation for testing
+4. **Caching**: 5-minute TTL for performance optimization
 
-# Test network connectivity
-python test_network.py
-```
+## 🎯 Key Benefits
 
-## 📱 **Telegram Bot Commands**
+1. **Focused Functionality**: Only essential ROI betting commands
+2. **Real-time Data**: Live odds and match information
+3. **Intelligent Units**: Data-driven unit allocation system
+4. **Automatic Updates**: Reliable morning ROI summaries
+5. **Professional Reports**: PDF generation for performance tracking
+6. **Scalable Architecture**: Clean, maintainable codebase
+7. **API Reliability**: Multiple fallback strategies
+8. **User Experience**: Intuitive commands and clear outputs
 
-### 🎯 **Core Commands**
-- `/start` - Welcome message and bot introduction
-- `/help` - Detailed help and feature overview
-- `/status` - Bot status and system health check
-- `/setchat` - Set chat ID for notifications
+## 🔧 Troubleshooting
 
-### 🔍 **Analysis Commands**
-- `/analyze` - **NEW!** Progressive analysis of today's matches
-- `/live` - **NEW!** Progressive analysis of live matches
-- `/network` - Test network connectivity
+### Common Issues
+- **API Connection**: Verify API keys in config.py
+- **Scheduler Issues**: Check timezone settings and system time
+- **PDF Generation**: Ensure reportlab is installed
+- **Telegram Errors**: Verify bot token and permissions
 
-### 💡 **Command Features**
-- **Progressive Results** - Results appear in batches of 8 matches
-- **Real-time Progress** - Live updates on analysis status
-- **Interactive Messages** - Engaging progress and searching messages
-- **Batch Processing** - Each batch sent immediately when ready
+### Log Files
+- **Main System**: Check console output for errors
+- **Scheduler**: Monitor start_roi_scheduler.py output
+- **API Calls**: Review enhanced_api_client logs
 
-## 🔬 **Analysis Features**
+## 📈 Future Enhancements
 
-### 🎯 **Prediction Models**
-- **H2H (Win/Draw/Win)** - Using xG + Elo ratings
-- **Both Teams to Score (BTTS)** - Advanced statistical analysis
-- **Over/Under Goals** - 2.5 and 3.5 goal predictions
-- **Corners Analysis** - Total corners predictions (9.5, 10.5)
+### Planned Features
+- **Advanced Analytics**: Machine learning for ROI prediction
+- **Custom Alerts**: User-defined notification preferences
+- **Portfolio Management**: Track multiple betting strategies
+- **Performance Dashboard**: Web-based analytics interface
 
-### 📊 **Data Sources**
-- **Real-time Odds** - Live betting odds from multiple bookmakers
-- **Team Form** - Recent performance analysis
-- **Expected Goals (xG)** - Advanced goal prediction models
-- **Live Statistics** - Real-time match data and metrics
-
-### 🚀 **Performance Features**
-- **Fast Response** - First results in ~30 seconds
-- **Progressive Display** - Continuous results as they're processed
-- **Batch Processing** - Efficient analysis in groups of 8 matches
-- **Real-time Updates** - Live data from premium APIs
-
-## 🛠️ **Installation & Setup**
-
-### 📦 **Package Installation**
-```bash
-# Install all required packages
-pip install -r requirements.txt
-
-# Or install individually
-pip install python-telegram-bot
-pip install aiohttp
-pip install asyncio
-pip install schedule
-pip install logging
-```
-
-### 🔧 **System Requirements**
-- **Python**: 3.8 or higher
-- **Memory**: Minimum 2GB RAM
-- **Storage**: 100MB free space
-- **Network**: Stable internet connection
-- **APIs**: Valid SportMonks and API-Football subscriptions
-
-### 🌐 **API Setup**
-1. **SportMonks Account:**
-   - Visit [SportMonks](https://www.sportmonks.com/)
-   - Create account and get API token
-   - Add token to `config.py`
-
-2. **API-Football Account:**
-   - Visit [API-Football](https://www.api-football.com/)
-   - Subscribe to premium plan
-   - Get API key and add to `config.py`
-
-3. **Telegram Bot:**
-   - Message [@BotFather](https://t.me/botfather) on Telegram
-   - Create new bot and get token
-   - Add token to `config.py`
-
-## 📊 **Progressive Analysis Flow**
-
-### 🔄 **User Experience Timeline**
-```
-User sends /analyze
-↓
-🔍 Analyzing today's matches... (progress message)
-↓
-⚡ PROCESSING BATCH 1/18 (processing message)
-↓
-🎯 TODAY'S MATCH PREDICTIONS (Part 1/18) - RESULTS
-↓
-🔍 SEARCHING FOR NEXT BATCH... (searching message)
-↓
-⚡ PROCESSING BATCH 2/18 (processing message)
-↓
-🎯 TODAY'S MATCH PREDICTIONS (Part 2/18) - RESULTS
-↓
-(continues until all batches complete)
-```
-
-### ⚡ **Performance Improvements**
-- **Before**: Wait 5+ minutes for all 135 matches
-- **Now**: First 8 matches in ~30 seconds
-- **Progressive**: Each batch every ~1-2 minutes
-- **User Engagement**: Continuous feedback and progress updates
-
-## 🧪 **Testing & Development**
-
-### 🔍 **Test Scripts**
-```bash
-# Test progressive analysis
-python test_progressive.py
-
-# Test comprehensive system
-python test_comprehensive_system.py
-
-# Test Telegram bot
-python test_telegram_bot_comprehensive.py
-
-# Test network connectivity
-python test_network.py
-```
-
-### 🐛 **Debugging**
-- **Logs**: Check `comprehensive_test.log` for detailed information
-- **Network**: Use `/network` command to test connectivity
-- **Status**: Use `/status` command to check system health
-- **Progressive**: Monitor batch processing in real-time
-
-## 📈 **Advanced Features**
-
-### 💎 **Value Bet Detection**
-- **Multi-model Analysis** - Combines Elo, xG, and Corners models
-- **Edge Calculation** - Identifies profitable betting opportunities
-- **Risk Management** - Advanced risk scoring and Kelly Criterion
-- **Automatic Notifications** - Instant Telegram alerts for value bets
-
-### 📊 **ROI Tracking**
-- **Market Analysis** - Track performance by betting market
-- **Weekly Reports** - PDF reports with easy-to-read format
-- **Performance Metrics** - Win rate, profit/loss, and efficiency
-- **Historical Data** - Long-term performance analysis
-
-### 🔄 **Real-time Monitoring**
-- **Live Match Tracking** - Monitor ongoing matches
-- **Odds Updates** - Real-time odds changes
-- **Automatic Analysis** - Continuous value bet detection
-- **Instant Alerts** - Telegram notifications for opportunities
-
-## 🚨 **Troubleshooting**
-
-### ❌ **Common Issues**
-1. **Bot Not Responding:**
-   - Check network connectivity with `/network`
-   - Verify bot token in `config.py`
-   - Restart bot with `python start_bot.py`
-
-2. **API Errors:**
-   - Verify API keys are valid
-   - Check subscription status
-   - Test individual APIs
-
-3. **Progressive Display Not Working:**
-   - Ensure using `start_bot.py` (not old version)
-   - Check for syntax errors in logs
-   - Restart bot to clear any cached issues
-
-### 🔧 **Network Issues**
-- **Firewall/Proxy**: Check corporate network settings
-- **Regional Blocks**: Some regions block Telegram
-- **DNS Issues**: Try changing DNS servers
-- **VPN**: Use VPN if regional restrictions apply
-
-## 📚 **API Documentation**
-
-### 🌐 **SportMonks v3 Endpoints**
-- **Fixtures**: `GET /football/fixtures?filters=todayDate`
-- **Odds**: `GET /football/odds/pre-match/fixtures/{id}`
-- **Predictions**: `GET /football/predictions/probabilities/fixtures/{id}`
-- **Statistics**: `GET /football/fixtures/{id}?include=statistics`
-
-### ⚽ **API-Football v3 Endpoints**
-- **Fixtures**: `GET /fixtures?date={date}`
-- **Odds**: `GET /odds?fixture={id}`
-- **Predictions**: `GET /predictions?fixture={id}`
-- **Statistics**: `GET /fixtures/statistics?fixture={id}`
-
-## 🤝 **Contributing**
-
-### 🔧 **Development Setup**
-1. **Fork the repository**
-2. **Create feature branch**: `git checkout -b feature/progressive-analysis`
-3. **Make changes and test**
-4. **Submit pull request**
-
-### 📝 **Code Standards**
-- **Python**: Follow PEP 8 guidelines
-- **Async**: Use proper async/await patterns
-- **Error Handling**: Implement comprehensive error handling
-- **Logging**: Use structured logging throughout
-
-## 📄 **License**
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 **Acknowledgments**
-
-- **SportMonks** - Premium football data API
-- **API-Football** - Comprehensive football statistics
-- **Python Telegram Bot** - Bot framework and utilities
-- **Community** - Beta testers and feedback providers
-
-## 📞 **Support**
-
-### 💬 **Getting Help**
-- **Telegram**: Use `/help` command in bot
-- **Issues**: Report bugs via GitHub issues
-- **Documentation**: Check this README and code comments
-- **Community**: Join our development community
-
-### 🔗 **Useful Links**
-- **Project Repository**: [GitHub Link]
-- **API Documentation**: [SportMonks](https://www.sportmonks.com/docs/) | [API-Football](https://www.api-football.com/documentation)
-- **Telegram Bot**: [@YourBotUsername]
+### System Improvements
+- **Enhanced Caching**: Optimize API response times
+- **User Preferences**: Customizable update schedules
+- **Multi-language**: Support for additional languages
+- **Mobile App**: Native mobile application
 
 ---
 
-## 🎉 **What's New in This Version**
+## 🎉 System Status
 
-### ✨ **Major Improvements**
-- ✅ **Progressive Analysis System** - Results appear in real-time batches
-- ✅ **Enhanced User Experience** - Cool interactive messages and progress tracking
-- ✅ **Faster Response Times** - First results in ~30 seconds instead of 5+ minutes
-- ✅ **Professional Interface** - Engaging messages that keep users informed
-- ✅ **Batch Processing** - Efficient analysis in groups of 8 matches
-- ✅ **Real-time Progress** - Live updates on analysis status and completion
+**Current Version**: 2.0 - Enhanced ROI System  
+**Last Updated**: August 2025  
+**System Mode**: ROI-Only (Streamlined)  
+**Automatic Updates**: 8:00 AM UK time daily  
+**API Status**: Enhanced with fallback strategies  
 
-### 🚀 **Performance Enhancements**
-- **Before**: Users waited 5+ minutes for complete analysis
-- **Now**: Users see first results in ~30 seconds
-- **Progressive**: Continuous results as each batch completes
-- **Engagement**: Users stay informed throughout the process
-
-### 🔧 **Technical Improvements**
-- **Async Generators** - Efficient progressive data processing
-- **Batch Processing** - Optimized analysis in manageable chunks
-- **Real-time Updates** - Live progress and status information
-- **Enhanced Error Handling** - Better user feedback and troubleshooting
-
----
-
-**🎯 Ready to experience the future of football analysis? Run `python start_bot.py` and enjoy progressive results!**
+**Note**: This system is specifically designed for ROI-focused betting analysis with automatic morning updates. All unnecessary features have been removed to focus on core ROI functionality and user experience.
