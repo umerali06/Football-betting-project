@@ -26,35 +26,29 @@ async def start_bot():
         print("🤖 Starting FIXORA PRO Telegram Bot...")
         print("=" * 50)
         
-        # Import and create bot
-        from bot_interface.telegram_bot import TelegramBetBot
+        # Import and create bot from the correct location
+        from telegram_bot import TelegramBetBot
         
         bot = TelegramBetBot()
         
-        # Test connectivity first
-        print("🔍 Testing bot connectivity...")
-        if await bot.test_connectivity():
-            print("✅ Bot connectivity test passed!")
-        else:
-            print("❌ Bot connectivity test failed!")
-            print("\n🔧 Network connectivity issues detected.")
-            print("   This usually means:")
-            print("   • Firewall/proxy blocking Telegram")
-            print("   • Corporate network restrictions")
-            print("   • Regional blocking")
-            print("   • DNS resolution issues")
-            print("\n💡 Try these solutions:")
-            print("   1. Use a different network (mobile hotspot)")
-            print("   2. Try using a VPN")
-            print("   3. Check firewall settings")
-            print("   4. Change DNS servers (8.8.8.8, 1.1.1.1)")
-            print("\n⚠️  The bot cannot start without Telegram connectivity.")
-            print("   However, the core system works offline!")
-            return False
-        
         # Start the bot
         print("\n🚀 Starting bot...")
-        await bot.run()
+        await bot.start()
+        
+        if bot.is_active():
+            print("✅ Bot started successfully!")
+            print("🔗 Send /start to your bot in Telegram to begin")
+            
+            # Keep the bot running
+            try:
+                while bot.is_active():
+                    await asyncio.sleep(1)
+            except KeyboardInterrupt:
+                print("\n🛑 Stopping bot...")
+                await bot.stop()
+        else:
+            print("❌ Bot failed to start")
+            return False
         
         return True
         
@@ -83,9 +77,9 @@ async def main():
     
     # Check if required modules exist
     required_modules = [
-        'realtime_analyzer',
+        'telegram_bot',
         'api.unified_api_client',
-        'bot_interface.telegram_bot'
+        'config'
     ]
     
     missing_modules = []
@@ -112,10 +106,9 @@ async def main():
     else:
         print("\n❌ Bot startup failed")
         print("\n🔧 Troubleshooting:")
-        print("   1. Run: python test_telegram_bot_comprehensive.py")
-        print("   2. Check network connectivity")
-        print("   3. Verify bot token is correct")
-        print("   4. Try a different network")
+        print("   1. Check network connectivity")
+        print("   2. Verify bot token is correct")
+        print("   3. Try a different network")
 
 if __name__ == "__main__":
     try:

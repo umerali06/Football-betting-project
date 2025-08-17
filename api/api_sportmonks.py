@@ -86,6 +86,53 @@ class SportMonksClient:
         logger.info(f"Found {len(fixtures)} fixtures for today")
         return fixtures
 
+    async def get_matches_in_date_range(self, start_date: str, end_date: str) -> List[Dict]:
+        """Get matches within a date range using SportMonks v3 API"""
+        try:
+            from datetime import datetime, timedelta
+            
+            # Parse start and end dates
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+            
+            all_matches = []
+            
+            # Iterate through each date in the range
+            current_dt = start_dt
+            while current_dt <= end_dt:
+                day = current_dt.strftime('%Y-%m-%d')
+                
+                params = {
+                    'include': 'scores;participants;league;venue'
+                }
+                
+                logger.info(f"Fetching matches for date: {day}")
+                
+                data = await self._make_async_request(f'fixtures/date/{day}', params)
+                if data and 'data' in data:
+                    fixtures = data['data']
+                    logger.info(f"Found {len(fixtures)} fixtures for {day}")
+                    
+                    # Add provider tag and date for consistency
+                    for fixture in fixtures:
+                        fixture["_provider"] = "sportmonks"
+                        fixture["_date"] = day
+                    
+                    all_matches.extend(fixtures)
+                
+                # Move to next day (using timedelta to avoid month boundary issues)
+                current_dt = current_dt + timedelta(days=1)
+                
+                # Rate limiting between requests
+                await asyncio.sleep(0.1)
+            
+            logger.info(f"Total matches found for date range {start_date} to {end_date}: {len(all_matches)}")
+            return all_matches
+            
+        except Exception as e:
+            logger.error(f"Failed to get matches in date range: {e}")
+            return []
+
     async def get_live_scores(self) -> List[Dict]:
         """Get live matches using the correct v3 endpoint"""
         params = {
@@ -130,6 +177,218 @@ class SportMonksClient:
         odds = data['data']
         logger.info(f"Retrieved {len(odds)} odds for fixture {fixture_id}")
         return odds
+
+    async def get_predictions(self, fixture_id: int) -> Optional[Dict]:
+        """Get predictions for a fixture using SportMonks v3 API"""
+        try:
+            params = {
+                'include': 'predictions;predictions.type'
+            }
+            
+            data = await self._make_async_request(f'fixtures/{fixture_id}', params)
+            
+            if not data or 'data' not in data:
+                logger.debug(f"No predictions available for fixture {fixture_id}")
+                return None
+            
+            fixture_data = data['data']
+            
+            # Check if predictions are available
+            if 'predictions' in fixture_data and fixture_data['predictions']:
+                predictions = fixture_data['predictions']
+                logger.info(f"Retrieved {len(predictions)} predictions for fixture {fixture_id}")
+                
+                # Transform to ROI format
+                roi_predictions = {
+                    "fixture_id": fixture_id,
+                    "predictions": predictions,
+                    "source": "sportmonks"
+                }
+                return roi_predictions
+            
+            logger.debug(f"No predictions data in fixture {fixture_id}")
+            return None
+            
+        except Exception as e:
+            logger.debug(f"Error fetching predictions for fixture {fixture_id}: {e}")
+            return None
+
+    async def get_odds_for_roi(self, start_date: str = None, end_date: str = None, league_id: int = None) -> List[Dict]:
+        """Get pre-match odds for ROI calculation within a date range"""
+        try:
+            # If no date range specified, get today's odds
+            if not start_date:
+                start_date = datetime.now().strftime('%Y-%m-%d')
+            if not end_date:
+                end_date = start_date
+            
+            params = {
+                'include': 'bookmaker;market;fixture;fixture.participants;fixture.league'
+            }
+            
+            # Add league filter if specified
+            if league_id:
+                params['filters'] = f'leagues:{league_id}'
+            
+            # Use the pre-match odds endpoint with date range
+            data = await self._make_async_request('odds/pre-match', params)
+            
+            if not data or 'data' not in data:
+                logger.warning(f"No odds data available for date range {start_date} to {end_date}")
+                return []
+            
+            odds_data = data['data']
+            logger.info(f"Retrieved {len(odds_data)} odds records for ROI calculation")
+            return odds_data
+            
+        except Exception as e:
+            logger.error(f"Error fetching odds for ROI: {e}")
+            return []
+
+    async def get_events_for_roi(self, start_date: str = None, end_date: str = None, league_id: int = None) -> List[Dict]:
+        """Get finished fixtures for ROI calculation within a date range"""
+        try:
+            # If no date range specified, get today's fixtures
+            if not start_date:
+                start_date = datetime.now().strftime('%Y-%m-%d')
+            if not end_date:
+                end_date = start_date
+            
+            params = {
+                'include': 'scores;participants;league;venue'
+            }
+            
+            # Add league filter if specified
+            if league_id:
+                params['filters'] = f'leagues:{league_id}'
+            
+            # Use the fixtures endpoint with date range
+            data = await self._make_async_request('fixtures', params)
+            
+            if not data or 'data' not in data:
+                logger.warning(f"No fixtures data available for date range {start_date} to {end_date}")
+                return []
+            
+            fixtures = data['data']
+            
+            # Filter for finished fixtures only
+            finished_fixtures = []
+            for fixture in fixtures:
+                if self.extract_match_status(fixture) == 'FINISHED':
+                    finished_fixtures.append(fixture)
+            
+            logger.info(f"Retrieved {len(finished_fixtures)} finished fixtures for ROI calculation")
+            return finished_fixtures
+            
+        except Exception as e:
+            logger.error(f"Error fetching events for ROI: {e}")
+            return []
+
+    async def get_complete_roi_data(self, start_date: str = None, end_date: str = None, league_id: int = None) -> Dict:
+        """Get complete ROI data combining events and odds for a date range"""
+        try:
+            # Fetch both events and odds
+            events = await self.get_events_for_roi(start_date, end_date, league_id)
+            odds = await self.get_odds_for_roi(start_date, end_date, league_id)
+            
+            # Create a mapping of fixture_id to odds
+            odds_map = {}
+            for odds_record in odds:
+                if 'fixture' in odds_record and odds_record['fixture']:
+                    fixture_id = odds_record['fixture'].get('id')
+                    if fixture_id:
+                        odds_map[fixture_id] = odds_record
+            
+            # Combine events with their corresponding odds
+            combined_data = []
+            for event in events:
+                fixture_id = event.get('id')
+                event_odds = odds_map.get(fixture_id, {})
+                
+                combined_record = {
+                    "event": event,
+                    "odds": event_odds,
+                    "fixture_id": fixture_id,
+                    "has_odds": bool(event_odds),
+                    "_provider": "sportmonks",
+                    "_date": start_date or datetime.now().strftime('%Y-%m-%d')
+                }
+                combined_data.append(combined_record)
+            
+            return {
+                "data": combined_data,
+                "metadata": {
+                    "provider": "sportmonks",
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "league_id": league_id,
+                    "total_events": len(events),
+                    "events_with_odds": sum(1 for record in combined_data if record["has_odds"])
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Error fetching complete ROI data: {e}")
+            return {
+                "data": [],
+                "metadata": {
+                    "provider": "sportmonks",
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "league_id": league_id,
+                    "total_events": 0,
+                    "events_with_odds": 0,
+                    "error": str(e)
+                }
+            }
+
+    async def get_fixture_result(self, fixture_id: int) -> Optional[Dict]:
+        """Get fixture result for ROI calculation"""
+        try:
+            params = {
+                'include': 'scores;participants;league'
+            }
+            
+            data = await self._make_async_request(f'fixtures/{fixture_id}', params)
+            
+            if not data or 'data' not in data:
+                logger.warning(f"No fixture data available for {fixture_id}")
+                return None
+            
+            fixture_data = data['data']
+            
+            # Extract result information
+            result = {
+                "fixture_id": fixture_id,
+                "status": self.extract_match_status(fixture_data),
+                "home_team": None,
+                "away_team": None,
+                "home_score": 0,
+                "away_score": 0,
+                "league": fixture_data.get('league', {}).get('name', 'Unknown'),
+                "date": fixture_data.get('starting_at', 'Unknown')
+            }
+            
+            # Extract team names and scores
+            if 'participants' in fixture_data:
+                for participant in fixture_data['participants']:
+                    if participant.get('meta', {}).get('location') == 'home':
+                        result['home_team'] = participant.get('name', 'Unknown')
+                    elif participant.get('meta', {}).get('location') == 'away':
+                        result['away_team'] = participant.get('name', 'Unknown')
+            
+            if 'scores' in fixture_data:
+                for score in fixture_data['scores']:
+                    if score.get('description') == 'FULL_TIME':
+                        result['home_score'] = score.get('score', {}).get('participant_1', 0)
+                        result['away_score'] = score.get('score', {}).get('participant_2', 0)
+                        break
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error fetching fixture result for {fixture_id}: {e}")
+            return None
 
     async def get_team_form(self, team_id: int, limit: int = 5) -> List[Dict]:
         """Get team form using documented v3 approach with date ranges"""
@@ -425,8 +684,48 @@ class SportMonksClient:
         
         return home_score, away_score
 
-    async def close(self):
-        """Close the aiohttp session"""
-        if self.session:
-            await self.session.close()
-            self.session = None
+    async def get_fixtures_for_date_range(self, start_date: str, end_date: str) -> List[Dict]:
+        """
+        Get fixtures for a specific date range using SportMonks API
+        """
+        try:
+            # Convert dates to SportMonks format if needed
+            params = {
+                "api_token": self.api_token,
+                "filters": f"starts_at:{start_date},{end_date}",
+                "include": "league;participants;scores"
+            }
+            
+            data = await self._make_async_request("fixtures", params)
+            
+            logger.info(f"🔍 SportMonks fixtures for date range {start_date} to {end_date}: {type(data)} - {data is not None}")
+            if data and "data" in data:
+                fixtures = data["data"]
+                logger.info(f"🔍 SportMonks fixtures count: {len(fixtures) if isinstance(fixtures, list) else 'not a list'}")
+                if isinstance(fixtures, list) and len(fixtures) > 0:
+                    logger.info(f"🔍 First fixture: {fixtures[0].get('id', 'unknown')}")
+                return fixtures
+            else:
+                logger.warning(f"🔍 No SportMonks fixtures available for date range {start_date} to {end_date}")
+                return []
+                
+        except Exception as e:
+            logger.error(f"❌ Error fetching SportMonks fixtures: {e}")
+            return []
+
+    async def cleanup(self):
+        """Clean up resources and close sessions"""
+        try:
+            if self.session and not self.session.closed:
+                await self.session.close()
+                logger.info("✅ SportMonks session closed")
+        except Exception as e:
+            logger.warning(f"⚠️ Warning during SportMonks cleanup: {e}")
+
+    def __del__(self):
+        """Destructor to ensure cleanup"""
+        try:
+            if hasattr(self, 'session') and self.session and not self.session.closed:
+                logger.warning("⚠️ SportMonks destructor called without cleanup")
+        except:
+            pass

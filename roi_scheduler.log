@@ -1,0 +1,34 @@
+2025-08-17 10:28:35,911 - __main__ - INFO - 🚀 Starting ROI Scheduler...
+2025-08-17 10:28:40,756 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA/getMe "HTTP/1.1 200 OK"
+2025-08-17 10:28:40,759 - telegram.ext.Application - INFO - Application started
+2025-08-17 10:28:40,760 - telegram_bot - INFO - Interactive Telegram bot initialized successfully (polling not started)
+2025-08-17 10:28:40,761 - telegram_bot - ERROR - Failed to start auto ROI scheduler: 'Job' object has no attribute 'timezone'
+2025-08-17 10:28:40,762 - __main__ - INFO - ✅ Bot initialized successfully
+2025-08-17 10:28:40,762 - __main__ - ERROR - ❌ Failed to start ROI scheduler: 'Job' object has no attribute 'timezone'
+2025-08-17 10:28:40,765 - __main__ - ERROR - ❌ Failed to start ROI Scheduler
+2025-08-17 10:28:40,767 - telegram.ext.Application - WARNING - Fetching updates got a asyncio.CancelledError. Ignoring as this task may onlybe closed via `Application.stop`.
+2025-08-17 10:33:49,183 - __main__ - INFO - ⏹️ Program interrupted by user
+2025-08-17 10:33:49,223 - asyncio - ERROR - Task was destroyed but it is pending!
+task: <Task cancelling name='Application:8209018533:update_fetcher' coro=<Application._update_fetcher() done, defined at C:\Users\Umer_ali\AppData\Local\Programs\Python\Python312\Lib\site-packages\telegram\ext\_application.py:1145> wait_for=<Future cancelled> cb=[gather.<locals>._done_callback() at C:\Users\Umer_ali\AppData\Local\Programs\Python\Python312\Lib\asyncio\tasks.py:767]>
+2025-08-17 10:34:02,791 - __main__ - INFO - 🚀 Starting ROI Scheduler...
+2025-08-17 10:34:06,149 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA/getMe "HTTP/1.1 200 OK"
+2025-08-17 10:34:06,152 - telegram.ext.Application - INFO - Application started
+2025-08-17 10:34:06,153 - telegram_bot - INFO - Interactive Telegram bot initialized successfully (polling not started)
+2025-08-17 10:34:06,154 - telegram_bot - INFO - Automatic ROI analysis scheduled for 8am daily (adjust for your local timezone)
+2025-08-17 10:34:06,155 - telegram_bot - INFO - Note: If you're not in UK timezone, adjust the time in _start_auto_roi_scheduler method
+2025-08-17 10:34:06,156 - __main__ - INFO - ✅ Bot initialized successfully
+2025-08-17 10:34:06,157 - __main__ - INFO - ✅ ROI Scheduler started successfully
+2025-08-17 10:34:06,157 - __main__ - INFO - 🕗 Morning updates scheduled for 8am daily (adjust for your local timezone)
+2025-08-17 10:34:06,158 - __main__ - INFO - Note: If you're not in UK timezone, adjust the time in the schedule.every().day.at() call
+2025-08-17 10:34:06,158 - __main__ - INFO - 🎉 ROI Scheduler is now running!
+2025-08-17 10:34:06,159 - __main__ - INFO - 📋 Available Commands:
+2025-08-17 10:34:06,159 - __main__ - INFO - • /analyze_roi - Analyze ROI opportunities
+2025-08-17 10:34:06,160 - __main__ - INFO - • /report - Generate performance report
+2025-08-17 10:34:06,160 - __main__ - INFO - • /status - Check bot status
+2025-08-17 10:34:06,161 - __main__ - INFO - 🕗 Morning updates: Daily at 8am UK time
+2025-08-17 10:34:06,161 - __main__ - INFO - 🔄 Starting scheduler loop...
+2025-08-17 10:34:45,260 - __main__ - INFO - 🛑 Stopping ROI Scheduler...
+2025-08-17 10:34:45,261 - telegram_bot - ERROR - Error stopping bot: This Updater is not running!
+2025-08-17 10:34:45,262 - __main__ - INFO - ✅ ROI Scheduler stopped
+2025-08-17 10:34:45,264 - telegram.ext.Application - WARNING - Fetching updates got a asyncio.CancelledError. Ignoring as this task may onlybe closed via `Application.stop`.
+2025-08-17 10:34:45,581 - __main__ - INFO - ⏹️ Program interrupted by user

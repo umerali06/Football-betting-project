@@ -1,0 +1,29 @@
+# Enhanced API Keys for Better Real-Time Data
+# Copy these to your .env file or config.py to improve real-time data fetching
+
+# FootyStats API for enhanced predictions
+# Get your key from: https://footystats.org/api/
+FOOTYSTATS_API_KEY=your_footystats_api_key_here
+
+# Odds API for enhanced odds data
+# Get your key from: https://the-odds-api.com/
+ODDS_API_KEY=your_odds_api_key_here
+
+# Alternative Football APIs for redundancy
+# Football-Data.org API
+# Get your key from: https://www.football-data.org/
+FOOTBALL_DATA_API_KEY=your_football_data_api_key_here
+
+# LiveScore API
+# Get your key from: https://livescore-api.com/
+LIVESCORE_API_KEY=your_livescore_api_key_here
+
+# Note: These API keys are optional but will significantly improve
+# the system's ability to fetch real-time data instead of using sample data.
+# The system will work without them but will fall back to sample data more often.
+
+# To use these keys:
+# 1. Create a .env file in your project root
+# 2. Add the keys above with your actual API keys
+# 3. The system will automatically detect and use them
+# 4. This will reduce sample data usage and improve real-time analysis

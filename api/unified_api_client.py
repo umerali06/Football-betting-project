@@ -10,8 +10,8 @@ import time
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 
-from .api_apifootball import ApiFootballClient
-from .api_sportmonks import SportMonksClient
+from api.api_apifootball import ApiFootballClient
+from api.api_sportmonks import SportMonksClient
 import config
 
 logger = logging.getLogger(__name__)
@@ -570,3 +570,58 @@ class UnifiedAPIClient:
         else:
             logger.warning(f"Unknown provider {prov} for live odds")
             return []
+    
+    async def get_matches_in_date_range(self, start_date: str, end_date: str) -> List[Dict]:
+        """Get matches within a date range from both APIs"""
+        try:
+            # Try API-Football first
+            try:
+                result = await self.api_football.get_matches_in_date_range(start_date, end_date)
+                if result:
+                    # Tag with provider
+                    for match in result:
+                        match["_provider"] = "api_football"
+                    logger.info(f"API-Football returned {len(result)} matches for {start_date} to {end_date}")
+                    return result
+            except Exception as e:
+                logger.debug(f"API-Football date range failed: {e}")
+            
+            # Fall back to SportMonks
+            try:
+                result = await self.sportmonks.get_matches_in_date_range(start_date, end_date)
+                if result:
+                    # Tag with provider
+                    for match in result:
+                        match["_provider"] = "sportmonks"
+                    logger.info(f"SportMonks returned {len(result)} matches for {start_date} to {end_date}")
+                    return result
+            except Exception as e:
+                logger.debug(f"SportMonks date range failed: {e}")
+            
+            logger.warning(f"No matches found from either API for {start_date} to {end_date}")
+            return []
+            
+        except Exception as e:
+            logger.error(f"Failed to get matches in date range: {e}")
+            return []
+    
+    async def get_odds(self, fixture_id: int) -> Optional[Dict]:
+        """Get odds for a specific fixture"""
+        try:
+            # Try API-Football first
+            result = await self.api_football.get_match_odds(fixture_id)
+            if result:
+                return result
+        except Exception as e:
+            logger.debug(f"API-Football odds failed: {e}")
+        
+        # SportMonks doesn't have direct odds endpoint
+        logger.debug(f"No odds available for fixture {fixture_id}")
+        return None
+
+    async def cleanup(self):
+        """Clean up resources and close sessions"""
+        if hasattr(self, 'api_football') and self.api_football:
+            await self.api_football.cleanup()
+        if hasattr(self, 'sportmonks') and self.sportmonks:
+            await self.sportmonks.cleanup()

@@ -14,6 +14,17 @@ API_FOOTBALL_TIMEZONE = "Asia/Karachi"  # Use Asia/Karachi timezone for better d
 SPORTMONKS_API_KEY = "h9GMoaRrTilhjTWReVbVIofysrPRfkigyJ45IlCBhyp6x9EYu3Tqa5xqlUHC"
 SPORTMONKS_BASE_URL = "https://api.sportmonks.com/v3/football"
 
+# Enhanced API Keys for Better Real-Time Data
+# FootyStats API for enhanced predictions
+FOOTYSTATS_API_KEY = os.getenv("FOOTYSTATS_API_KEY", None)  # Add your FootyStats API key
+
+# Odds API for enhanced odds data
+ODDS_API_KEY = os.getenv("ODDS_API_KEY", None)  # Add your Odds API key
+
+# Alternative Football APIs for redundancy
+FOOTBALL_DATA_API_KEY = os.getenv("FOOTBALL_DATA_API_KEY", None)  # Add your Football-Data.org API key
+LIVESCORE_API_KEY = os.getenv("LIVESCORE_API_KEY", None)  # Add your LiveScore API key
+
 # Telegram Configuration
 TELEGRAM_BOT_TOKEN = "8209018533:AAFDxZ0GujMc8dZ6HFVn0Lj3TDc3DrfQFCA"  # Your working token
 # TELEGRAM_BOT_TOKEN = "8209018533:AAFFEFcJ0XDKKOFdNvalvtFoxvS0JHkeG0k"  # Your other token
@@ -129,3 +140,44 @@ TRACK_STREAKS = True
 ALERT_HIGH_EDGE = 0.15    # Alert for bets with 15%+ edge
 ALERT_CONFIDENCE = 0.85   # Alert for bets with 85%+ confidence
 ALERT_STREAK = 5          # Alert for 5+ consecutive wins/losses
+
+# League Filtering Configuration
+ENGLAND_LEAGUES = [
+    39,  # Premier League
+    40,  # Championship
+    41,  # League One
+    42,  # League Two
+]
+
+TOP_EUROPEAN_LEAGUES = [
+    39,  # England - Premier League
+    40,  # England - Championship
+    41,  # England - League One
+    42,  # England - League Two
+    140, # Spain - La Liga
+    135, # Italy - Serie A
+    78,  # Germany - Bundesliga
+    61,  # France - Ligue 1
+    88,  # Netherlands - Eredivisie
+    94,  # Portugal - Primeira Liga
+    203, # Turkey - Super Lig
+    119, # Poland - Ekstraklasa
+    106, # Ukraine - Premier League
+    113, # Belgium - Pro League
+    197, # Czech Republic - First League
+    39,  # England - Premier League (duplicate for clarity)
+]
+
+# ROI Tracking Configuration
+ROI_TRACKING_ENABLED = True
+ROI_TRACKING_INTERVAL = 3600  # Check every hour
+WEEKLY_REPORT_DAY = "monday"  # Generate report every Monday
+ROI_MIN_BETS_FOR_REPORT = 5   # Minimum bets required for meaningful ROI calculation
+
+# Market ROI Thresholds
+MARKET_ROI_THRESHOLDS = {
+    "match_result": 0.01,      # 1% ROI threshold for H2H (lowered for testing)
+    "both_teams_to_score": 0.01,  # 1% ROI threshold for BTTS (lowered for testing)
+    "over_under_goals": 0.01,     # 1% ROI threshold for Over/Under (lowered for testing)
+    "corners": 0.01,              # 1% ROI threshold for Corners (lowered for testing)
+}
