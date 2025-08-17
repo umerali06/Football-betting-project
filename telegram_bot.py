@@ -96,24 +96,24 @@ class TelegramBetBot:
 
  Hi {user.first_name}! I'm your AI-powered ROI betting assistant.
 
- What I can do:
+What I can do:
  • Analyze ROI opportunities and find highest-rated bets
  • Generate PDF reports of betting performance
  • Provide unit-based betting recommendations (3-2-1 units)
  • Send automatic morning ROI updates at 8am UK time
  • Track betting performance and calculate ROI%
 
- Commands:
- /start - Show this welcome message
- /help - Show detailed help
- /status - Check bot status
+Commands:
+/start - Show this welcome message
+/help - Show detailed help
+/status - Check bot status
  /analyze_roi - Analyze today's ROI opportunities
  /report - Generate PDF report of bets
  /weekly_report - Generate weekly ROI performance summary
 
  🕗 I'll automatically send you ROI analysis every morning at 8am UK time!
  💰 You can also use /analyze_roi anytime for manual analysis.
-         """
+        """
         
         await update.message.reply_text(welcome_message)
         logger.info(f"User {user.first_name} (ID: {user.id}) started the bot in chat {chat_id}")
@@ -312,10 +312,7 @@ Send me any message or use /analyze_roi to get started.
                     
                     results_message += f"""
 {unit_emoji} <b>#{i+1} - {opportunity['home_team']} vs {opportunity['away_team']}</b>
-📅 <b>Status</b>: {opportunity['status']}
-🎯 <b>Score</b>: {opportunity['home_score']}-{opportunity['away_score']}
 💰 <b>Betting</b>: {opportunity['odds_info']}
-⭐ <b>ROI Rating</b>: {opportunity['roi_rating']:.2f}
 💎 <b>Recommended Units</b>: {units} units
 """
                 
@@ -670,8 +667,6 @@ Or just ask me about ROI, betting units, or performance analysis!
                 
                 morning_message += f"""
 {unit_emoji} <b>#{i+1} - {opportunity['home_team']} vs {opportunity['away_team']}</b>
-📅 <b>Status</b>: {opportunity['status']}
-⭐ <b>ROI Rating</b>: {opportunity['roi_rating']:.2f}
 💎 <b>Recommended Units</b>: {units} units
 """
             
@@ -772,7 +767,7 @@ Or just ask me about ROI, betting units, or performance analysis!
             'total_sessions': len(self.user_sessions),
             'sessions': self.user_sessions
         }
-    
+
     def _extract_team_names(self, match_data: Dict) -> tuple:
         """Extract home and away team names from match data"""
         try:
@@ -1006,10 +1001,7 @@ Or just ask me about ROI, betting units, or performance analysis!
                 
                 morning_message += f"""
 {unit_emoji} <b>#{i+1} - {opportunity['home_team']} vs {opportunity['away_team']}</b>
-📅 <b>Status</b>: {opportunity['status']}
-🎯 <b>Score</b>: {opportunity['home_score']}-{opportunity['away_score']}
 💰 <b>Betting</b>: {opportunity['odds_info']}
-⭐ <b>ROI Rating</b>: {opportunity['roi_rating']:.2f}
 💎 <b>Recommended Units</b>: {units} units
 """
             

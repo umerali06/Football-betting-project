@@ -52,7 +52,7 @@ class EnhancedAPIClient(UnifiedAPIClient):
         
         # Cache for enhanced data
         self.enhanced_data_cache = {}
-        self.cache_ttl = 300  # 5 minutes
+        self.cache_ttl = 300  # 5 minutes;..;/
 
     def _init_fallback_generators(self):
         """Initialize fallback data generators"""
