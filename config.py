@@ -71,7 +71,7 @@ CORNERS_THRESHOLD = 0.05
 
 # Value Bet Analysis Settings
 VALUE_BET_THRESHOLD = 0.05  # Default threshold for value bets
-MIN_ODDS = 1.5               # Minimum odds to consider
+MIN_ODDS = 1.8               # Minimum odds to consider (REQUIRED: ≥1.8)
 MAX_ODDS = 10.0              # Maximum odds to consider
 CONFIDENCE_THRESHOLD = 0.6   # Minimum confidence for value bets
 

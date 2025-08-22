@@ -8,6 +8,7 @@ import pytz
 
 from utils.time import now_london, get_next_8am_london
 from filters.competition_filter import CompetitionFilter
+from utils.odds_filter import OddsFilter
 import config
 
 logger = logging.getLogger(__name__)
@@ -173,10 +174,13 @@ class DailyJobsScheduler:
                     logger.debug(f"Failed to analyze fixture {fixture.get('id', 'unknown')}: {e}")
                     continue
             
+            # CRITICAL: Final odds filtering to ensure no bets with odds < 1.8 slip through
+            value_bets = OddsFilter.filter_value_bets(value_bets)
+            
             # Sort by edge value (descending)
             value_bets.sort(key=lambda x: x.get('edge', 0), reverse=True)
             
-            logger.info(f"Found {len(value_bets)} value bets")
+            logger.info(f"Found {len(value_bets)} value bets after odds filtering")
             return value_bets
             
         except Exception as e:
@@ -310,6 +314,12 @@ class DailyJobsScheduler:
                 for outcome, prob in predictions['match_result'].items():
                     if outcome in match_odds:
                         odds = match_odds[outcome]
+                        
+                        # CRITICAL: Filter by minimum odds requirement (≥1.8)
+                        if not OddsFilter.validate_odds(odds):
+                            logger.debug(f"Excluding bet with invalid odds {odds} for {outcome}")
+                            continue
+                        
                         edge = value_analyzer.calculate_value_edge(prob, odds)
                         
                         if edge >= config.VALUE_BET_THRESHOLD:
@@ -326,6 +336,11 @@ class DailyJobsScheduler:
                                 'stake_units': self._calculate_stake_units(edge)
                             }
                             value_bets.append(value_bet)
+                            logger.info(f"Added value bet: {outcome} @ {odds:.2f} (edge: {edge:.3f})")
+                        else:
+                            logger.debug(f"Bet {outcome} @ {odds:.2f} failed edge threshold: {edge:.3f} < {config.VALUE_BET_THRESHOLD}")
+                    else:
+                        logger.debug(f"No odds available for {outcome}")
             
             return value_bets
             
@@ -421,6 +436,10 @@ class DailyJobsScheduler:
                         except (ValueError, TypeError):
                             continue
             
+            # Log odds validation summary
+            if match_odds:
+                OddsFilter.log_odds_validation_summary(match_odds, "Match Result")
+            
             return match_odds
             
         except Exception as e:
@@ -439,6 +458,8 @@ class DailyJobsScheduler:
             return 0.5  # 4th & 5th - lower confidence
         else:
             return 0.0  # No bet
+    
+
     
     def _format_morning_digest(self, fixtures: List[Dict], value_bets: List[Dict], 
                               now_uk: datetime) -> str:

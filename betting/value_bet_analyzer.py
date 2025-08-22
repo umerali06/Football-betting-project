@@ -1,5 +1,6 @@
 import numpy as np
 from typing import Dict, List, Tuple, Optional
+from utils.odds_filter import OddsFilter
 import config
 
 class ValueBetAnalyzer:
@@ -32,6 +33,14 @@ class ValueBetAnalyzer:
     
     def is_value_bet(self, model_probability: float, odds: float, market_type: str = 'match_result', confidence: float = 0.7) -> bool:
         """Check if a bet offers value with advanced criteria"""
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        # CRITICAL: Validate odds requirements first using centralized filter
+        if not OddsFilter.validate_odds(odds):
+            logger.debug(f"Bet rejected: odds {odds:.2f} failed validation (min: {self.min_odds}, max: {self.max_odds})")
+            return False
+        
         edge = self.calculate_value_edge(model_probability, odds)
         
         # Get market-specific threshold
@@ -47,7 +56,15 @@ class ValueBetAnalyzer:
         # Kelly Criterion check
         kelly_criteria = self._check_kelly_criterion(model_probability, odds)
         
+        # Log detailed validation results
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f"Bet validation for odds {odds:.2f}: edge={edge:.3f}, "
+                        f"basic_criteria={basic_criteria}, confidence={confidence_criteria}, "
+                        f"kelly={kelly_criteria}")
+        
         return basic_criteria and confidence_criteria and kelly_criteria
+    
+
     
     def _check_kelly_criterion(self, model_probability: float, odds: float) -> bool:
         """Check if bet meets Kelly Criterion"""
@@ -128,7 +145,22 @@ class ValueBetAnalyzer:
                     'confidence': self._calculate_confidence(away_prob, away_odds)
                 })
         
+        # Final odds filtering to ensure no invalid odds slip through
+        value_bets = self.filter_value_bets_by_odds(value_bets)
+        
         return value_bets
+    
+    def filter_value_bets_by_odds(self, value_bets: List[Dict]) -> List[Dict]:
+        """
+        Filter value bets to ensure all have valid odds (≥1.8)
+        
+        Args:
+            value_bets: List of value bet dictionaries
+            
+        Returns:
+            List[Dict]: Filtered list with only valid odds
+        """
+        return OddsFilter.filter_value_bets(value_bets)
     
     def analyze_goals_bets(self, predictions: Dict, odds: Dict) -> List[Dict]:
         """
