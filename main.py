@@ -9,6 +9,9 @@ import os
 from typing import Dict, List, Optional, Tuple
 import argparse
 
+# Import timezone utilities
+from utils.time import now_london, to_utc, is_future_match
+
 # Configure logging to handle UTF-8 properly on Windows
 if sys.platform == "win32":
     # Force UTF-8 encoding for Windows
@@ -197,6 +200,16 @@ class FootballBettingSystem:
             logger.info("Daily analysis scheduled for 09:00")
             logger.info("Weekly reports scheduled for Sunday 18:00")
         
+        # Initialize daily jobs scheduler for 8:00 AM UK time updates
+        try:
+            from scheduling.daily_jobs import DailyJobsScheduler
+            self.daily_scheduler = DailyJobsScheduler(self.telegram_bot)
+            await self.daily_scheduler.start()
+            logger.info("Daily jobs scheduler started successfully")
+        except Exception as e:
+            logger.error(f"Failed to start daily jobs scheduler: {e}")
+            self.daily_scheduler = None
+        
         logger.info("System started successfully!")
         
         # Initial daily analysis completely disabled in ROI-only mode
@@ -204,6 +217,13 @@ class FootballBettingSystem:
             logger.info("ROI-only mode: Initial daily analysis completely disabled")
         else:
             await self.daily_analysis()
+        
+        # Show current UK time and next scheduled run
+        current_uk_time = now_london()
+        logger.info(f"Current UK time: {current_uk_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        if hasattr(self, 'daily_scheduler') and self.daily_scheduler:
+            next_run = self.daily_scheduler.get_next_run_time()
+            logger.info(f"Next morning digest scheduled for: {next_run.strftime('%Y-%m-%d %H:%M:%S')} UK time")
         
         if not self.demo_mode:
             # Keep the system running with bot
@@ -578,6 +598,12 @@ class FootballBettingSystem:
         try:
             if hasattr(self.api_client, 'cleanup'):
                 await self.api_client.cleanup()
+            
+            # Stop daily scheduler
+            if hasattr(self, 'daily_scheduler') and self.daily_scheduler:
+                await self.daily_scheduler.stop()
+                logger.info("Daily scheduler stopped successfully")
+            
             logger.info("API clients cleaned up successfully")
         except Exception as e:
             logger.error(f"Error during cleanup: {e}")

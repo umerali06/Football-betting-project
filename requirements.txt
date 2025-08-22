@@ -34,6 +34,12 @@ Pillow>=9.0.0
 # Schedule management
 schedule>=1.1.0
 
+# Advanced scheduling with timezone support
+APScheduler>=3.10.0
+
+# YAML configuration support
+PyYAML>=6.0
+
 # JSON handling
 ujson>=5.0.0
 

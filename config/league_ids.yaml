@@ -1,0 +1,25 @@
+# API-Football League IDs
+api_football:
+  uefa:
+    "UEFA Champions League": 2
+    "UEFA Europa League": 3
+    "UEFA Europa Conference League": 848
+  domestics:
+    "English Premier League": 39
+    "La Liga": 140
+    "Serie A": 135
+    "Bundesliga": 78
+    "Ligue 1": 61
+
+# SportMonks League IDs
+sportmonks:
+  uefa:
+    "UEFA Champions League": 732
+    "UEFA Europa League": 733
+    "UEFA Europa Conference League": 1129
+  domestics:
+    "English Premier League": 8
+    "La Liga": 564
+    "Serie A": 384
+    "Bundesliga": 8
+    "Ligue 1": 301

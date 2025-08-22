@@ -14,6 +14,9 @@ from typing import Dict, List, Optional
 
 import schedule
 
+# Import timezone utilities
+from utils.time import now_london, to_utc, is_future_match
+
 from realtime_analyzer import RealTimeAnalyzer
 import config
 
@@ -74,6 +77,16 @@ class RealTimeBettingSystem:
         
         # System status every hour with sync wrapper
         schedule.every().hour.do(self._send_system_status_sync)
+        
+        # Initialize daily jobs scheduler for 8:00 AM UK time updates
+        try:
+            from scheduling.daily_jobs import DailyJobsScheduler
+            self.daily_scheduler = DailyJobsScheduler()
+            asyncio.create_task(self.daily_scheduler.start())
+            logger.info("Daily jobs scheduler started successfully")
+        except Exception as e:
+            logger.error(f"Failed to start daily jobs scheduler: {e}")
+            self.daily_scheduler = None
     
     def _run_live_analysis_sync(self):
         """Sync wrapper for run_live_analysis to avoid coroutine warning"""
@@ -228,9 +241,18 @@ class RealTimeBettingSystem:
         uptime = self._get_uptime()
         features_status = self._get_features_status()
         
+        # Get current UK time and next scheduled run
+        current_uk_time = now_london()
+        next_run_info = "Not scheduled"
+        if hasattr(self, 'daily_scheduler') and self.daily_scheduler:
+            next_run = self.daily_scheduler.get_next_run_time()
+            next_run_info = next_run.strftime('%Y-%m-%d %H:%M:%S')
+        
         status = f"""
 System Status Report
 ===================
+Current UK Time: {current_uk_time.strftime('%Y-%m-%d %H:%M:%S')}
+Next 8:00 AM Run: {next_run_info}
 Uptime: {uptime}
 Total Analyses: {self.analysis_stats['total_analyses']}
 Successful: {self.analysis_stats['successful_analyses']}
@@ -274,6 +296,11 @@ Feature Status:
             
             # Close analyzer
             await self.analyzer.close()
+            
+            # Stop daily scheduler
+            if hasattr(self, 'daily_scheduler') and self.daily_scheduler:
+                await self.daily_scheduler.stop()
+                logger.info("Daily scheduler stopped successfully")
             
             logger.info("System shutdown completed")
             

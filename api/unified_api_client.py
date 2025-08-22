@@ -619,6 +619,282 @@ class UnifiedAPIClient:
         logger.debug(f"No odds available for fixture {fixture_id}")
         return None
 
+    async def get_fixtures(self, start_dt, end_dt, league_names: list[str] = None) -> list[dict]:
+        """
+        Get fixtures within date range, filtered to future-only and allowed competitions
+        
+        Args:
+            start_dt: Start datetime (timezone-aware)
+            end_dt: End datetime (timezone-aware)
+            league_names: Optional list of league names to filter by
+            
+        Returns:
+            List of fixtures sorted by kickoff time (ascending)
+        """
+        try:
+            from utils.time import to_utc, now_utc
+            from filters.competition_filter import CompetitionFilter
+            
+            # Initialize competition filter
+            comp_filter = CompetitionFilter()
+            
+            # Convert to UTC for API calls
+            start_utc = to_utc(start_dt)
+            end_utc = to_utc(end_dt)
+            
+            # Format dates for API calls
+            start_date = start_utc.strftime("%Y-%m-%d")
+            end_date = end_utc.strftime("%Y-%m-%d")
+            
+            all_fixtures = []
+            
+            # Try API-Football first
+            try:
+                api_football_fixtures = await self.api_football.get_matches_in_date_range(start_date, end_date)
+                if api_football_fixtures:
+                    # Tag with provider and filter future matches
+                    for fixture in api_football_fixtures:
+                        fixture["_provider"] = "api_football"
+                        fixture["_source"] = "api_football"
+                    all_fixtures.extend(api_football_fixtures)
+                    logger.info(f"API-Football returned {len(api_football_fixtures)} fixtures")
+            except Exception as e:
+                logger.debug(f"API-Football fixtures failed: {e}")
+            
+            # Try SportMonks as fallback
+            try:
+                sportmonks_fixtures = await self.sportmonks.get_matches_in_date_range(start_date, end_date)
+                if sportmonks_fixtures:
+                    # Tag with provider and filter future matches
+                    for fixture in sportmonks_fixtures:
+                        fixture["_provider"] = "sportmonks"
+                        fixture["_source"] = "sportmonks"
+                    all_fixtures.extend(sportmonks_fixtures)
+                    logger.info(f"SportMonks returned {len(sportmonks_fixtures)} fixtures")
+            except Exception as e:
+                logger.debug(f"SportMonks fixtures failed: {e}")
+            
+            if not all_fixtures:
+                logger.warning(f"No fixtures found from either API for {start_date} to {end_date}")
+                return []
+            
+            # Filter to future-only matches
+            now_utc_time = now_utc()
+            future_fixtures = []
+            
+            for fixture in all_fixtures:
+                kickoff_time = self._extract_kickoff_time(fixture)
+                if kickoff_time and kickoff_time >= now_utc_time:
+                    # Check if match is not finished
+                    status = self._extract_match_status(fixture)
+                    if status not in ['FT', 'AET', 'PEN', 'PST', 'CANC', 'ABN']:
+                        future_fixtures.append(fixture)
+            
+            logger.info(f"Filtered to {len(future_fixtures)} future fixtures from {len(all_fixtures)} total")
+            
+            # Filter by allowed competitions
+            if league_names:
+                # Filter by specific league names
+                filtered_fixtures = []
+                for fixture in future_fixtures:
+                    comp_name = self._extract_competition_name(fixture)
+                    if comp_name in league_names:
+                        filtered_fixtures.append(fixture)
+                future_fixtures = filtered_fixtures
+                logger.info(f"Filtered to {len(future_fixtures)} fixtures in specified leagues")
+            else:
+                # Use competition filter for allowed competitions
+                future_fixtures = comp_filter.filter_fixtures(future_fixtures)
+            
+            # Remove duplicates (prefer API-Football over SportMonks)
+            unique_fixtures = self._deduplicate_fixtures(future_fixtures)
+            
+            # Sort by kickoff time (ascending)
+            unique_fixtures.sort(key=lambda x: self._extract_kickoff_time(x) or now_utc_time)
+            
+            logger.info(f"Final result: {len(unique_fixtures)} unique future fixtures")
+            return unique_fixtures
+            
+        except Exception as e:
+            logger.error(f"Failed to get fixtures: {e}")
+            return []
+    
+    def _extract_kickoff_time(self, fixture: dict) -> Optional[datetime]:
+        """Extract kickoff time from fixture data"""
+        try:
+            from utils.time import to_utc
+            
+            # Try different possible keys for kickoff time
+            possible_keys = [
+                'fixture.date', 'date', 'kickoff', 'start_time', 'time'
+            ]
+            
+            for key in possible_keys:
+                if '.' in key:
+                    # Handle nested keys like 'fixture.date'
+                    parts = key.split('.')
+                    value = fixture
+                    for part in parts:
+                        if isinstance(value, dict) and part in value:
+                            value = value[part]
+                        else:
+                            value = None
+                            break
+                else:
+                    value = fixture.get(key)
+                
+                if value:
+                    if isinstance(value, str):
+                        # Try to parse string datetime
+                        try:
+                            dt = datetime.fromisoformat(value.replace('Z', '+00:00'))
+                            return to_utc(dt)
+                        except ValueError:
+                            continue
+                    elif isinstance(value, datetime):
+                        return to_utc(value)
+            
+            return None
+        except Exception as e:
+            logger.debug(f"Failed to extract kickoff time: {e}")
+            return None
+    
+    def _extract_match_status(self, fixture: dict) -> str:
+        """Extract match status from fixture data"""
+        try:
+            # Try different possible keys for status
+            possible_keys = [
+                'fixture.status.short', 'status.short', 'status', 'state'
+            ]
+            
+            for key in possible_keys:
+                if '.' in key:
+                    # Handle nested keys
+                    parts = key.split('.')
+                    value = fixture
+                    for part in parts:
+                        if isinstance(value, dict) and part in value:
+                            value = value[part]
+                        else:
+                            value = None
+                            break
+                else:
+                    value = fixture.get(key)
+                
+                if value:
+                    return str(value).upper()
+            
+            return "UNKNOWN"
+        except Exception as e:
+            logger.debug(f"Failed to extract match status: {e}")
+            return "UNKNOWN"
+    
+    def _extract_competition_name(self, fixture: dict) -> str:
+        """Extract competition name from fixture data"""
+        try:
+            # Try different possible keys for competition name
+            possible_keys = [
+                'league.name', 'competition.name', 'tournament.name', 'division.name',
+                'league', 'competition', 'tournament', 'division'
+            ]
+            
+            for key in possible_keys:
+                if '.' in key:
+                    # Handle nested keys
+                    parts = key.split('.')
+                    value = fixture
+                    for part in parts:
+                        if isinstance(value, dict) and part in value:
+                            value = value[part]
+                        else:
+                            value = None
+                            break
+                else:
+                    value = fixture.get(key)
+                
+                if value:
+                    if isinstance(value, dict):
+                        # Try to get name from dict
+                        for sub_key in ['name', 'title', 'full_name']:
+                            if sub_key in value:
+                                return value[sub_key]
+                    elif isinstance(value, str):
+                        return value
+            
+            return "Unknown Competition"
+        except Exception as e:
+            logger.debug(f"Failed to extract competition name: {e}")
+            return "Unknown Competition"
+    
+    def _deduplicate_fixtures(self, fixtures: list[dict]) -> list[dict]:
+        """Remove duplicate fixtures, preferring API-Football over SportMonks"""
+        seen_fixtures = {}
+        
+        for fixture in fixtures:
+            # Create a unique key based on teams and date
+            home_team = self._extract_team_name(fixture, 'home')
+            away_team = self._extract_team_name(fixture, 'away')
+            kickoff = self._extract_kickoff_time(fixture)
+            
+            if home_team and away_team and kickoff:
+                key = f"{home_team}_{away_team}_{kickoff.strftime('%Y%m%d_%H%M')}"
+                
+                if key not in seen_fixtures:
+                    seen_fixtures[key] = fixture
+                else:
+                    # Prefer API-Football over SportMonks
+                    existing_provider = seen_fixtures[key].get('_provider', 'unknown')
+                    current_provider = fixture.get('_provider', 'unknown')
+                    
+                    if current_provider == 'api_football' and existing_provider == 'sportmonks':
+                        seen_fixtures[key] = fixture
+                        logger.debug(f"Replaced SportMonks fixture with API-Football: {key}")
+        
+        return list(seen_fixtures.values())
+    
+    def _extract_team_name(self, fixture: dict, team_type: str) -> Optional[str]:
+        """Extract team name from fixture data"""
+        try:
+            # Try different possible keys for team names
+            possible_keys = [
+                f'teams.{team_type}.name',
+                f'{team_type}Team.name',
+                f'{team_type}_team_name',
+                'participants'
+            ]
+            
+            for key in possible_keys:
+                if key == 'participants':
+                    # Handle participants array
+                    participants = fixture.get('participants', [])
+                    if len(participants) >= 2:
+                        if team_type == 'home':
+                            return participants[0].get('name')
+                        else:
+                            return participants[1].get('name')
+                elif '.' in key:
+                    # Handle nested keys
+                    parts = key.split('.')
+                    value = fixture
+                    for part in parts:
+                        if isinstance(value, dict) and part in value:
+                            value = value[part]
+                        else:
+                            value = None
+                            break
+                    
+                    if value:
+                        return str(value)
+                else:
+                    value = fixture.get(key)
+                    if value:
+                        return str(value)
+            
+            return None
+        except Exception as e:
+            logger.debug(f"Failed to extract {team_type} team name: {e}")
+            return None
+
     async def cleanup(self):
         """Clean up resources and close sessions"""
         if hasattr(self, 'api_football') and self.api_football:

@@ -1,0 +1,14 @@
+timezone: "Europe/London"
+show_past_matches: false
+future_cutoff_minutes: 0
+include_competitions:
+  uefa:
+    - "UEFA Champions League"
+    - "UEFA Europa League"
+    - "UEFA Europa Conference League"
+  domestics:
+    - "English Premier League"
+    - "La Liga"
+    - "Serie A"
+    - "Bundesliga"
+    - "Ligue 1"

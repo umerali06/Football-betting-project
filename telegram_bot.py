@@ -17,6 +17,9 @@ from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import config
 
+# Import timezone utilities
+from utils.time import now_london, get_next_8am_london
+
 logger = logging.getLogger(__name__)
 
 class TelegramBetBot:
@@ -151,8 +154,15 @@ Features:
         """Handle /status command"""
         active_sessions = self.get_active_sessions()
         
+        # Get current UK time and next 8:00 AM run
+        current_uk_time = now_london()
+        next_8am = get_next_8am_london()
+        
         status_message = f"""
 📊 ROI Betting System Status
+
+⏰ Current UK Time: {current_uk_time.strftime('%Y-%m-%d %H:%M:%S')}
+🕗 Next 8:00 AM UK Run: {next_8am.strftime('%Y-%m-%d %H:%M:%S')}
 
 ✅ Bot is running and active
 🔑 API Connection: Enhanced Unified API System
