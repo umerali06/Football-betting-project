@@ -164,7 +164,7 @@ class ROIWeeklyReportGenerator:
             ['Total Stake', f"${overall.get('total_stake', 0):.2f}"],
             ['Total Return', f"${overall.get('total_return', 0):.2f}"],
             ['Total Profit/Loss', f"${overall.get('total_profit_loss', 0):.2f}"],
-            ['Overall ROI', f"{overall.get('roi', 0):.2f}%"]
+            ['Overall ROI', f"{overall.get('overall_roi', 0):.2f}%"]
         ]
         
         # Create summary table
@@ -188,7 +188,7 @@ class ROIWeeklyReportGenerator:
         story.append(Spacer(1, 10))
         
         insights = []
-        roi = overall.get('roi', 0)
+        roi = overall.get('overall_roi', 0)
         win_rate = overall.get('win_rate', 0)
         
         if roi > 0:
@@ -228,11 +228,11 @@ class ROIWeeklyReportGenerator:
                     market.get('market_type', 'Unknown'),
                     str(market.get('total_bets', 0)),
                     str(market.get('winning_bets', 0)),
-                    f"{market.get('overall_roi', 0):.1f}%",
+                    f"{market.get('win_rate', 0):.1f}%",
                     f"${market.get('total_stake', 0):.2f}",
                     f"${market.get('total_return', 0):.2f}",
                     f"${market.get('total_profit_loss', 0):.2f}",
-                    f"{market.get('overall_roi', 0):.2f}%"
+                    f"{market.get('roi', 0):.2f}%"
                 ])
             
             market_table = Table(market_data, colWidths=[1.2*inch, 0.5*inch, 0.5*inch, 0.8*inch, 0.8*inch, 0.8*inch, 0.8*inch, 0.6*inch])
@@ -255,11 +255,11 @@ class ROIWeeklyReportGenerator:
             story.append(Paragraph("Market Insights", self.header_style))
             story.append(Spacer(1, 10))
             
-            best_market = max(market_performance, key=lambda x: x.get('overall_roi', 0))
-            worst_market = min(market_performance, key=lambda x: x.get('overall_roi', 0))
+            best_market = max(market_performance, key=lambda x: x.get('roi', 0))
+            worst_market = min(market_performance, key=lambda x: x.get('roi', 0))
             
-            story.append(Paragraph(f"Best Performing Market: {best_market.get('market_type', 'Unknown')} with {best_market.get('overall_roi', 0):.2f}% ROI", self.styles['Normal']))
-            story.append(Paragraph(f"Worst Performing Market: {worst_market.get('market_type', 'Unknown')} with {worst_market.get('overall_roi', 0):.2f}% ROI", self.styles['Normal']))
+            story.append(Paragraph(f"Best Performing Market: {best_market.get('market_type', 'Unknown')} with {best_market.get('roi', 0):.2f}% ROI", self.styles['Normal']))
+            story.append(Paragraph(f"Worst Performing Market: {worst_market.get('market_type', 'Unknown')} with {worst_market.get('roi', 0):.2f}% ROI", self.styles['Normal']))
             
         else:
             story.append(Paragraph("No market performance data available for this period", self.styles['Normal']))
@@ -287,11 +287,11 @@ class ROIWeeklyReportGenerator:
                     league.get('league_name', 'Unknown')[:25],  # Truncate long names
                     str(league.get('total_bets', 0)),
                     str(league.get('winning_bets', 0)),
-                    f"{league.get('overall_roi', 0):.1f}%",
+                    f"{league.get('win_rate', 0):.1f}%",
                     f"${league.get('total_stake', 0):.2f}",
                     f"${league.get('total_return', 0):.2f}",
                     f"${league.get('total_profit_loss', 0):.2f}",
-                    f"{league.get('overall_roi', 0):.2f}%"
+                    f"{league.get('roi', 0):.2f}%"
                 ])
             
             league_table = Table(league_data, colWidths=[1.5*inch, 0.5*inch, 0.5*inch, 0.8*inch, 0.8*inch, 0.8*inch, 0.8*inch, 0.6*inch])
@@ -314,11 +314,11 @@ class ROIWeeklyReportGenerator:
             story.append(Paragraph("League Insights", self.header_style))
             story.append(Spacer(1, 10))
             
-            best_league = max(league_performance, key=lambda x: x.get('overall_roi', 0))
-            worst_league = min(league_performance, key=lambda x: x.get('overall_roi', 0))
+            best_league = max(league_performance, key=lambda x: x.get('roi', 0))
+            worst_league = min(league_performance, key=lambda x: x.get('roi', 0))
             
-            story.append(Paragraph(f"Best Performing League: {best_league.get('league_name', 'Unknown')} with {best_league.get('overall_roi', 0):.2f}% ROI", self.styles['Normal']))
-            story.append(Paragraph(f"Worst Performing League: {worst_league.get('league_name', 'Unknown')} with {worst_league.get('overall_roi', 0):.2f}% ROI", self.styles['Normal']))
+            story.append(Paragraph(f"Best Performing League: {best_league.get('league_name', 'Unknown')} with {best_league.get('roi', 0):.2f}% ROI", self.styles['Normal']))
+            story.append(Paragraph(f"Worst Performing League: {worst_league.get('league_name', 'Unknown')} with {worst_league.get('roi', 0):.2f}% ROI", self.styles['Normal']))
             
         else:
             story.append(Paragraph("No league performance data available for this period", self.styles['Normal']))

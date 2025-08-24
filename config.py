@@ -79,6 +79,7 @@ CONFIDENCE_THRESHOLD = 0.6   # Minimum confidence for value bets
 MAX_BETS_PER_DAY = 10
 MAX_BETS_PER_MATCH = 2
 BANKROLL_PERCENTAGE = 0.02  # 2% of bankroll per bet
+MAX_DAILY_STAKE = 0.1  # Maximum 10% of bankroll per day
 KELLY_CRITERION_ENABLED = True
 
 # Advanced Statistics

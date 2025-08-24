@@ -1,0 +1,958 @@
+2025-08-24 19:02:24,672 - filters.competition_filter - INFO - Filtered 4 fixtures to 3 allowed competitions
+2025-08-24 19:02:25,327 - utils.odds_filter - WARNING - Invalid odds type: <class 'NoneType'> for value None
+2025-08-24 19:02:26,011 - utils.odds_filter - INFO - Odds validation summary [Match Result]:
+2025-08-24 19:02:26,047 - utils.odds_filter - INFO -   Total markets: 3
+2025-08-24 19:02:26,058 - utils.odds_filter - INFO -   Valid odds: 1
+2025-08-24 19:02:26,155 - utils.odds_filter - INFO -   Invalid odds: 2
+2025-08-24 19:02:26,184 - utils.odds_filter - INFO -   Valid odds range: 3.50 - 3.50
+2025-08-24 19:02:26,226 - utils.odds_filter - INFO -   Rejected odds: [1.09, 1.24]
+2025-08-24 19:02:26,962 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:26,988 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:26,999 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:02:27,006 - etl.ingest - ERROR - Failed to clean and store data: 35 values for 36 columns
+2025-08-24 19:02:27,008 - pipeline.run_daily - ERROR - ETL process failed
+2025-08-24 19:02:27,059 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:27,077 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:27,078 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:02:27,083 - etl.ingest - ERROR - Failed to clean and store data: 35 values for 36 columns
+2025-08-24 19:02:27,083 - pipeline.run_daily - ERROR - ETL process failed
+2025-08-24 19:02:27,113 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:27,133 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:27,133 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:02:27,137 - etl.ingest - ERROR - Failed to clean and store data: 35 values for 36 columns
+2025-08-24 19:02:27,138 - pipeline.run_daily - ERROR - ETL process failed
+2025-08-24 19:02:27,180 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:27,207 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:27,234 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:02:27,242 - etl.ingest - ERROR - Failed to clean and store data: 35 values for 36 columns
+2025-08-24 19:02:27,308 - pipeline.run_daily - ERROR - ETL process failed
+2025-08-24 19:02:27,538 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:27,661 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:27,736 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:02:27,841 - etl.ingest - ERROR - Failed to clean and store data: 35 values for 36 columns
+2025-08-24 19:02:27,884 - pipeline.run_daily - ERROR - ETL process failed
+2025-08-24 19:02:27,997 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:28,033 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:28,037 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:02:28,039 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:02:28,057 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:02:28,063 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:02:28,081 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:02:28,109 - etl.ingest - ERROR - Failed to clean and store data: 35 values for 36 columns
+2025-08-24 19:02:28,115 - pipeline.run_daily - ERROR - ETL process failed
+2025-08-24 19:02:28,179 - pipeline.run_daily - ERROR - Pipeline failed at ETL step
+2025-08-24 19:02:28,254 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:28,269 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:28,334 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:02:28,361 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:02:28,362 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:02:28,364 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:02:28,364 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:02:28,365 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:02:28,366 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:02:28,374 - etl.ingest - ERROR - Failed to clean and store data: 35 values for 36 columns
+2025-08-24 19:02:28,381 - pipeline.run_daily - ERROR - ETL process failed
+2025-08-24 19:02:28,383 - pipeline.run_daily - ERROR - Pipeline failed at ETL step
+2025-08-24 19:02:28,414 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:02:28,426 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:02:28,442 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:02:28,467 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:02:28,492 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:02:28,510 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:02:28,526 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:02:28,542 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:02:28,565 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:02:28,584 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:02:28,596 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:02:28,650 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:02:28,671 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:02:28,695 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:02:28,719 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:02:28,742 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:02:28,767 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:02:28,791 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:02:28,808 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:02:28,822 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:02:28,841 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:02:28,862 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:02:28,936 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:02:28,957 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:02:28,972 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:02:28,993 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:02:29,017 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:02:29,035 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:02:29,063 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:02:29,081 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:02:29,096 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:02:29,118 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:02:29,139 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:02:29,187 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:02:29,208 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:02:29,224 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:02:29,242 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:02:29,266 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:02:29,284 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:02:29,302 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:02:29,318 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:02:29,338 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:02:29,358 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:02:29,383 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:02:29,424 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:02:29,444 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:02:29,463 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:02:29,478 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:02:29,492 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:02:29,511 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:02:29,528 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:02:29,550 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:02:29,574 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:02:29,593 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:02:29,617 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:02:29,670 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:02:29,691 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:02:29,706 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:02:29,723 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:02:29,745 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:02:29,769 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:02:29,787 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:02:29,803 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:02:29,824 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:02:29,845 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:02:29,912 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:11:59,265 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:11:59,328 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:11:59,341 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:11:59,367 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:11:59,368 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:11:59,381 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:11:59,448 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:11:59,454 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:11:59,455 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:11:59,509 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:11:59,519 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:11:59,526 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:11:59,539 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:11:59,540 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:11:59,581 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:11:59,593 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:11:59,593 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:11:59,610 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:11:59,610 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:11:59,709 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:11:59,719 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:11:59,719 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:11:59,738 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:11:59,738 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:11:59,739 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:11:59,783 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:11:59,784 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:11:59,785 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:11:59,835 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:11:59,850 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:11:59,853 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:11:59,866 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:11:59,867 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:11:59,867 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:11:59,912 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:11:59,912 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:11:59,913 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:11:59,943 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:11:59,960 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:11:59,961 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:11:59,962 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:11:59,962 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:11:59,963 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:11:59,963 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:11:59,977 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:11:59,982 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:11:59,983 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:11:59,984 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:00,019 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:00,039 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:00,062 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:00,064 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:12:00,065 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:12:00,076 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:12:00,082 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:12:00,086 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:12:00,087 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:12:00,088 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:00,090 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:12:00,091 - pipeline.run_daily - INFO - Total Duration: 0:00:00.125001
+2025-08-24 19:12:00,092 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:00,136 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:00,148 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:00,190 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:00,202 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:00,202 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:00,207 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:12:00,208 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:00,208 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:12:00,210 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:00,219 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:00,220 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:00,227 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:12:00,228 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:00,266 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:00,268 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:00,275 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:00,283 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:12:00,284 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:12:00,295 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:12:00,296 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:12:00,301 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:12:00,303 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:12:00,305 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:00,308 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:12:00,310 - pipeline.run_daily - INFO - Total Duration: 0:00:00.097003
+2025-08-24 19:12:00,311 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:29,622 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:29,636 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:29,638 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:29,649 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:29,651 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:29,660 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:29,699 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:29,700 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:29,701 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:29,739 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:29,749 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:29,750 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:29,766 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:29,767 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:29,799 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:29,817 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:29,818 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:29,833 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:29,838 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:29,876 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:29,899 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:29,903 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:29,920 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:29,921 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:29,922 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:29,960 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:29,961 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:29,964 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:29,997 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:30,012 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:30,015 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:30,028 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:30,028 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:30,029 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:30,065 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:30,066 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:30,067 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:30,101 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:30,116 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:30,117 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:30,118 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:12:30,118 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:30,119 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:12:30,120 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:30,129 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:30,134 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:30,136 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:12:30,137 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:30,174 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:30,175 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:30,175 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:30,176 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:12:30,177 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:12:30,188 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:12:30,191 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:12:30,192 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:12:30,192 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:12:30,193 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:30,193 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:12:30,194 - pipeline.run_daily - INFO - Total Duration: 0:00:00.074089
+2025-08-24 19:12:30,194 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:30,236 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:30,249 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:30,276 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:30,293 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:30,294 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:30,294 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:12:30,295 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:30,295 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:12:30,296 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:30,312 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:30,318 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:30,320 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:12:30,320 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:30,356 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:30,359 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:30,363 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:30,363 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:12:30,364 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:12:30,372 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:12:30,373 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:12:30,373 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:12:30,374 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:12:30,374 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:30,375 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:12:30,375 - pipeline.run_daily - INFO - Total Duration: 0:00:00.079006
+2025-08-24 19:12:30,375 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:49,734 - filters.competition_filter - INFO - Filtered 4 fixtures to 3 allowed competitions
+2025-08-24 19:12:50,067 - utils.odds_filter - WARNING - Invalid odds type: <class 'NoneType'> for value None
+2025-08-24 19:12:50,151 - utils.odds_filter - INFO - Odds validation summary [Match Result]:
+2025-08-24 19:12:50,156 - utils.odds_filter - INFO -   Total markets: 3
+2025-08-24 19:12:50,157 - utils.odds_filter - INFO -   Valid odds: 1
+2025-08-24 19:12:50,158 - utils.odds_filter - INFO -   Invalid odds: 2
+2025-08-24 19:12:50,159 - utils.odds_filter - INFO -   Valid odds range: 3.50 - 3.50
+2025-08-24 19:12:50,160 - utils.odds_filter - INFO -   Rejected odds: [1.09, 1.24]
+2025-08-24 19:12:50,357 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:50,368 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:50,369 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:50,391 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:50,392 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:50,410 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:50,444 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:50,448 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:50,454 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:50,491 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:50,508 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:50,510 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:50,522 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:50,524 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:50,564 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:50,577 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:50,582 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:50,592 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:50,593 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:50,640 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:50,656 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:50,659 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:50,675 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:50,680 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:50,682 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:50,717 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:50,718 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:50,719 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:50,759 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:50,769 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:50,769 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:50,790 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:50,791 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:50,791 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:50,823 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:50,827 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:50,829 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:50,861 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:50,874 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:50,877 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:50,879 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:12:50,883 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:50,885 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:12:50,887 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:50,900 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:50,903 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:50,904 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:12:50,908 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:50,940 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:50,941 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:50,941 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:50,942 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:12:50,942 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:12:50,951 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:12:50,956 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:12:50,958 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:12:50,958 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:12:50,959 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:50,960 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:12:50,961 - pipeline.run_daily - INFO - Total Duration: 0:00:00.073989
+2025-08-24 19:12:50,962 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:51,000 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:51,017 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:51,063 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:12:51,094 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:12:51,108 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:51,109 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:12:51,110 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:51,118 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:12:51,120 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:12:51,134 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:12:51,139 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:12:51,159 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:12:51,163 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:12:51,206 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:12:51,211 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:12:51,214 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:12:51,222 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:12:51,243 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:12:51,286 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:12:51,291 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:12:51,296 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:12:51,312 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:12:51,315 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:51,318 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:12:51,319 - pipeline.run_daily - INFO - Total Duration: 0:00:00.196253
+2025-08-24 19:12:51,333 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:12:51,630 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:12:51,718 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:12:51,804 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:12:51,921 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:12:51,959 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:12:52,117 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:12:52,162 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:12:52,288 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:12:52,453 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:12:52,596 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:12:52,718 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:12:52,773 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:12:52,841 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:12:52,859 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:12:52,930 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:12:53,122 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:12:53,169 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:12:53,186 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:12:53,225 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:12:53,248 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:12:53,278 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:12:53,324 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:12:53,341 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:12:53,369 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:12:53,391 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:12:53,419 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:12:53,429 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:12:53,468 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:12:53,481 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:12:53,517 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:12:53,532 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:12:53,567 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:12:53,583 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:12:53,620 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:12:53,637 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:12:53,668 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:12:53,691 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:12:53,717 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:12:53,727 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:12:53,764 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:12:53,776 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:12:53,803 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:12:53,849 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:12:53,867 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:12:53,897 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:12:53,911 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:12:53,949 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:12:53,965 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:12:54,001 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:12:54,020 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:12:54,068 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:12:54,084 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:12:54,144 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:12:54,168 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:12:54,206 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:12:54,233 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:12:54,273 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:12:54,291 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:12:54,341 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:12:54,355 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:12:54,397 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:12:54,417 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:12:54,443 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:12:54,474 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:12:54,488 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:12:54,518 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:12:54,538 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:12:54,566 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:12:54,577 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:12:54,617 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:12:54,626 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:12:54,653 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:12:54,676 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:12:54,703 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:12:54,721 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:12:54,753 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:12:54,767 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:12:54,796 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:12:54,818 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:12:54,871 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:12:54,886 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:12:54,914 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:12:54,927 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:12:54,960 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:12:55,004 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:12:55,025 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:12:55,054 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:12:55,075 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:12:55,103 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:12:55,125 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:12:55,151 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:12:55,166 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:12:55,195 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:12:55,209 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:12:55,269 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:12:55,296 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:12:55,340 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:12:55,357 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:12:55,394 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:12:55,404 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:12:55,443 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:12:55,455 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:12:55,504 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:12:55,524 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:12:55,573 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:12:55,664 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:12:55,679 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:12:55,722 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:12:55,797 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:12:55,841 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:12:55,874 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:12:55,925 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:12:55,992 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:12:56,119 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:12:56,144 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:12:56,194 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:12:56,236 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:12:56,320 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:12:56,353 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:12:56,451 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:12:56,482 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:12:56,536 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:12:56,596 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:12:56,658 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:12:56,752 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:12:56,777 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:19:00,766 - filters.competition_filter - INFO - Filtered 4 fixtures to 3 allowed competitions
+2025-08-24 19:19:01,059 - utils.odds_filter - WARNING - Invalid odds type: <class 'NoneType'> for value None
+2025-08-24 19:19:01,143 - utils.odds_filter - INFO - Odds validation summary [Match Result]:
+2025-08-24 19:19:01,146 - utils.odds_filter - INFO -   Total markets: 3
+2025-08-24 19:19:01,147 - utils.odds_filter - INFO -   Valid odds: 1
+2025-08-24 19:19:01,147 - utils.odds_filter - INFO -   Invalid odds: 2
+2025-08-24 19:19:01,148 - utils.odds_filter - INFO -   Valid odds range: 3.50 - 3.50
+2025-08-24 19:19:01,149 - utils.odds_filter - INFO -   Rejected odds: [1.09, 1.24]
+2025-08-24 19:19:01,292 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:01,306 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:01,307 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:19:01,321 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:19:01,323 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:19:01,328 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:19:01,364 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:19:01,366 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:19:01,368 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:19:01,410 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:01,428 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:01,429 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:19:01,455 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:19:01,498 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:19:01,861 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:01,890 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:01,950 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:19:02,026 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:19:02,075 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:19:02,352 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:02,458 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:02,507 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:19:02,579 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:19:02,663 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:19:02,683 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:19:02,836 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:19:02,852 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:19:02,906 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:19:02,962 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:02,982 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:02,984 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:19:02,995 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:19:03,000 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:19:03,002 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:19:03,059 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:19:03,078 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:19:03,079 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:19:03,237 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:03,252 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:03,252 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,254 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:19:03,255 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,256 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:19:03,256 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:19:03,268 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:19:03,273 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:19:03,274 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:19:03,276 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:19:03,308 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:19:03,309 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:19:03,309 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:19:03,310 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:19:03,311 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:19:03,319 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:19:03,325 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:19:03,326 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:19:03,327 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:19:03,327 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,328 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:19:03,329 - pipeline.run_daily - INFO - Total Duration: 0:00:00.072015
+2025-08-24 19:19:03,330 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,361 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:03,376 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:03,405 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:19:03,414 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:19:03,421 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,423 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:19:03,427 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,427 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:19:03,428 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:19:03,438 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:19:03,438 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:19:03,439 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:19:03,440 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:19:03,480 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:19:03,480 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:19:03,481 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:19:03,482 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:19:03,482 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:19:03,488 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:19:03,489 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:19:03,490 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:19:03,490 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:19:03,498 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,500 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:19:03,501 - pipeline.run_daily - INFO - Total Duration: 0:00:00.070991
+2025-08-24 19:19:03,502 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:19:03,533 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:19:03,565 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:19:03,627 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:19:03,647 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:19:03,684 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:19:03,698 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:19:03,731 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:19:03,741 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:19:03,772 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:19:03,785 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:19:03,808 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:19:03,818 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:19:03,841 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:19:03,858 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:19:03,906 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:19:03,933 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:19:03,978 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:19:03,995 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:19:04,030 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:19:04,040 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:19:04,075 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:19:04,111 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:19:04,120 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:19:04,144 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:19:04,159 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:19:04,206 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:19:04,235 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:19:04,274 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:19:04,292 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:19:04,327 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:19:04,341 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:19:04,370 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:19:04,386 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:19:04,410 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:19:04,420 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:19:04,442 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:19:04,458 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:19:04,502 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:19:04,528 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:19:04,575 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:19:04,592 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:19:04,630 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:19:04,685 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:19:04,696 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:19:04,723 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:19:04,735 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:19:04,758 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:19:04,771 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:19:04,838 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:19:04,858 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:19:04,899 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:19:04,915 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:19:04,948 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:19:04,962 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:19:04,989 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:19:05,000 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:19:05,027 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:19:05,038 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:19:05,060 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:19:05,069 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:19:05,098 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:19:05,110 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:19:05,133 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:19:05,197 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:19:05,237 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:19:05,278 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:19:05,293 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:19:05,322 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:19:05,339 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:19:05,367 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:19:05,383 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:19:05,408 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:19:05,416 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:19:05,439 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:19:05,449 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:19:05,472 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:19:05,487 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:19:05,534 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:19:05,559 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:19:05,611 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:19:05,635 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:19:05,669 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:19:05,685 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:19:05,713 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:19:05,743 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:19:05,759 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:19:05,783 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:19:05,791 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:19:05,815 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:19:05,826 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:19:05,853 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:19:05,864 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:19:05,888 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:19:05,903 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:19:05,933 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:19:05,944 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:19:05,971 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:19:05,989 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:19:06,019 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:19:06,036 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:19:06,083 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:19:06,114 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:19:06,155 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:19:06,173 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:19:06,211 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:19:06,245 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:19:06,262 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:19:06,290 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:19:06,302 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:19:06,324 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:19:06,339 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:19:06,360 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:19:06,368 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:19:06,392 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:19:06,403 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:19:06,430 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:19:06,442 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:19:06,474 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:19:06,489 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:19:06,517 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:19:06,532 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:19:06,558 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:19:06,568 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:19:06,592 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:19:06,605 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:19:06,631 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:36:53,288 - filters.competition_filter - INFO - Filtered 4 fixtures to 3 allowed competitions
+2025-08-24 19:36:53,808 - utils.odds_filter - WARNING - Invalid odds type: <class 'NoneType'> for value None
+2025-08-24 19:36:53,885 - utils.odds_filter - INFO - Odds validation summary [Match Result]:
+2025-08-24 19:36:53,886 - utils.odds_filter - INFO -   Total markets: 3
+2025-08-24 19:36:53,888 - utils.odds_filter - INFO -   Valid odds: 1
+2025-08-24 19:36:53,889 - utils.odds_filter - INFO -   Invalid odds: 2
+2025-08-24 19:36:53,889 - utils.odds_filter - INFO -   Valid odds range: 3.50 - 3.50
+2025-08-24 19:36:53,890 - utils.odds_filter - INFO -   Rejected odds: [1.09, 1.24]
+2025-08-24 19:36:54,046 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,067 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,067 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:36:54,082 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:36:54,083 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:36:54,088 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:36:54,138 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:36:54,139 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:36:54,139 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:36:54,167 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,183 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,183 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:36:54,192 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:36:54,193 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:36:54,234 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,243 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,243 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:36:54,259 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:36:54,259 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:36:54,290 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,302 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,306 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:36:54,319 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:36:54,319 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:36:54,320 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:36:54,354 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:36:54,356 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:36:54,357 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:36:54,390 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,402 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,406 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:36:54,418 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:36:54,419 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:36:54,420 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:36:54,453 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:36:54,454 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:36:54,456 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:36:54,488 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,497 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,505 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,507 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:36:54,509 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,510 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:36:54,511 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:36:54,521 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:36:54,521 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:36:54,522 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:36:54,522 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:36:54,560 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:36:54,561 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:36:54,561 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:36:54,562 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:36:54,562 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:36:54,568 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:36:54,569 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:36:54,569 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:36:54,570 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:36:54,570 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,571 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:36:54,571 - pipeline.run_daily - INFO - Total Duration: 0:00:00.061001
+2025-08-24 19:36:54,571 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,616 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,636 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,663 - etl.ingest - INFO - ETL database initialized successfully
+2025-08-24 19:36:54,672 - models.goal_model - INFO - Goal model database initialized successfully
+2025-08-24 19:36:54,683 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,684 - pipeline.run_daily - INFO - Starting FIXORA PRO Daily Pipeline
+2025-08-24 19:36:54,684 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,685 - pipeline.run_daily - INFO - Step 1/4: ETL Process
+2025-08-24 19:36:54,686 - pipeline.run_daily - INFO - Starting ETL process...
+2025-08-24 19:36:54,695 - etl.ingest - INFO - Successfully stored 1 match stats, 3 odds records, and 1 fixtures
+2025-08-24 19:36:54,696 - pipeline.run_daily - INFO - ETL process completed successfully
+2025-08-24 19:36:54,696 - pipeline.run_daily - INFO - Step 2/4: Modelling Process
+2025-08-24 19:36:54,697 - pipeline.run_daily - INFO - Starting modelling process...
+2025-08-24 19:36:54,733 - models.goal_model - INFO - Stored predictions for fixture 1
+2025-08-24 19:36:54,733 - pipeline.run_daily - INFO - Generated predictions for Manchester City vs Arsenal
+2025-08-24 19:36:54,734 - pipeline.run_daily - INFO - Modelling process completed: 1/1 fixtures processed successfully
+2025-08-24 19:36:54,734 - pipeline.run_daily - INFO - Step 3/4: Value Engine Analysis
+2025-08-24 19:36:54,736 - pipeline.run_daily - INFO - Starting value engine analysis...
+2025-08-24 19:36:54,742 - pipeline.run_daily - INFO - Value bet found: home_win @ 1.85 (model prob: 0.666)
+2025-08-24 19:36:54,743 - pipeline.run_daily - INFO - Value engine analysis completed: 1 value bets found
+2025-08-24 19:36:54,744 - pipeline.run_daily - INFO - Step 4/4: Reporting Process
+2025-08-24 19:36:54,744 - pipeline.run_daily - INFO - Reporting step completed (placeholder)
+2025-08-24 19:36:54,745 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,745 - pipeline.run_daily - INFO - Daily Pipeline Completed Successfully!
+2025-08-24 19:36:54,745 - pipeline.run_daily - INFO - Total Duration: 0:00:00.059232
+2025-08-24 19:36:54,746 - pipeline.run_daily - INFO - ============================================================
+2025-08-24 19:36:54,791 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:36:54,803 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:36:54,833 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:36:54,843 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:36:54,866 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:36:54,877 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:36:54,898 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:36:54,911 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:36:54,931 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:36:54,943 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:36:54,969 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:36:54,980 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:36:55,007 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:36:55,018 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:36:55,044 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:36:55,056 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:36:55,079 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:36:55,092 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:36:55,116 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:36:55,128 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:36:55,152 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:36:55,192 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:36:55,214 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:36:55,244 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:36:55,264 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:36:55,294 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:36:55,307 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:36:55,339 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:36:55,349 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:36:55,392 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:36:55,407 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:36:55,439 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:36:55,449 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:36:55,475 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:36:55,493 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:36:55,516 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:36:55,530 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:36:55,567 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:36:55,599 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:36:55,668 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:36:55,684 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:36:55,721 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:36:55,767 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:36:55,779 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:36:55,805 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:36:55,818 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:36:55,842 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:36:55,850 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:36:55,872 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:36:55,885 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:36:55,904 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:36:55,917 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:36:55,938 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:36:55,946 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:36:55,967 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:36:55,977 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:36:56,000 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:36:56,021 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:36:56,048 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:36:56,063 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:36:56,093 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:36:56,106 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:36:56,139 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:36:56,176 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:36:56,192 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:36:56,218 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:36:56,231 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:36:56,259 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:36:56,272 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:36:56,299 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:36:56,314 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:36:56,342 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:36:56,363 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:36:56,394 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:36:56,420 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:36:56,465 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:36:56,477 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:36:56,516 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:36:56,526 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:36:56,549 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:36:56,565 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:36:56,589 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:36:56,602 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:36:56,649 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:36:56,697 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:36:56,717 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:36:56,750 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:36:56,773 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:36:56,801 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:36:56,817 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:36:56,844 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:36:56,858 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:36:56,890 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:36:56,900 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:36:56,927 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:36:56,945 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:36:56,970 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:36:56,981 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:36:57,008 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:36:57,023 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:36:57,047 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:36:57,064 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:36:57,089 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:36:57,099 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:36:57,122 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss
+2025-08-24 19:36:57,151 - betting.roi_tracker - INFO - ROI tracking database initialized successfully
+2025-08-24 19:36:57,167 - betting.roi_tracker - INFO - Bet recorded for Team A vs Team B
+2025-08-24 19:36:57,189 - betting.roi_tracker - INFO - Bet result updated for fixture 1: win
+2025-08-24 19:36:57,198 - betting.roi_tracker - INFO - Bet recorded for Team C vs Team D
+2025-08-24 19:36:57,224 - betting.roi_tracker - INFO - Bet result updated for fixture 2: win
+2025-08-24 19:36:57,236 - betting.roi_tracker - INFO - Bet recorded for Team E vs Team F
+2025-08-24 19:36:57,264 - betting.roi_tracker - INFO - Bet result updated for fixture 3: win
+2025-08-24 19:36:57,273 - betting.roi_tracker - INFO - Bet recorded for Team G vs Team H
+2025-08-24 19:36:57,296 - betting.roi_tracker - INFO - Bet result updated for fixture 4: win
+2025-08-24 19:36:57,307 - betting.roi_tracker - INFO - Bet recorded for Team I vs Team J
+2025-08-24 19:36:57,330 - betting.roi_tracker - INFO - Bet result updated for fixture 5: win
+2025-08-24 19:36:57,346 - betting.roi_tracker - INFO - Bet recorded for Team K vs Team L
+2025-08-24 19:36:57,369 - betting.roi_tracker - INFO - Bet result updated for fixture 6: win
+2025-08-24 19:36:57,377 - betting.roi_tracker - INFO - Bet recorded for Team M vs Team N
+2025-08-24 19:36:57,400 - betting.roi_tracker - INFO - Bet result updated for fixture 7: loss
+2025-08-24 19:36:57,413 - betting.roi_tracker - INFO - Bet recorded for Team O vs Team P
+2025-08-24 19:36:57,439 - betting.roi_tracker - INFO - Bet result updated for fixture 8: loss
+2025-08-24 19:36:57,450 - betting.roi_tracker - INFO - Bet recorded for Team Q vs Team R
+2025-08-24 19:36:57,473 - betting.roi_tracker - INFO - Bet result updated for fixture 9: loss
+2025-08-24 19:36:57,486 - betting.roi_tracker - INFO - Bet recorded for Team S vs Team T
+2025-08-24 19:36:57,515 - betting.roi_tracker - INFO - Bet result updated for fixture 10: loss

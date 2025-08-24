@@ -182,12 +182,12 @@ class ReportGenerator:
             ['Total Bets', str(summary_stats['total_bets'])],
             ['Winning Bets', str(summary_stats['winning_bets'])],
             ['Losing Bets', str(summary_stats['losing_bets'])],
-            ['Win Rate', f"{summary_stats['win_rate']:.1%}"],
+            ['Win Rate', f"{summary_stats['win_rate']:.1f}%"],
             ['Total Stake', f"£{summary_stats['total_stake']:.2f}"],
             ['Total Return', f"£{summary_stats['total_return']:.2f}"],
-            ['ROI', f"{summary_stats['roi']:.1%}"],
+            ['ROI', f"{summary_stats['roi']:.1f}%"],
             ['Average Odds', f"{summary_stats['average_odds']:.2f}"],
-            ['Total Edge', f"{summary_stats['total_edge']:.1%}"]
+            ['Total Edge', f"{summary_stats['total_edge']:.1f}%"]
         ]
         
         summary_table = Table(summary_data, colWidths=[2*inch, 1.5*inch])
@@ -227,8 +227,8 @@ class ReportGenerator:
             market_data.append([
                 market_name,
                 str(stats['total_bets']),
-                f"{stats['win_rate']:.1%}",
-                f"{stats['roi']:.1%}",
+                f"{stats['win_rate']:.1f}%",
+                f"{stats['roi']:.1f}%",
                 f"£{stats['total_stake']:.2f}",
                 f"£{stats['total_return']:.2f}"
             ])

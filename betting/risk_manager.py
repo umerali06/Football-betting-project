@@ -98,11 +98,22 @@ class AdvancedRiskManager:
         # Final stake (minimum of all methods)
         final_stake = min(kelly_stake, confidence_stake, risk_stake)
         
+        # Apply stake rounding to nearest unit (1.0)
+        final_stake = round(final_stake)
+        
         # Ensure minimum and maximum stakes
         min_stake = 10.0  # Minimum £10
         max_stake = self.current_bankroll * 0.05  # Maximum 5% of bankroll
         
         final_stake = max(min_stake, min(final_stake, max_stake))
+        
+        # Apply daily stake cap
+        daily_stake_cap = config.MAX_DAILY_STAKE if hasattr(config, 'MAX_DAILY_STAKE') else self.current_bankroll * 0.1
+        if hasattr(self, '_daily_stake_used'):
+            remaining_daily_stake = daily_stake_cap - self._daily_stake_used
+            final_stake = min(final_stake, remaining_daily_stake)
+        else:
+            self._daily_stake_used = 0
         
         return {
             'kelly_stake': kelly_stake,
@@ -204,9 +215,15 @@ class AdvancedRiskManager:
         self.bet_history.append(bet_record)
         self.daily_bets += 1
         
+        # Track daily stake usage
+        if not hasattr(self, '_daily_stake_used'):
+            self._daily_stake_used = 0
+        self._daily_stake_used += stake
+        
         # Reset daily counter if new day
         if datetime.now().date() != self.daily_date:
             self.daily_bets = 0
+            self._daily_stake_used = 0
             self.daily_date = datetime.now().date()
     
     def get_performance_metrics(self) -> Dict:
@@ -354,6 +371,7 @@ class AdvancedRiskManager:
     def reset_daily_counters(self):
         """Reset daily betting counters"""
         self.daily_bets = 0
+        self._daily_stake_used = 0
         self.daily_date = datetime.now().date()
     
     def export_bet_history(self, filepath: str):
