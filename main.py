@@ -231,11 +231,17 @@ class FootballBettingSystem:
                 logger.info("System running in ROI-only mode. Press Ctrl+C to stop.")
                 logger.info("Morning ROI updates will be sent at 8am UK time")
                 while True:
+                    # Check fallback scheduler if needed
+                    if hasattr(self, 'daily_scheduler') and self.daily_scheduler:
+                        await self.daily_scheduler.check_and_run_fallback()
                     await asyncio.sleep(60)  # Check every minute
             else:
                 logger.info("System running with Telegram bot. Press Ctrl+C to stop.")
                 while True:
                     schedule.run_pending()
+                    # Check fallback scheduler if needed
+                    if hasattr(self, 'daily_scheduler') and self.daily_scheduler:
+                        await self.daily_scheduler.check_and_run_fallback()
                     await asyncio.sleep(60)  # Check every minute
         else:
             logger.info("Demo mode: System completed initial analysis")

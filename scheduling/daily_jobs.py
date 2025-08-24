@@ -1,29 +1,133 @@
 import asyncio
 import logging
+import sys
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
-import pytz
 
-from utils.time import now_london, get_next_8am_london
-from filters.competition_filter import CompetitionFilter
-from utils.odds_filter import OddsFilter
-import config
+# Robust import handling with fallbacks
+try:
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+    from apscheduler.triggers.cron import CronTrigger
+    APSCHEDULER_AVAILABLE = True
+    logger = logging.getLogger(__name__)
+    logger.info("APScheduler imported successfully")
+except ImportError as e:
+    APSCHEDULER_AVAILABLE = False
+    logger = logging.getLogger(__name__)
+    logger.error(f"APScheduler import failed: {e}")
+    logger.warning("Falling back to basic time-based scheduling")
 
-logger = logging.getLogger(__name__)
+try:
+    import pytz
+    PYTZ_AVAILABLE = True
+except ImportError:
+    PYTZ_AVAILABLE = False
+    logger.warning("pytz not available, using basic timezone handling")
+
+# Local imports with error handling
+try:
+    from utils.time import now_london, get_next_8am_london
+    TIME_UTILS_AVAILABLE = True
+except ImportError as e:
+    TIME_UTILS_AVAILABLE = False
+    logger.error(f"Time utils import failed: {e}")
+
+try:
+    from filters.competition_filter import CompetitionFilter
+    COMPETITION_FILTER_AVAILABLE = True
+except ImportError as e:
+    COMPETITION_FILTER_AVAILABLE = False
+    logger.error(f"Competition filter import failed: {e}")
+
+try:
+    from utils.odds_filter import OddsFilter
+    ODDS_FILTER_AVAILABLE = True
+except ImportError as e:
+    ODDS_FILTER_AVAILABLE = False
+    logger.error(f"Odds filter import failed: {e}")
+
+try:
+    import config
+    CONFIG_AVAILABLE = True
+except ImportError as e:
+    CONFIG_AVAILABLE = False
+    logger.error(f"Config import failed: {e}")
 
 class DailyJobsScheduler:
-    """Scheduler for daily automated jobs"""
+    """Robust scheduler for daily automated jobs with fallback mechanisms"""
     
     def __init__(self, telegram_bot=None):
-        self.scheduler = AsyncIOScheduler()
         self.telegram_bot = telegram_bot
-        self.competition_filter = CompetitionFilter()
         self.is_running = False
+        self.fallback_mode = False
+        
+        # Initialize components with availability checks
+        if COMPETITION_FILTER_AVAILABLE:
+            try:
+                self.competition_filter = CompetitionFilter()
+            except Exception as e:
+                logger.error(f"Failed to initialize CompetitionFilter: {e}")
+                self.competition_filter = None
+        else:
+            self.competition_filter = None
+            
+        if ODDS_FILTER_AVAILABLE:
+            try:
+                self.odds_filter = OddsFilter()
+            except Exception as e:
+                logger.error(f"Failed to initialize OddsFilter: {e}")
+                self.odds_filter = None
+        else:
+            self.odds_filter = None
+        
+        # Initialize scheduler based on availability
+        if APSCHEDULER_AVAILABLE:
+            try:
+                self.scheduler = AsyncIOScheduler()
+                self.fallback_mode = False
+                logger.info("Using APScheduler for job scheduling")
+            except Exception as e:
+                logger.error(f"Failed to initialize APScheduler: {e}")
+                self.scheduler = None
+                self.fallback_mode = True
+        else:
+            self.scheduler = None
+            self.fallback_mode = True
+            logger.warning("Running in fallback mode without APScheduler")
+        
+        # Fallback scheduling variables
+        self.last_check = None
+        self.next_8am = None
         
     async def start(self):
-        """Start the scheduler"""
+        """Start the scheduler with robust error handling"""
+        try:
+            if self.fallback_mode:
+                await self._start_fallback_scheduler()
+            else:
+                await self._start_apscheduler()
+                
+            self.is_running = True
+            logger.info("Daily jobs scheduler started successfully")
+            
+        except Exception as e:
+            logger.error(f"Failed to start primary scheduler: {e}")
+            logger.info("Attempting to start fallback scheduler...")
+            
+            try:
+                self.fallback_mode = True
+                await self._start_fallback_scheduler()
+                self.is_running = True
+                logger.info("Fallback scheduler started successfully")
+            except Exception as fallback_error:
+                logger.error(f"Failed to start fallback scheduler: {fallback_error}")
+                raise
+    
+    async def _start_apscheduler(self):
+        """Start APScheduler-based scheduling"""
+        if not self.scheduler:
+            raise RuntimeError("APScheduler not available")
+            
         try:
             # Add daily digest job at 8:00 AM UK time
             self.scheduler.add_job(
@@ -36,23 +140,69 @@ class DailyJobsScheduler:
             
             # Start the scheduler
             self.scheduler.start()
-            self.is_running = True
-            
-            next_run = get_next_8am_london()
-            logger.info(f"Daily jobs scheduler started successfully")
-            logger.info(f"Next morning digest scheduled for: {next_run.strftime('%Y-%m-%d %H:%M')} UK time")
+            logger.info("APScheduler started successfully")
             
         except Exception as e:
-            logger.error(f"Failed to start daily jobs scheduler: {e}")
+            logger.error(f"Failed to start APScheduler: {e}")
             raise
+    
+    async def _start_fallback_scheduler(self):
+        """Start fallback time-based scheduling"""
+        try:
+            # Calculate next 8am UK time
+            if TIME_UTILS_AVAILABLE:
+                self.next_8am = get_next_8am_london()
+            else:
+                # Basic fallback calculation
+                now = datetime.now()
+                if now.hour >= 8:
+                    # Next 8am is tomorrow
+                    self.next_8am = now.replace(hour=8, minute=0, second=0, microsecond=0) + timedelta(days=1)
+                else:
+                    # Next 8am is today
+                    self.next_8am = now.replace(hour=8, minute=0, second=0, microsecond=0)
+            
+            self.last_check = datetime.now()
+            logger.info(f"Fallback scheduler started - next run at: {self.next_8am.strftime('%Y-%m-%d %H:%M')}")
+            
+        except Exception as e:
+            logger.error(f"Failed to start fallback scheduler: {e}")
+            raise
+    
+    async def check_and_run_fallback(self):
+        """Check if it's time to run the morning digest (fallback mode)"""
+        if not self.fallback_mode or not self.is_running:
+            return
+            
+        try:
+            now = datetime.now()
+            
+            # Check if we've passed 8am
+            if self.next_8am and now >= self.next_8am:
+                logger.info("Fallback scheduler: Time to run morning digest")
+                await self.job_morning_digest()
+                
+                # Calculate next 8am
+                if TIME_UTILS_AVAILABLE:
+                    self.next_8am = get_next_8am_london()
+                else:
+                    self.next_8am = now.replace(hour=8, minute=0, second=0, microsecond=0) + timedelta(days=1)
+                
+                logger.info(f"Next fallback run scheduled for: {self.next_8am.strftime('%Y-%m-%d %H:%M')}")
+                
+        except Exception as e:
+            logger.error(f"Error in fallback scheduler check: {e}")
     
     async def stop(self):
         """Stop the scheduler"""
         try:
-            if self.scheduler.running:
+            if self.scheduler and self.scheduler.running:
                 self.scheduler.shutdown()
-                self.is_running = False
-                logger.info("Daily jobs scheduler stopped")
+                logger.info("APScheduler stopped")
+            
+            self.is_running = False
+            logger.info("Daily jobs scheduler stopped")
+            
         except Exception as e:
             logger.error(f"Error stopping scheduler: {e}")
     
@@ -351,66 +501,57 @@ class DailyJobsScheduler:
     def _extract_team_name(self, fixture: Dict, team_type: str) -> str:
         """Extract team name from fixture data"""
         try:
-            # Try different possible keys
-            possible_keys = [
-                f'teams.{team_type}.name',
-                f'{team_type}Team.name',
-                f'{team_type}_team_name'
-            ]
-            
-            for key in possible_keys:
-                if '.' in key:
-                    parts = key.split('.')
-                    value = fixture
-                    for part in parts:
-                        if isinstance(value, dict) and part in value:
-                            value = value[part]
-                        else:
-                            value = None
-                            break
+            if team_type == 'home':
+                # Try different possible keys for home team
+                for key in ['home_team', 'localTeam', 'home']:
+                    if key in fixture:
+                        team_data = fixture[key]
+                        if isinstance(team_data, dict):
+                            return team_data.get('name', 'Unknown')
+                        elif isinstance(team_data, str):
+                            return team_data
+                
+                # Try teams structure
+                if 'teams' in fixture and 'home' in fixture['teams']:
+                    return fixture['teams']['home'].get('name', 'Unknown')
                     
-                    if value:
-                        return str(value)
-                else:
-                    value = fixture.get(key)
-                    if value:
-                        return str(value)
+            elif team_type == 'away':
+                # Try different possible keys for away team
+                for key in ['away_team', 'visitorTeam', 'away']:
+                    if key in fixture:
+                        team_data = fixture[key]
+                        if isinstance(team_data, dict):
+                            return team_data.get('name', 'Unknown')
+                        elif isinstance(team_data, str):
+                            return team_data
+                
+                # Try teams structure
+                if 'teams' in fixture and 'away' in fixture['teams']:
+                    return fixture['teams']['away'].get('name', 'Unknown')
             
-            return f"Unknown {team_type.title()} Team"
+            return 'Unknown'
+            
         except Exception as e:
             logger.debug(f"Failed to extract {team_type} team name: {e}")
-            return f"Unknown {team_type.title()} Team"
+            return 'Unknown'
     
     def _extract_competition_name(self, fixture: Dict) -> str:
         """Extract competition name from fixture data"""
         try:
-            # Try different possible keys
-            possible_keys = [
-                'league.name', 'competition.name', 'tournament.name'
-            ]
+            # Try different possible keys for competition
+            for key in ['league', 'competition', 'tournament']:
+                if key in fixture:
+                    comp_data = fixture[key]
+                    if isinstance(comp_data, dict):
+                        return comp_data.get('name', 'Unknown')
+                    elif isinstance(comp_data, str):
+                        return comp_data
             
-            for key in possible_keys:
-                if '.' in key:
-                    parts = key.split('.')
-                    value = fixture
-                    for part in parts:
-                        if isinstance(value, dict) and part in value:
-                            value = value[part]
-                        else:
-                            value = None
-                            break
-                    
-                    if value:
-                        return str(value)
-                else:
-                    value = fixture.get(key)
-                    if value:
-                        return str(value)
+            return 'Unknown'
             
-            return "Unknown Competition"
         except Exception as e:
             logger.debug(f"Failed to extract competition name: {e}")
-            return "Unknown Competition"
+            return 'Unknown'
     
     def _extract_match_odds(self, odds_data: Dict) -> Dict:
         """Extract match result odds from odds data"""
@@ -528,37 +669,34 @@ class DailyJobsScheduler:
     def _extract_kickoff_time(self, fixture: Dict) -> Optional[datetime]:
         """Extract kickoff time from fixture data"""
         try:
-            from utils.time import to_utc
-            
-            # Try different possible keys
-            possible_keys = [
-                'fixture.date', 'date', 'kickoff', 'start_time', 'time'
-            ]
-            
-            for key in possible_keys:
-                if '.' in key:
-                    parts = key.split('.')
-                    value = fixture
-                    for part in parts:
-                        if isinstance(value, dict) and part in value:
-                            value = value[part]
-                        else:
-                            value = None
-                            break
+            # Try different possible keys for kickoff time
+            if 'fixture' in fixture and 'date' in fixture['fixture']:
+                date_str = fixture['fixture']['date']
+                if TIME_UTILS_AVAILABLE:
+                    from utils.time import parse_datetime
+                    return parse_datetime(date_str)
                 else:
-                    value = fixture.get(key)
-                
-                if value:
-                    if isinstance(value, str):
-                        try:
-                            dt = datetime.fromisoformat(value.replace('Z', '+00:00'))
-                            return to_utc(dt)
-                        except ValueError:
-                            continue
-                    elif isinstance(value, datetime):
-                        return to_utc(value)
+                    # Basic fallback parsing
+                    try:
+                        return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                    except:
+                        pass
+            
+            # Try other common keys
+            for key in ['kickoff', 'start_time', 'match_time', 'scheduled']:
+                if key in fixture:
+                    date_str = fixture[key]
+                    try:
+                        if TIME_UTILS_AVAILABLE:
+                            from utils.time import parse_datetime
+                            return parse_datetime(date_str)
+                        else:
+                            return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                    except:
+                        continue
             
             return None
+            
         except Exception as e:
             logger.debug(f"Failed to extract kickoff time: {e}")
             return None
@@ -586,22 +724,42 @@ class DailyJobsScheduler:
         except Exception as e:
             logger.error(f"Failed to send Telegram message: {e}")
     
-    def get_next_run_time(self) -> datetime:
+    def get_next_run_time(self):
         """Get the next scheduled run time"""
         try:
-            if self.scheduler.running:
-                job = self.scheduler.get_job('morning_digest')
-                if job:
-                    return job.next_run_time
-            return get_next_8am_london()
+            if self.fallback_mode and self.next_8am:
+                return self.next_8am
+            elif self.scheduler and self.scheduler.running:
+                # Get next run from APScheduler
+                jobs = self.scheduler.get_jobs()
+                for job in jobs:
+                    if job.name == 'Daily Morning Digest':
+                        return job.next_run_time
+            return None
         except Exception as e:
-            logger.error(f"Failed to get next run time: {e}")
-            return get_next_8am_london()
+            logger.error(f"Error getting next run time: {e}")
+            return None
     
     def get_status(self) -> Dict:
-        """Get scheduler status"""
-        return {
-            'is_running': self.is_running,
-            'next_run': self.get_next_run_time().strftime('%Y-%m-%d %H:%M:%S') if self.is_running else 'Not scheduled',
-            'jobs_count': len(self.scheduler.get_jobs()) if self.scheduler.running else 0
-        }
+        """Get scheduler status information"""
+        try:
+            status = {
+                'is_running': self.is_running,
+                'fallback_mode': self.fallback_mode,
+                'apscheduler_available': APSCHEDULER_AVAILABLE,
+                'time_utils_available': TIME_UTILS_AVAILABLE,
+                'competition_filter_available': COMPETITION_FILTER_AVAILABLE,
+                'odds_filter_available': ODDS_FILTER_AVAILABLE,
+                'config_available': CONFIG_AVAILABLE
+            }
+            
+            if self.fallback_mode:
+                status['next_run'] = self.next_8am.isoformat() if self.next_8am else None
+            else:
+                status['next_run'] = self.get_next_run_time().isoformat() if self.get_next_run_time() else None
+            
+            return status
+            
+        except Exception as e:
+            logger.error(f"Error getting scheduler status: {e}")
+            return {'error': str(e)}

@@ -1,29 +1,32 @@
 # 🚀 FIXORA PRO - Progressive Football Analysis System
 # Core dependencies for real-time analysis and Telegram bot
+# Updated for 100% reliability with comprehensive module coverage
 
 # Telegram Bot Framework
 python-telegram-bot>=20.0
 
 # HTTP Client for API calls
 aiohttp>=3.8.0
+httpx>=0.24.0
+requests>=2.28.0
 
 # Async support
 asyncio
 
 # Date and time handling
 python-dateutil>=2.8.0
+pytz>=2022.1
 
 # Logging and utilities
 colorama>=0.4.0
 
 # Data processing
 pandas>=1.5.0
-
-# Mathematical operations
 numpy>=1.21.0
 
 # Configuration management
 python-dotenv>=0.19.0
+PyYAML>=6.0
 
 # PDF generation (for ROI reports)
 reportlab>=3.6.0
@@ -34,20 +37,12 @@ Pillow>=9.0.0
 # Schedule management
 schedule>=1.1.0
 
-# Advanced scheduling with timezone support
+# Advanced scheduling with timezone support - CRITICAL FOR 8AM UPDATES
 APScheduler>=3.10.0
-
-# YAML configuration support
-PyYAML>=6.0
+tzlocal>=3.0
 
 # JSON handling
 ujson>=5.0.0
-
-# HTTP requests (fallback)
-requests>=2.28.0
-
-# Async HTTP client (alternative)
-httpx>=0.24.0
 
 # Development and testing
 pytest>=7.0.0
@@ -61,6 +56,11 @@ flake8>=5.0.0
 sphinx>=5.0.0
 sphinx-rtd-theme>=1.0.0
 
+# Additional reliability modules
+psutil>=5.8.0  # System monitoring
+watchdog>=2.1.0  # File system monitoring
+tenacity>=8.0.0  # Retry logic for reliability
+
 ---
 
 # 🎯 Installation Instructions:
@@ -71,3 +71,5 @@ sphinx-rtd-theme>=1.0.0
 #
 # 📱 For production:
 # pip install -r requirements.txt --no-dev
+#
+# 🚨 CRITICAL: Ensure APScheduler and pytz are installed for 8AM reliability

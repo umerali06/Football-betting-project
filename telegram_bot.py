@@ -19,6 +19,7 @@ import config
 
 # Import timezone utilities
 from utils.time import now_london, get_next_8am_london
+from utils.odds_filter import OddsFilter
 
 logger = logging.getLogger(__name__)
 
@@ -245,42 +246,69 @@ Send me any message or use /analyze_roi to get started.
             # Analyze matches for ROI opportunities
             roi_opportunities = []
             
+            # CRITICAL: Pre-filter matches to only include those with valid odds
+            valid_matches = []
             for i, match in enumerate(filtered_matches[:10]):  # Analyze first 10 matches
+                try:
+                    # Extract basic info
+                    home_team, away_team = self._extract_team_names(match)
+                    
+                    # Get odds if available
+                    odds_data = None
+                    valid_odds = False
+                    try:
+                        fixture_id = api_client.extract_fixture_id(match)
+                        if fixture_id:
+                            odds = await api_client.safe_match_odds(match)
+                            if odds:
+                                odds_data = odds
+                                
+                                # NUCLEAR OPTION: Direct odds validation bypassing complex logic
+                                main_odds = self._extract_main_odds_direct(odds)
+                                logger.info(f"🔍 DEBUG: Match {i+1} {home_team} vs {away_team} - extracted odds: {main_odds}")
+                                
+                                if main_odds and main_odds >= 1.8:
+                                    valid_odds = True
+                                    logger.info(f"✅ INCLUDING match {home_team} vs {away_team} - main odds: {main_odds}")
+                                else:
+                                    valid_odds = False
+                                    logger.info(f"❌ EXCLUDING match {home_team} vs {away_team} - main odds: {main_odds} (below 1.8)")
+                            else:
+                                logger.info(f"⚠️ No odds data for match {home_team} vs {away_team}")
+                        else:
+                            logger.info(f"⚠️ No fixture ID for match {home_team} vs {away_team}")
+                    except Exception as odds_error:
+                        logger.error(f"Error getting odds for {home_team} vs {away_team}: {odds_error}")
+                    
+                    # Only include matches with valid odds
+                    if valid_odds:
+                        valid_matches.append((i, match, odds_data))
+                        logger.info(f"✅ ADDED to valid_matches: {home_team} vs {away_team}")
+                    else:
+                        logger.info(f"❌ EXCLUDING match {home_team} vs {away_team} - odds below minimum threshold (1.8)")
+                        
+                except Exception as e:
+                    logger.error(f"Error pre-filtering match {i+1}: {e}")
+                    continue
+            
+            logger.info(f"🔍 DEBUG: Found {len(valid_matches)} matches with valid odds out of {min(10, len(filtered_matches))} analyzed")
+            
+            # Now process only the valid matches
+            for i, (original_index, match, odds_data) in enumerate(valid_matches):
                 try:
                     # Extract basic info
                     home_team, away_team = self._extract_team_names(match)
                     status = api_client.extract_match_status(match)
                     home_score, away_score = api_client.extract_score(match)
                     
-                    # Get odds if available
-                    odds_info = "No odds data"
-                    odds_data = None
-                    try:
-                        fixture_id = api_client.extract_fixture_id(match)
-                        if fixture_id:
-                            odds = await api_client.safe_match_odds(match)
-                            if odds:
-                                # Debug: Log odds structure for first few matches
-                                if i < 3:  # Only log first 3 matches to avoid spam
-                                    logger.info(f"Odds data for match {i+1}: {json.dumps(odds[:2], indent=2)}")
-                                
-                                # Extract actual odds values for display
-                                odds_display = self._extract_odds_for_display(odds)
-                                odds_info = odds_display
-                                odds_data = odds
-                    except Exception as odds_error:
-                        logger.error(f"Error getting odds: {odds_error}")
-                        odds_info = "Odds data error"
+                    # Since we pre-filtered, we know odds_data exists and is valid
+                    odds_info = self._extract_odds_for_display(odds_data)
                     
-                    # Calculate ROI rating based on actual odds data
-                    roi_rating = 0.0
-                    if odds_data:
-                        # Calculate ROI based on actual odds and market analysis
-                        roi_rating = self._calculate_roi_rating(odds_data, match, i)
-                    else:
-                        # Lower rating without odds data
-                        roi_rating = 0.3 + (i * 0.05)
+                    # Calculate ROI rating based on validated odds data
+                    roi_rating = self._calculate_roi_rating(odds_data, match, i)
+                    logger.info(f"✅ Processing match {home_team} vs {away_team} - ROI rating: {roi_rating}")
                     
+                    # Add to opportunities (all matches here have valid odds)
                     roi_opportunities.append({
                         'match': match,
                         'home_team': home_team,
@@ -290,7 +318,7 @@ Send me any message or use /analyze_roi to get started.
                         'away_score': away_score,
                         'odds_info': odds_info,
                         'roi_rating': roi_rating,
-                        'fixture_id': fixture_id if 'fixture_id' in locals() else None
+                        'fixture_id': api_client.extract_fixture_id(match)
                     })
                     
                 except Exception as e:
@@ -930,15 +958,22 @@ Or just ask me about ROI, betting units, or performance analysis!
                     # Get odds if available
                     odds_info = "No odds data"
                     odds_data = None
+                    valid_odds = False  # Initialize valid_odds to False by default
                     try:
                         fixture_id = api_client.extract_fixture_id(match)
                         if fixture_id:
                             odds = await api_client.safe_match_odds(match)
                             if odds:
-                                # Extract actual odds values for display
-                                odds_display = self._extract_odds_for_display(odds)
-                                odds_info = odds_display
+                                # Store odds data for validation first
                                 odds_data = odds
+                                
+                                # Only extract odds display if validation passes
+                                valid_odds = self._extract_and_validate_odds(odds_data)
+                                if valid_odds:
+                                    odds_display = self._extract_odds_for_display(odds)
+                                    odds_info = odds_display
+                                else:
+                                    odds_info = "Odds below minimum threshold"
                     except Exception as odds_error:
                         logger.error(f"Error getting odds: {odds_error}")
                         odds_info = "Odds data error"
@@ -946,12 +981,21 @@ Or just ask me about ROI, betting units, or performance analysis!
                     # Calculate ROI rating based on actual odds data
                     roi_rating = 0.0
                     if odds_data:
-                        # Calculate ROI based on actual odds and market analysis
-                        roi_rating = self._calculate_roi_rating(odds_data, match, i)
+                        # Use the already validated odds from above
+                        if valid_odds:
+                            # Calculate ROI based on actual odds and market analysis
+                            roi_rating = self._calculate_roi_rating(odds_data, match, i)
+                            logger.debug(f"✅ Match {home_team} vs {away_team} - Valid odds, ROI rating: {roi_rating}")
+                        else:
+                            # Skip this match - odds don't meet minimum requirement
+                            logger.debug(f"❌ Skipping match {home_team} vs {away_team} - odds below minimum threshold")
+                            continue
                     else:
                         # Lower rating without odds data
                         roi_rating = 0.3 + (i * 0.05)
+                        logger.debug(f"⚠️ Match {home_team} vs {away_team} - No odds data, default rating: {roi_rating}")
                     
+                    # Only add matches that passed odds validation or have no odds data
                     roi_opportunities.append({
                         'match': match,
                         'home_team': home_team,
@@ -1034,6 +1078,39 @@ Or just ask me about ROI, betting units, or performance analysis!
             # Send error message to user
             await self.send_message_to_user(chat_id, f"❌ <b>Error</b>: Automatic ROI analysis failed. Please use /analyze_roi for manual analysis.")
     
+    def _extract_main_odds_direct(self, odds_data: List[Dict]) -> float:
+        """Extract the main odds value directly - NUCLEAR OPTION for strict filtering"""
+        try:
+            if not odds_data:
+                return 0.0
+            
+            # Look for the first valid odds value in the structure
+            for market in odds_data:
+                if isinstance(market, dict):
+                    # Try to find any odds value
+                    if 'bookmakers' in market:
+                        for bookmaker in market['bookmakers']:
+                            if 'bets' in bookmaker:
+                                for bet in bookmaker['bets']:
+                                    if 'values' in bet:
+                                        for value in bet['values']:
+                                            if 'odd' in value:
+                                                try:
+                                                    odds_value = float(value['odd'])
+                                                    if odds_value > 0:
+                                                        logger.info(f"🔍 DEBUG: Found main odds: {odds_value}")
+                                                        return odds_value
+                                                except (ValueError, TypeError):
+                                                    continue
+            
+            # If no odds found, return 0
+            logger.warning("No valid odds found in data structure")
+            return 0.0
+            
+        except Exception as e:
+            logger.error(f"Error extracting main odds: {e}")
+            return 0.0
+
     def _extract_odds_for_display(self, odds_data: List[Dict]) -> str:
         """Extract and format odds for display"""
         try:
@@ -1108,6 +1185,191 @@ Or just ask me about ROI, betting units, or performance analysis!
             logger.error(f"Error extracting odds for display: {e}")
             return f"Odds available ({len(odds_data)} markets)"
     
+    def _extract_and_validate_odds(self, odds_data: List[Dict]) -> bool:
+        """Extract and validate odds to ensure they meet minimum requirements - Universal validator"""
+        try:
+            if not odds_data:
+                logger.debug("🔍 DEBUG: No odds data provided")
+                return False
+            
+            logger.debug(f"🔍 DEBUG: Validating odds data structure: {type(odds_data)} with {len(odds_data)} items")
+            
+            # Try multiple common API data structures
+            valid_odds_found = self._try_expected_structure(odds_data)
+            if valid_odds_found:
+                return True
+            
+            valid_odds_found = self._try_api_football_structure(odds_data)
+            if valid_odds_found:
+                return True
+            
+            valid_odds_found = self._try_sportmonks_structure(odds_data)
+            if valid_odds_found:
+                return True
+            
+            valid_odds_found = self._try_flat_odds_structure(odds_data)
+            if valid_odds_found:
+                return True
+            
+            valid_odds_found = self._try_generic_structure(odds_data)
+            if valid_odds_found:
+                return True
+            
+            logger.debug("🔍 DEBUG: No valid odds found in any structure")
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error validating odds: {e}")
+            return False
+    
+    def _try_expected_structure(self, odds_data: List[Dict]) -> bool:
+        """Try the expected structure: bookmakers -> bets -> values -> odd - Validate MAIN odds only"""
+        try:
+            for market in odds_data:
+                if isinstance(market, dict) and 'bookmakers' in market:
+                    for bookmaker in market['bookmakers']:
+                        if 'bets' in bookmaker:
+                            for bet in bookmaker['bets']:
+                                if 'values' in bet and bet['values']:
+                                    # CRITICAL: Only validate the FIRST (main) odds value
+                                    # This is typically Home win, which is what we're betting on
+                                    main_value = bet['values'][0]
+                                    if 'odd' in main_value:
+                                        try:
+                                            main_odds = float(main_value.get('odd', 0))
+                                            logger.debug(f"🔍 DEBUG: Validating main odds: {main_odds}")
+                                            if OddsFilter.validate_odds(main_odds):
+                                                logger.debug(f"🔍 DEBUG: Main odds valid in expected structure: {main_odds}")
+                                                return True
+                                            else:
+                                                logger.debug(f"🔍 DEBUG: Main odds invalid in expected structure: {main_odds}")
+                                                return False  # Main odds failed validation
+                                        except (ValueError, TypeError):
+                                            logger.debug(f"🔍 DEBUG: Error converting main odds: {main_value.get('odd', 'N/A')}")
+                                            return False
+            return False
+        except Exception as e:
+            logger.debug(f"🔍 DEBUG: Exception in expected structure validation: {e}")
+            return False
+    
+    def _try_api_football_structure(self, odds_data: List[Dict]) -> bool:
+        """Try API-Football style structure: markets -> values -> odd - Validate MAIN odds only"""
+        try:
+            for market in odds_data:
+                if isinstance(market, dict) and 'markets' in market:
+                    for submarket in market['markets']:
+                        if 'values' in submarket and submarket['values']:
+                            # CRITICAL: Only validate the FIRST (main) odds value
+                            main_value = submarket['values'][0]
+                            if 'odd' in main_value:
+                                try:
+                                    main_odds = float(main_value.get('odd', 0))
+                                    logger.debug(f"🔍 DEBUG: Validating main odds in API-Football: {main_odds}")
+                                    if OddsFilter.validate_odds(main_odds):
+                                        logger.debug(f"🔍 DEBUG: Main odds valid in API-Football: {main_odds}")
+                                        return True
+                                    else:
+                                        logger.debug(f"🔍 DEBUG: Main odds invalid in API-Football: {main_odds}")
+                                        return False  # Main odds failed validation
+                                except (ValueError, TypeError):
+                                    logger.debug(f"🔍 DEBUG: Error converting main odds in API-Football: {main_value.get('odd', 'N/A')}")
+                                    return False
+            return False
+        except Exception as e:
+            logger.debug(f"🔍 DEBUG: Exception in API-Football validation: {e}")
+            return False
+    
+    def _try_sportmonks_structure(self, odds_data: List[Dict]) -> bool:
+        """Try SportMonks style structure: odds -> value - Validate MAIN odds only"""
+        try:
+            for market in odds_data:
+                if isinstance(market, dict) and 'odds' in market and market['odds']:
+                    # CRITICAL: Only validate the FIRST (main) odds value
+                    main_odds_item = market['odds'][0]
+                    if 'value' in main_odds_item:
+                        try:
+                            main_odds = float(main_odds_item.get('value', 0))
+                            logger.debug(f"🔍 DEBUG: Validating main odds in SportMonks: {main_odds}")
+                            if OddsFilter.validate_odds(main_odds):
+                                logger.debug(f"🔍 DEBUG: Main odds valid in SportMonks: {main_odds}")
+                                return True
+                            else:
+                                logger.debug(f"🔍 DEBUG: Main odds invalid in SportMonks: {main_odds}")
+                                return False  # Main odds failed validation
+                        except (ValueError, TypeError):
+                            logger.debug(f"🔍 DEBUG: Error converting main odds in SportMonks: {main_odds_item.get('value', 'N/A')}")
+                            return False
+            return False
+        except Exception as e:
+            logger.debug(f"🔍 DEBUG: Exception in SportMonks validation: {e}")
+            return False
+    
+    def _try_flat_odds_structure(self, odds_data: List[Dict]) -> bool:
+        """Try flat structure: direct odds key - Validate MAIN odds only"""
+        try:
+            for market in odds_data:
+                if isinstance(market, dict):
+                    # Try common odds keys - validate the first valid one found
+                    for odds_key in ['odds', 'price', 'odd', 'value']:
+                        if odds_key in market:
+                            try:
+                                main_odds = float(market.get(odds_key, 0))
+                                logger.debug(f"🔍 DEBUG: Validating main odds in flat structure: {main_odds}")
+                                if OddsFilter.validate_odds(main_odds):
+                                    logger.debug(f"🔍 DEBUG: Main odds valid in flat structure: {main_odds}")
+                                    return True
+                                else:
+                                    logger.debug(f"🔍 DEBUG: Main odds invalid in flat structure: {main_odds}")
+                                    return False  # Main odds failed validation
+                            except (ValueError, TypeError):
+                                logger.debug(f"🔍 DEBUG: Error converting main odds in flat structure: {market.get(odds_key, 'N/A')}")
+                                return False
+            return False
+        except Exception as e:
+            logger.debug(f"🔍 DEBUG: Exception in flat structure validation: {e}")
+            return False
+    
+    def _try_generic_structure(self, odds_data: List[Dict]) -> bool:
+        """Try generic structure: recursively search for odds values - Validate MAIN odds only"""
+        try:
+            def search_recursively(obj, depth=0):
+                if depth > 10:  # Increase depth limit for deep structures
+                    return False
+                
+                if isinstance(obj, dict):
+                    # Check if this dict has an odds-like key - validate the first valid one found
+                    for key, value in obj.items():
+                        if key.lower() in ['odds', 'price', 'odd', 'value'] and isinstance(value, (int, float, str)):
+                            try:
+                                main_odds = float(value)
+                                logger.debug(f"🔍 DEBUG: Validating main odds in generic structure: {main_odds}")
+                                if OddsFilter.validate_odds(main_odds):
+                                    logger.debug(f"🔍 DEBUG: Main odds valid in generic structure: {main_odds}")
+                                    return True
+                                else:
+                                    logger.debug(f"🔍 DEBUG: Main odds invalid in generic structure: {main_odds}")
+                                    return False  # Main odds failed validation
+                            except (ValueError, TypeError):
+                                logger.debug(f"🔍 DEBUG: Error converting main odds in generic structure: {value}")
+                                return False
+                        
+                        # Recursively search nested objects
+                        if isinstance(value, (dict, list)):
+                            if search_recursively(value, depth + 1):
+                                return True
+                
+                elif isinstance(obj, list):
+                    for item in obj:
+                        if search_recursively(item, depth + 1):
+                            return True
+                
+                return False
+            
+            return search_recursively(odds_data)
+            
+        except Exception:
+            return False
+
     def _calculate_roi_rating(self, odds_data: List[Dict], match: Dict, match_index: int) -> float:
         """Calculate ROI rating based on actual odds data and match context"""
         try:
