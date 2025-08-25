@@ -295,27 +295,29 @@ class ReportGenerator:
     
     async def generate_betting_performance_report(self) -> Dict:
         """
-        Generate a basic betting performance report
+        Generate a comprehensive betting performance report using real database data
         
         Returns:
             Dictionary with report data and success status
         """
         try:
-            # Create a simple report for now
-            # In a real implementation, this would fetch actual betting data
-            report_data = {
-                'success': True,
-                'total_bets': 25,
-                'winning_bets': 15,
-                'losing_bets': 10,
-                'overall_roi': 12.5,
-                'total_pnl': 3.2,
-                'file_path': 'betting_performance_report.pdf',
-                'period': 'Last 30 days'
-            }
+            # Import ROI tracker to get real data
+            from betting.roi_tracker import ROITracker
             
-            # Generate a simple PDF report
-            filename = f"betting_performance_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            # Initialize ROI tracker
+            roi_tracker = ROITracker()
+            
+            # Get real-time performance data
+            overall_performance = roi_tracker.get_overall_performance()
+            market_performance = roi_tracker.get_market_performance()
+            league_performance = roi_tracker.get_league_performance()
+            
+            # Calculate current date for period
+            from datetime import datetime
+            current_date = datetime.now()
+            
+            # Generate a comprehensive PDF report
+            filename = f"betting_performance_report_{current_date.strftime('%Y%m%d_%H%M%S')}.pdf"
             filepath = os.path.join(self.output_dir, filename)
             
             # Create PDF document
@@ -331,19 +333,36 @@ class ReportGenerator:
                 alignment=1  # Center alignment
             )
             
-            title = Paragraph("Betting Performance Report", title_style)
+            title = Paragraph("FIXORA PRO - Betting Performance Report", title_style)
             story.append(title)
             story.append(Spacer(1, 20))
             
-            # Add summary
+            # Add timestamp
+            timestamp_style = ParagraphStyle(
+                'Timestamp',
+                parent=self.styles['Normal'],
+                fontSize=12,
+                alignment=1,
+                textColor=colors.grey
+            )
+            
+            timestamp = f"Report Generated: {current_date.strftime('%Y-%m-%d %H:%M:%S')}"
+            story.append(Paragraph(timestamp, timestamp_style))
+            story.append(Spacer(1, 30))
+            
+            # Add overall performance summary
+            story.append(Paragraph("Overall Performance Summary", self.styles['Heading2']))
+            story.append(Spacer(1, 10))
+            
             summary_data = [
                 ['Metric', 'Value'],
-                ['Total Bets', str(report_data['total_bets'])],
-                ['Winning Bets', str(report_data['winning_bets'])],
-                ['Losing Bets', str(report_data['losing_bets'])],
-                ['Win Rate', f"{report_data['winning_bets']/report_data['total_bets']*100:.1f}%"],
-                ['Overall ROI', f"{report_data['overall_roi']:.1f}%"],
-                ['Total P&L', f"{report_data['total_pnl']:.2f} units"]
+                ['Total Bets', str(overall_performance.get('total_bets', 0))],
+                ['Winning Bets', str(overall_performance.get('winning_bets', 0))],
+                ['Win Rate', f"{overall_performance.get('win_rate', 0):.1f}%"],
+                ['Total Stake', f"{overall_performance.get('total_stake', 0):.2f} units"],
+                ['Total Return', f"{overall_performance.get('total_return', 0):.2f} units"],
+                ['Total Profit/Loss', f"{overall_performance.get('total_profit_loss', 0):.2f} units"],
+                ['Overall ROI', f"{overall_performance.get('overall_roi', 0):.1f}%"]
             ]
             
             summary_table = Table(summary_data, colWidths=[2*inch, 2*inch])
@@ -359,12 +378,87 @@ class ReportGenerator:
             ]))
             
             story.append(summary_table)
+            story.append(Spacer(1, 20))
+            
+            # Add market performance breakdown
+            if market_performance:
+                story.append(Paragraph("Market Performance Breakdown", self.styles['Heading2']))
+                story.append(Spacer(1, 10))
+                
+                market_data = [['Market', 'Bets', 'Win Rate', 'ROI', 'Stake', 'Return']]
+                for market_stats in market_performance:
+                    market_name = market_stats.get('market_type', 'Unknown').replace('_', ' ').title()
+                    market_data.append([
+                        market_name,
+                        str(market_stats.get('total_bets', 0)),
+                        f"{market_stats.get('overall_roi', 0):.1f}%",
+                        f"{market_stats.get('overall_roi', 0):.1f}%",
+                        f"{market_stats.get('total_stake', 0):.2f}",
+                        f"{market_stats.get('total_return', 0):.2f}"
+                    ])
+                
+                market_table = Table(market_data, colWidths=[1.5*inch, 0.5*inch, 0.7*inch, 0.7*inch, 0.8*inch, 0.8*inch])
+                market_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                    ('FONTSIZE', (0, 1), (-1, -1), 9)
+                ]))
+                
+                story.append(market_table)
+                story.append(Spacer(1, 20))
+            
+            # Add league performance
+            if league_performance:
+                story.append(Paragraph("League Performance", self.styles['Heading2']))
+                story.append(Spacer(1, 10))
+                
+                league_data = [['League', 'Bets', 'Win Rate', 'ROI', 'Stake', 'Return']]
+                for league in league_performance:
+                    league_data.append([
+                        league.get('league_name', 'Unknown'),
+                        str(league.get('total_bets', 0)),
+                        f"{league.get('overall_roi', 0):.1f}%",
+                        f"{league.get('overall_roi', 0):.1f}%",
+                        f"{league.get('total_stake', 0):.2f}",
+                        f"{league.get('total_return', 0):.2f}"
+                    ])
+                
+                league_table = Table(league_data, colWidths=[2*inch, 0.5*inch, 0.7*inch, 0.7*inch, 0.8*inch, 0.8*inch])
+                league_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                    ('FONTSIZE', (0, 1), (-1, -1), 9)
+                ]))
+                
+                story.append(league_table)
+                story.append(Spacer(1, 20))
             
             # Build PDF
             doc.build(story)
             
-            # Update file path in report data
-            report_data['file_path'] = filepath
+            # Prepare report data with real values
+            report_data = {
+                'success': True,
+                'total_bets': overall_performance.get('total_bets', 0),
+                'winning_bets': overall_performance.get('winning_bets', 0),
+                'losing_bets': overall_performance.get('total_bets', 0) - overall_performance.get('winning_bets', 0),
+                'overall_roi': overall_performance.get('overall_roi', 0),
+                'total_pnl': overall_performance.get('total_profit_loss', 0),
+                'file_path': filepath,
+                'period': f"All time (as of {current_date.strftime('%B %d, %Y')})"
+            }
             
             print(f"Betting performance report generated: {filepath}")
             return report_data
@@ -379,10 +473,10 @@ class ReportGenerator:
     async def generate_weekly_roi_report(self, betting_data: List[Dict], 
                                        start_date: datetime, end_date: datetime) -> str:
         """
-        Generate weekly ROI performance report
+        Generate weekly ROI performance report using real database data
         
         Args:
-            betting_data: List of betting records for the week
+            betting_data: List of betting records for the week (can be empty, will fetch from DB)
             start_date: Start of the week
             end_date: End of the week
             
@@ -390,6 +484,16 @@ class ReportGenerator:
             Path to generated PDF file
         """
         try:
+            # Import ROI tracker to get real data if betting_data is empty
+            from betting.roi_tracker import ROITracker
+            
+            # Initialize ROI tracker
+            roi_tracker = ROITracker()
+            
+            # Get real-time weekly performance data
+            weekly_performance = roi_tracker.get_weekly_performance(7)  # Last 7 days
+            overall_performance = roi_tracker.get_overall_performance()
+            
             # Create filename for weekly report
             filename = f"weekly_roi_report_{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}.pdf"
             filepath = os.path.join(self.output_dir, filename)
@@ -397,17 +501,18 @@ class ReportGenerator:
             # Create PDF document
             doc = SimpleDocTemplate(filepath, pagesize=A4)
             story = []
+
             
             # Add title
             title_style = ParagraphStyle(
-                'WeeklyTitle',
+                'CustomTitle',
                 parent=self.styles['Heading1'],
                 fontSize=24,
                 spaceAfter=30,
                 alignment=1  # Center alignment
             )
             
-            title = Paragraph("Weekly ROI Performance Report", title_style)
+            title = Paragraph("FIXORA PRO - Weekly ROI Report", title_style)
             story.append(title)
             story.append(Spacer(1, 20))
             
@@ -415,89 +520,115 @@ class ReportGenerator:
             date_style = ParagraphStyle(
                 'DateRange',
                 parent=self.styles['Normal'],
-                fontSize=12,
-                alignment=1
+                fontSize=16,
+                alignment=1,
+                textColor=colors.grey
             )
             
             date_range = f"Week: {start_date.strftime('%B %d, %Y')} - {end_date.strftime('%B %d, %Y')}"
             story.append(Paragraph(date_range, date_style))
+            story.append(Spacer(1, 20))
+            
+            # Add timestamp
+            timestamp_style = ParagraphStyle(
+                'Timestamp',
+                parent=self.styles['Normal'],
+                fontSize=12,
+                alignment=1,
+                textColor=colors.lightgrey
+            )
+            
+            timestamp = f"Report Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            story.append(Paragraph(timestamp, timestamp_style))
             story.append(Spacer(1, 30))
             
-            # Generate weekly summary statistics
-            if betting_data:
-                # Use actual betting data if available
-                summary_stats = self._calculate_summary_statistics(betting_data)
-            else:
-                # Generate sample weekly data for demonstration
-                summary_stats = {
-                    'total_bets': 18,
-                    'winning_bets': 11,
-                    'losing_bets': 7,
-                    'total_stake': 45.0,
-                    'total_return': 52.8,
-                    'roi': 17.3,
-                    'win_rate': 61.1,
-                    'average_odds': 2.15,
-                    'total_edge': 8.7
-                }
+            # Add weekly performance summary
+            story.append(Paragraph("Weekly Performance Summary", self.styles['Heading2']))
+            story.append(Spacer(1, 10))
             
-            # Create weekly summary table
-            weekly_summary_data = [
-                ['Metric', 'Value'],
-                ['Total Bets', str(summary_stats['total_bets'])],
-                ['Winning Bets', str(summary_stats['winning_bets'])],
-                ['Losing Bets', str(summary_stats['losing_bets'])],
-                ['Win Rate', f"{summary_stats['win_rate']:.1f}%"],
-                ['Total Stake', f"{summary_stats['total_stake']:.1f} units"],
-                ['Total Return', f"{summary_stats['total_return']:.1f} units"],
-                ['Weekly ROI', f"{summary_stats['roi']:.1f}%"],
-                ['Average Odds', f"{summary_stats['average_odds']:.2f}"],
-                ['Total Edge', f"{summary_stats['total_edge']:.1f}%"]
+            if weekly_performance:
+                weekly_data = [['Market', 'Bets', 'Win Rate', 'ROI', 'Stake', 'Return', 'P&L']]
+                total_weekly_bets = 0
+                total_weekly_stake = 0
+                total_weekly_return = 0
+                total_weekly_pnl = 0
+                
+                for market, stats in weekly_performance.items():
+                    weekly_data.append([
+                        market.replace('_', ' ').title(),
+                        str(stats.get('total_bets', 0)),
+                        f"{stats.get('win_rate', 0):.1f}%",
+                        f"{stats.get('roi', 0):.1f}%",
+                        f"{stats.get('total_stake', 0):.2f}",
+                        f"{stats.get('total_return', 0):.2f}",
+                        f"{stats.get('total_profit_loss', 0):.2f}"
+                    ])
+                    
+                    total_weekly_bets += stats.get('total_bets', 0)
+                    total_weekly_stake += stats.get('total_stake', 0)
+                    total_weekly_return += stats.get('total_return', 0)
+                    total_weekly_pnl += stats.get('total_profit_loss', 0)
+                
+                # Add weekly totals row
+                weekly_roi = (total_weekly_pnl / total_weekly_stake) * 100 if total_weekly_stake > 0 else 0
+                weekly_data.append([
+                    'TOTAL',
+                    str(total_weekly_bets),
+                    f"{(total_weekly_bets - (total_weekly_bets - sum(1 for s in weekly_performance.values() if s.get('winning_bets', 0) > 0)) / total_weekly_bets * 100):.1f}%" if total_weekly_bets > 0 else "0.0%",
+                    f"{weekly_roi:.1f}%",
+                    f"{total_weekly_stake:.2f}",
+                    f"{total_weekly_return:.2f}",
+                    f"{total_weekly_pnl:.2f}"
+                ])
+                
+                weekly_table = Table(weekly_data, colWidths=[1.5*inch, 0.5*inch, 0.7*inch, 0.7*inch, 0.8*inch, 0.8*inch, 0.8*inch])
+                weekly_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                    ('FONTSIZE', (0, 1), (-1, -1), 9),
+                    ('BACKGROUND', (0, -1), (-1, -1), colors.lightblue),
+                    ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold')
+                ]))
+                
+                story.append(weekly_table)
+            else:
+                story.append(Paragraph("No betting activity in the last 7 days", self.styles['Normal']))
+            
+            story.append(Spacer(1, 20))
+            
+            # Add overall performance context
+            story.append(Paragraph("Overall Performance Context", self.styles['Heading2']))
+            story.append(Spacer(1, 10))
+            
+            context_data = [
+                ['Metric', 'All Time', 'This Week'],
+                ['Total Bets', str(overall_performance.get('total_bets', 0)), str(total_weekly_bets if weekly_performance else 0)],
+                ['Win Rate', f"{overall_performance.get('win_rate', 0):.1f}%", f"{weekly_performance.get('match_result', {}).get('win_rate', 0):.1f}%" if weekly_performance and 'match_result' in weekly_performance else "0.0%"],
+                ['Overall ROI', f"{overall_performance.get('overall_roi', 0):.1f}%", f"{weekly_roi:.1f}%" if weekly_performance else "0.0%"],
+                ['Total Stake', f"{overall_performance.get('total_stake', 0):.2f}", f"{total_weekly_stake:.2f}" if weekly_performance else "0.00"],
+                ['Total P&L', f"{overall_performance.get('total_profit_loss', 0):.2f}", f"{total_weekly_pnl:.2f}" if weekly_performance else "0.00"]
             ]
             
-            weekly_summary_table = Table(weekly_summary_data, colWidths=[2*inch, 2*inch])
-            weekly_summary_table.setStyle(TableStyle([
+            context_table = Table(context_data, colWidths=[2*inch, 1.5*inch, 1.5*inch])
+            context_table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 12),
+                ('FONTSIZE', (0, 0), (-1, 0), 10),
                 ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('FONTSIZE', (0, 1), (-1, -1), 9)
             ]))
             
-            story.append(weekly_summary_table)
-            story.append(Spacer(1, 30))
-            
-            # Add weekly insights section
-            insights_title = Paragraph("Weekly Insights", self.styles['Heading2'])
-            story.append(insights_title)
-            story.append(Spacer(1, 15))
-            
-            insights_text = f"""
-            This week's performance shows a {summary_stats['win_rate']:.1f}% win rate with a {summary_stats['roi']:.1f}% ROI.
-            The betting strategy generated {summary_stats['total_edge']:.1f}% total edge across all markets.
-            """
-            
-            insights_para = Paragraph(insights_text, self.styles['Normal'])
-            story.append(insights_para)
-            story.append(Spacer(1, 20))
-            
-            # Add recommendations section
-            recommendations_title = Paragraph("Recommendations for Next Week", self.styles['Heading2'])
-            story.append(recommendations_title)
-            story.append(Spacer(1, 15))
-            
-            recommendations_text = """
-            • Continue focusing on markets with positive edge
-            • Maintain consistent unit allocation strategy
-            • Monitor performance patterns for optimization
-            • Consider adjusting stake sizes based on confidence levels
-            """
-            
-            recommendations_para = Paragraph(recommendations_text, self.styles['Normal'])
-            story.append(recommendations_para)
+            story.append(context_table)
             
             # Build PDF
             doc.build(story)

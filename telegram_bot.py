@@ -49,6 +49,7 @@ class TelegramBetBot:
             self.application.add_handler(CommandHandler("analyze_roi", self.analyze_roi_command))
             self.application.add_handler(CommandHandler("report", self.report_command))
             self.application.add_handler(CommandHandler("weekly_report", self.weekly_report_command))
+            self.application.add_handler(CommandHandler("daily_report", self.daily_report_command))
             self.application.add_handler(CommandHandler("status", self.status_command))
             
             # Add message handler for any text message
@@ -113,6 +114,7 @@ Commands:
 /status - Check bot status
  /analyze_roi - Analyze today's ROI opportunities
  /report - Generate PDF report of bets
+ /daily_report - Generate today's ROI performance summary
  /weekly_report - Generate weekly ROI performance summary
 
  🕗 I'll automatically send you ROI analysis every morning at 8am UK time!
@@ -139,6 +141,7 @@ Commands:
 /status - Bot status
 /analyze_roi - Analyze today's ROI opportunities
 /report - Generate PDF report of bets
+/daily_report - Generate today's ROI performance summary
 /weekly_report - Generate weekly ROI performance summary
 
 Features:
@@ -181,8 +184,8 @@ Features:
 🎯 Available Commands:
 • /analyze_roi - ROI analysis with unit recommendations
 • /report - PDF report generation
+• /daily_report - Today's ROI performance summary
 • /weekly_report - Weekly ROI performance summary
-• /status - This status message
 
 💰 Betting System:
 • Unit System: 3-2-1 units for top 3 bets
@@ -454,81 +457,196 @@ Send me any message or use /analyze_roi to get started.
         await update.message.reply_text("📅 Generating weekly ROI performance summary... Please wait.")
         
         try:
-            # Import and use the report generator
-            from reports.report_generator import ReportGenerator
+            # Import ROI tracker for real data
+            from betting.roi_tracker import ROITracker
             
-            # Create report generator instance
-            report_gen = ReportGenerator()
+            # Initialize ROI tracker
+            roi_tracker = ROITracker()
             
             # Calculate date range for the last 7 days
             end_date = datetime.now()
             start_date = end_date - timedelta(days=7)
             
-            # Generate weekly ROI report
-            weekly_report_data = await report_gen.generate_weekly_roi_report(
-                betting_data=[],  # Empty for now, will be populated with real data
-                start_date=start_date,
-                end_date=end_date
-            )
+            # Get real-time weekly performance data
+            weekly_performance = roi_tracker.get_weekly_performance(7)
+            overall_performance = roi_tracker.get_overall_performance()
             
-            if weekly_report_data:
-                # Send weekly summary
+            if weekly_performance:
+                # Calculate weekly totals
+                total_weekly_bets = sum(stats.get('total_bets', 0) for stats in weekly_performance.values())
+                total_weekly_stake = sum(stats.get('total_stake', 0) for stats in weekly_performance.values())
+                total_weekly_return = sum(stats.get('total_return', 0) for stats in weekly_performance.values())
+                total_weekly_pnl = sum(stats.get('total_profit_loss', 0) for stats in weekly_performance.values())
+                weekly_roi = (total_weekly_pnl / total_weekly_stake) * 100 if total_weekly_stake > 0 else 0
+                
+                # Send weekly summary with real data
                 weekly_summary = f"""
 📊 <b>Weekly ROI Performance Summary</b>
 
 📅 <b>Period</b>: {start_date.strftime('%B %d, %Y')} - {end_date.strftime('%B %d, %Y')}
 📈 <b>Report Type</b>: Weekly ROI Analysis
-📁 <b>Report File</b>: {weekly_report_data}
 
-💡 <b>Note</b>: Your weekly ROI performance report is being generated and sent now.
+🎯 <b>Weekly Performance</b>:
+• Total Bets: {total_weekly_bets}
+• Total Stake: {total_weekly_stake:.2f} units
+• Total Return: {total_weekly_return:.2f} units
+• Total P&L: {total_weekly_pnl:.2f} units
+• Weekly ROI: {weekly_roi:.1f}%
+
+📊 <b>Market Breakdown</b>:
 """
+                
+                # Add market breakdown
+                for market, stats in weekly_performance.items():
+                    market_name = market.replace('_', ' ').title()
+                    weekly_summary += f"• {market_name}: {stats.get('total_bets', 0)} bets, {stats.get('roi', 0):.1f}% ROI\n"
+                
+                weekly_summary += f"""
+💡 <b>Overall Context</b>:
+• All-Time Bets: {overall_performance.get('total_bets', 0)}
+• All-Time ROI: {overall_performance.get('overall_roi', 0):.1f}%
+• All-Time P&L: {overall_performance.get('total_profit_loss', 0):.2f} units
+
+🕗 <b>Next Update</b>: Automatic daily update at 8am UK time
+"""
+                
                 await update.message.reply_text(weekly_summary, parse_mode='HTML')
                 
-                # Send the actual PDF file
+                # Generate and send PDF report
                 try:
-                    if os.path.exists(weekly_report_data):
-                        with open(weekly_report_data, 'rb') as pdf_file:
+                    from reports.roi_weekly_report import ROIWeeklyReportGenerator
+                    report_gen = ROIWeeklyReportGenerator()
+                    
+                    # Generate weekly ROI report
+                    roi_data = {
+                        'overall_performance': overall_performance,
+                        'market_performance': roi_tracker.get_market_performance(),
+                        'league_performance': roi_tracker.get_league_performance(),
+                        'weekly_performance': weekly_performance
+                    }
+                    
+                    report_path = report_gen.generate_weekly_roi_report(roi_data, start_date, end_date)
+                    
+                    if report_path and os.path.exists(report_path):
+                        with open(report_path, 'rb') as pdf_file:
                             await update.message.reply_document(
                                 document=pdf_file,
                                 filename=f"weekly_roi_report_{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}.pdf",
                                 caption="📊 Your weekly ROI performance report is ready! Download and review your weekly betting analysis."
                             )
-                        logger.info(f"Weekly PDF report sent successfully: {weekly_report_data}")
+                        logger.info(f"Weekly PDF report sent successfully: {report_path}")
                     else:
-                        await update.message.reply_text("⚠ <b>Warning</b>: Weekly PDF file not found. Summary only.", parse_mode='HTML')
+                        await update.message.reply_text("⚠ <b>Warning</b>: Could not generate PDF report. Summary only.", parse_mode='HTML')
+                        
                 except Exception as pdf_error:
-                    logger.error(f"Error sending weekly PDF: {pdf_error}")
-                    await update.message.reply_text("⚠ <b>Warning</b>: Could not send weekly PDF file. Summary only.", parse_mode='HTML')
-                
-                # Send weekly insights
-                weekly_insights = """
-🔍 <b>Weekly Report Features</b>:
-• 7-day ROI performance analysis
-• Daily profit/loss breakdown
-• Unit-based performance tracking
-• Market type analysis
-• Performance trends and patterns
-• Cumulative ROI over the week
-
-💡 <b>Use Cases</b>:
-• Track weekly betting performance
-• Identify profitable betting patterns
-• Monitor unit allocation effectiveness
-• Plan next week's betting strategy
-
-🕗 <b>Next Report</b>: Use /weekly_report anytime for a new 7-day analysis
-💰 <b>Daily Analysis</b>: Use /analyze_roi for today's opportunities
-📊 <b>Overall Report</b>: Use /report for complete performance history
-"""
-                await update.message.reply_text(weekly_insights, parse_mode='HTML')
+                    logger.error(f"Error generating weekly PDF: {pdf_error}")
+                    await update.message.reply_text("⚠ <b>Warning</b>: Could not generate PDF report. Summary only.", parse_mode='HTML')
                 
             else:
-                await update.message.reply_text("❌ <b>Weekly report generation failed</b> - Could not create weekly ROI summary", parse_mode='HTML')
-                
+                # No weekly data available
+                no_data_message = f"""
+📊 <b>Weekly ROI Performance Summary</b>
+
+📅 <b>Period</b>: {start_date.strftime('%B %d, %Y')} - {end_date.strftime('%B %d, %Y')}
+
+❌ <b>No Betting Activity</b>: No bets were placed in the last 7 days
+
+💡 <b>Overall Context</b>:
+• All-Time Bets: {overall_performance.get('total_bets', 0)}
+• All-Time ROI: {overall_performance.get('overall_roi', 0):.1f}%
+• All-Time P&L: {overall_performance.get('total_profit_loss', 0):.2f} units
+
+🕗 <b>Next Update</b>: Automatic daily update at 8am UK time
+"""
+                await update.message.reply_text(no_data_message, parse_mode='HTML')
+            
         except Exception as e:
             error_msg = f"❌ Weekly report generation failed: {str(e)}"
             await update.message.reply_text(error_msg)
             logger.error(f"Weekly report command failed: {e}")
+    
+    async def daily_report_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /daily_report command - generate today's ROI performance summary"""
+        await update.message.reply_text("📅 Generating today's ROI performance summary... Please wait.")
+        
+        try:
+            # Import ROI tracker for real data
+            from betting.roi_tracker import ROITracker
+            
+            # Initialize ROI tracker
+            roi_tracker = ROITracker()
+            
+            # Get today's date
+            today = datetime.now()
+            today_str = today.strftime('%Y-%m-%d')
+            
+            # Get real-time daily performance data (last 24 hours)
+            daily_performance = roi_tracker.get_weekly_performance(1)  # Last 1 day
+            overall_performance = roi_tracker.get_overall_performance()
+            
+            if daily_performance:
+                # Calculate daily totals
+                total_daily_bets = sum(stats.get('total_bets', 0) for stats in daily_performance.values())
+                total_daily_stake = sum(stats.get('total_stake', 0) for stats in daily_performance.values())
+                total_daily_return = sum(stats.get('total_return', 0) for stats in daily_performance.values())
+                total_daily_pnl = sum(stats.get('total_profit_loss', 0) for stats in daily_performance.values())
+                daily_roi = (total_daily_pnl / total_daily_stake) * 100 if total_daily_stake > 0 else 0
+                
+                # Send daily summary with real data
+                daily_summary = f"""
+📊 <b>Today's ROI Performance Summary</b>
+
+📅 <b>Date</b>: {today.strftime('%B %d, %Y')}
+📈 <b>Report Type</b>: Daily ROI Analysis
+
+🎯 <b>Today's Performance</b>:
+• Total Bets: {total_daily_bets}
+• Total Stake: {total_daily_stake:.2f} units
+• Total Return: {total_daily_return:.2f} units
+• Total P&L: {total_daily_pnl:.2f} units
+• Daily ROI: {daily_roi:.1f}%
+
+📊 <b>Market Breakdown</b>:
+"""
+                
+                # Add market breakdown
+                for market, stats in daily_performance.items():
+                    market_name = market.replace('_', ' ').title()
+                    daily_summary += f"• {market_name}: {stats.get('total_bets', 0)} bets, {stats.get('roi', 0):.1f}% ROI\n"
+                
+                daily_summary += f"""
+💡 <b>Overall Context</b>:
+• All-Time Bets: {overall_performance.get('total_bets', 0)}
+• All-Time ROI: {overall_performance.get('overall_roi', 0):.1f}%
+• All-Time P&L: {overall_performance.get('total_profit_loss', 0):.2f} units
+
+🕗 <b>Next Update</b>: Automatic daily update at 8am UK time
+"""
+                
+                await update.message.reply_text(daily_summary, parse_mode='HTML')
+                
+            else:
+                # No daily data available
+                no_data_message = f"""
+📊 <b>Today's ROI Performance Summary</b>
+
+📅 <b>Date</b>: {today.strftime('%B %d, %Y')}
+
+❌ <b>No Betting Activity</b>: No bets were placed today
+
+💡 <b>Overall Context</b>:
+• All-Time Bets: {overall_performance.get('total_bets', 0)}
+• All-Time ROI: {overall_performance.get('overall_roi', 0):.1f}%
+• All-Time P&L: {overall_performance.get('total_profit_loss', 0):.2f} units
+
+🕗 <b>Next Update</b>: Automatic daily update at 8am UK time
+"""
+                await update.message.reply_text(no_data_message, parse_mode='HTML')
+            
+        except Exception as e:
+            error_msg = f"❌ Daily report generation failed: {str(e)}"
+            await update.message.reply_text(error_msg)
+            logger.error(f"Daily report command failed: {e}")
     
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle any text message from users"""
@@ -1110,7 +1228,7 @@ Or just ask me about ROI, betting units, or performance analysis!
         except Exception as e:
             logger.error(f"Error extracting main odds: {e}")
             return 0.0
-
+    
     def _extract_odds_for_display(self, odds_data: List[Dict]) -> str:
         """Extract and format odds for display"""
         try:
@@ -1369,7 +1487,7 @@ Or just ask me about ROI, betting units, or performance analysis!
             
         except Exception:
             return False
-
+    
     def _calculate_roi_rating(self, odds_data: List[Dict], match: Dict, match_index: int) -> float:
         """Calculate ROI rating based on actual odds data and match context"""
         try:
